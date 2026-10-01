@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" role="img" aria-label="YEFA logo">
+  <title>YEFA</title>
+  <g font-family="'Poppins','Arial Black',sans-serif" font-weight="800" fill="#3658c9">
+    <!-- Y -->
+    <text x="-10" y="178" font-size="200" letter-spacing="-6">Y</text>
+    <!-- bars standing in for E -->
+    <g>
+      <rect x="268" y="30"  width="150" height="38" rx="6" fill="#3658c9"/>
+      <rect x="268" y="92"  width="150" height="38" rx="6" fill="#e8923a"/>
+      <rect x="268" y="154" width="150" height="38" rx="6" fill="#3658c9"/>
+    </g>
+    <!-- F -->
+    <text x="430" y="178" font-size="200" letter-spacing="-6">F</text>
+    <!-- A -->
+    <text x="585" y="178" font-size="200" letter-spacing="-6">A</text>
+  </g>
+</svg>
