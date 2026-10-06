@@ -15,33 +15,30 @@ const OPPORTUNITIES = [
 export default function Events() {
   return (
     <div>
-      <PageHeader
-        title="Events & Meetings"
-        subtitle="Upcoming meetings, guest speakers, and workshops."
-      />
+      <PageHeader title="Events & Meetings" subtitle="Upcoming meetings, guest speakers, and workshops." />
 
-      <section className="mx-auto max-w-5xl px-5 py-14">
-        <h2 className="text-xl font-bold text-yefa-navy">Upcoming Meetings</h2>
-        <div className="mt-4 space-y-4">
+      <section className="mx-auto max-w-5xl px-5 py-16">
+        <h2 className="text-lg font-bold text-yefa-navy">Upcoming Meetings</h2>
+        <div className="mt-4 space-y-3">
           {MEETINGS.map((m, i) => (
-            <div key={i} className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-yefa-blue text-white">
-                <span className="text-xs font-semibold uppercase">{m.date === "TBA" ? "TBA" : m.date}</span>
+            <div key={i} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-yefa-blue-50 text-xs font-bold uppercase tracking-wide text-yefa-blue">
+                {m.date}
               </div>
               <div>
                 <h3 className="font-semibold text-yefa-navy">{m.title}</h3>
-                <p className="text-sm text-slate-500">{m.location}</p>
+                <p className="text-sm text-yefa-ink">{m.location}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <h2 className="mt-14 text-xl font-bold text-yefa-navy">Opportunities</h2>
+        <h2 className="mt-14 text-lg font-bold text-yefa-navy">Opportunities</h2>
         <div className="mt-4 grid gap-5 sm:grid-cols-3">
           {OPPORTUNITIES.map((o) => (
-            <div key={o.title} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div key={o.title} className="rounded-2xl border border-slate-200 bg-white p-5">
               <h3 className="font-semibold text-yefa-navy">{o.title}</h3>
-              <p className="mt-2 text-sm text-slate-500">{o.desc}</p>
+              <p className="mt-2 text-sm text-yefa-ink">{o.desc}</p>
             </div>
           ))}
         </div>

@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Poppins", "Inter", system-ui, sans-serif;
+  --font-display: "Lexend", "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
 
-  --color-yefa-blue: #3658c9;
-  --color-yefa-blue-dark: #1e3a8a;
-  --color-yefa-blue-light: #6b8af2;
-  --color-yefa-orange: #e8923a;
-  --color-yefa-orange-light: #f3b876;
-  --color-yefa-navy: #0f1b3d;
+  --color-yefa-blue: #3657c9;
+  --color-yefa-blue-dark: #1b2f6b;
+  --color-yefa-blue-light: #7893e8;
+  --color-yefa-blue-50: #eef1fb;
+  --color-yefa-orange: #e2912e;
+  --color-yefa-orange-light: #f5c583;
+  --color-yefa-navy: #10142b;
+  --color-yefa-ink: #4a5068;
 }
 
 html {
@@ -17,15 +19,16 @@ html {
 }
 
 body {
-  background-color: #f7f8fc;
+  background-color: #fcfcfd;
   color: var(--color-yefa-navy);
   font-family: var(--font-sans);
 }
 
-.perspective-1000 {
-  perspective: 1200px;
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
 }
 
-.preserve-3d {
-  transform-style: preserve-3d;
+::selection {
+  background: var(--color-yefa-orange-light);
+  color: var(--color-yefa-navy);
 }
