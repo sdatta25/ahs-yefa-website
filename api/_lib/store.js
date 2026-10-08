@@ -1,10 +1,9 @@
 import { put, list, del } from "@vercel/blob"
 
-const PREFIX = "data/events-"
 const KEEP_VERSIONS = 2
 
-export async function readEvents() {
-  const { blobs } = await list({ prefix: PREFIX })
+export async function readCollection(prefix) {
+  const { blobs } = await list({ prefix })
   if (blobs.length === 0) return []
   const latest = blobs.reduce((a, b) => (a.pathname > b.pathname ? a : b))
   const res = await fetch(latest.url, { cache: "no-store" })
@@ -13,12 +12,12 @@ export async function readEvents() {
   return Array.isArray(data) ? data : []
 }
 
-export async function writeEvents(events) {
-  const { blobs } = await list({ prefix: PREFIX })
+export async function writeCollection(prefix, items) {
+  const { blobs } = await list({ prefix })
   // Zero-padded timestamp so pathnames sort chronologically as plain strings.
-  const pathname = `${PREFIX}${String(Date.now()).padStart(15, "0")}.json`
+  const pathname = `${prefix}${String(Date.now()).padStart(15, "0")}.json`
 
-  await put(pathname, JSON.stringify(events, null, 2), {
+  await put(pathname, JSON.stringify(items, null, 2), {
     access: "public",
     addRandomSuffix: false,
     contentType: "application/json",

@@ -30,8 +30,13 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 py-5 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} {SITE.shortName}. All rights reserved.
+      <div className="flex flex-col items-center gap-2 border-t border-white/10 py-5 text-center text-xs text-slate-500 sm:flex-row sm:justify-between sm:px-5">
+        <span className="mx-auto sm:mx-0">
+          © {new Date().getFullYear()} {SITE.shortName}. All rights reserved.
+        </span>
+        <a href="/admin" className="mx-auto text-slate-600 transition hover:text-slate-400 sm:mx-0">
+          Officer Login
+        </a>
       </div>
     </footer>
   )

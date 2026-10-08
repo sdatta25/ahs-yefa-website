@@ -1,17 +1,7 @@
 import { useEffect, useState } from "react"
 import type { FormEvent } from "react"
-import {
-  clearToken,
-  createEvent,
-  deleteEvent,
-  fetchEvents,
-  hasToken,
-  login,
-  updateEvent,
-  type EventItem,
-  type EventType,
-} from "../lib/api"
-import { formatDateLabel, formatTime12h } from "../lib/date"
+import { createEvent, deleteEvent, fetchEvents, updateEvent, type EventItem, type EventType } from "../../lib/api"
+import { formatDateLabel, formatTime12h } from "../../lib/date"
 
 const EMPTY_DRAFT = {
   type: "meeting" as EventType,
@@ -22,22 +12,17 @@ const EMPTY_DRAFT = {
   description: "",
 }
 
-export default function OfficerPortal() {
-  const [unlocked, setUnlocked] = useState(hasToken())
-  const [password, setPassword] = useState("")
-  const [loginError, setLoginError] = useState<string | null>(null)
-  const [loggingIn, setLoggingIn] = useState(false)
-
+export default function EventManager() {
   const [events, setEvents] = useState<EventItem[]>([])
-  const [loadingEvents, setLoadingEvents] = useState(false)
+  const [loadingEvents, setLoadingEvents] = useState(true)
   const [draft, setDraft] = useState(EMPTY_DRAFT)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (unlocked) loadEvents()
-  }, [unlocked])
+    loadEvents()
+  }, [])
 
   function loadEvents() {
     setLoadingEvents(true)
@@ -45,27 +30,6 @@ export default function OfficerPortal() {
       .then((list) => setEvents(list.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))))
       .catch(() => setFormError("Couldn't load events."))
       .finally(() => setLoadingEvents(false))
-  }
-
-  async function handleLogin(e: FormEvent) {
-    e.preventDefault()
-    setLoginError(null)
-    setLoggingIn(true)
-    try {
-      await login(password)
-      setUnlocked(true)
-      setPassword("")
-    } catch (err) {
-      setLoginError(err instanceof Error ? err.message : "Login failed")
-    } finally {
-      setLoggingIn(false)
-    }
-  }
-
-  function handleLogout() {
-    clearToken()
-    setUnlocked(false)
-    setEvents([])
   }
 
   function startEdit(ev: EventItem) {
@@ -98,9 +62,7 @@ export default function OfficerPortal() {
 
     setSaving(true)
     try {
-      const updated = editingId
-        ? await updateEvent({ id: editingId, ...draft })
-        : await createEvent(draft)
+      const updated = editingId ? await updateEvent({ id: editingId, ...draft }) : await createEvent(draft)
       setEvents(updated.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)))
       resetForm()
     } catch (err) {
@@ -121,44 +83,10 @@ export default function OfficerPortal() {
     }
   }
 
-  if (!unlocked) {
-    return (
-      <div className="mx-auto max-w-sm rounded-2xl border border-slate-200 bg-white p-7">
-        <h3 className="text-base font-semibold text-yefa-navy">Officer Portal</h3>
-        <p className="mt-1 text-sm text-yefa-ink">Officers can log in to manage meetings and competitions.</p>
-        <form onSubmit={handleLogin} className="mt-4 space-y-3">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Officer password"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
-            required
-          />
-          {loginError && <p className="text-sm text-red-600">{loginError}</p>}
-          <button
-            type="submit"
-            disabled={loggingIn}
-            className="w-full rounded-full bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
-          >
-            {loggingIn ? "Logging in…" : "Log In"}
-          </button>
-        </form>
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h3 className="text-base font-semibold text-yefa-navy">Officer Portal</h3>
-        <button onClick={handleLogout} className="text-sm font-semibold text-yefa-ink hover:text-yefa-blue">
-          Log out
-        </button>
-      </div>
-
       <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h4 className="font-semibold text-yefa-navy">{editingId ? "Edit Item" : "Add Meeting or Competition"}</h4>
+        <h3 className="font-semibold text-yefa-navy">{editingId ? "Edit Item" : "Add Meeting or Competition"}</h3>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <label className="text-sm font-medium text-yefa-ink">
@@ -250,7 +178,7 @@ export default function OfficerPortal() {
       </form>
 
       <div>
-        <h4 className="font-semibold text-yefa-navy">All Items</h4>
+        <h3 className="font-semibold text-yefa-navy">All Items</h3>
         {loadingEvents ? (
           <p className="mt-3 text-sm text-yefa-ink">Loading&hellip;</p>
         ) : events.length === 0 ? (
@@ -264,7 +192,7 @@ export default function OfficerPortal() {
               >
                 <div>
                   <span className="text-xs font-semibold uppercase tracking-wide text-yefa-orange">{e.type}</span>
-                  <h5 className="font-semibold text-yefa-navy">{e.title}</h5>
+                  <h4 className="font-semibold text-yefa-navy">{e.title}</h4>
                   <p className="text-sm text-yefa-ink">
                     {formatDateLabel(e.date)} &middot; {formatTime12h(e.time)}
                   </p>

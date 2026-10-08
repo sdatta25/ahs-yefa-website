@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom"
 import { motion, type Variants } from "framer-motion"
 import BackgroundBlobs from "../components/BackgroundBlobs"
-import BrandLogo from "../components/BrandLogo"
-import TiltCard from "../components/TiltCard"
+import RevolvingLogo from "../components/RevolvingLogo"
 import { SITE } from "../data/site"
 
 const QUICK_LINKS = [
@@ -10,16 +9,37 @@ const QUICK_LINKS = [
     title: "Meet the Officers",
     desc: "Get to know the students leading YEFA this year.",
     to: "/officers",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM15.75 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+      />
+    ),
   },
   {
     title: "Meetings & Competitions",
     desc: "Calendar of meetings, deadlines, and registration info.",
     to: "/meetings-competitions",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008Z"
+      />
+    ),
   },
   {
     title: "Resources",
     desc: "Guides and materials to help you prep and get involved.",
     to: "/resources",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
+      />
+    ),
   },
 ]
 
@@ -97,14 +117,8 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
-            className="relative mx-auto flex w-full max-w-sm items-center justify-center"
           >
-            <div className="absolute inset-6 rounded-[2rem] bg-white/60 blur-2xl" />
-            <TiltCard className="rounded-[2rem]">
-              <div className="relative flex w-full items-center justify-center rounded-[2rem] border border-white bg-white/90 p-8 shadow-[0_30px_60px_-20px_rgba(27,47,107,0.3)] backdrop-blur">
-                <BrandLogo size="lg" />
-              </div>
-            </TiltCard>
+            <RevolvingLogo />
           </motion.div>
         </div>
       </section>
@@ -140,7 +154,12 @@ export default function Home() {
                 to={item.to}
                 className="group block h-full rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
               >
-                <h3 className="text-lg font-semibold text-yefa-navy">{item.title}</h3>
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-yefa-blue-50 text-yefa-blue transition group-hover:bg-yefa-blue group-hover:text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="h-5 w-5">
+                    {item.icon}
+                  </svg>
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-yefa-navy">{item.title}</h3>
                 <p className="mt-2 text-sm text-yefa-ink">{item.desc}</p>
                 <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue">
                   Explore

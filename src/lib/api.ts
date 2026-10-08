@@ -79,3 +79,56 @@ export async function deleteEvent(id: string): Promise<EventItem[]> {
   const data = await authedFetch("/api/events", { method: "DELETE", body: JSON.stringify({ id }) })
   return data.events
 }
+
+export type DocSection = "forms" | "resources"
+
+export type DocItem = {
+  id: string
+  section: DocSection
+  title: string
+  description?: string
+  url: string
+}
+
+export type DocDraft = Omit<DocItem, "id">
+
+export async function fetchDocuments(section?: DocSection): Promise<DocItem[]> {
+  const res = await fetch("/api/documents")
+  if (!res.ok) throw new Error("Failed to load documents")
+  const data = await res.json()
+  const docs = data.documents as DocItem[]
+  return section ? docs.filter((d) => d.section === section) : docs
+}
+
+export async function createDocument(draft: DocDraft): Promise<DocItem[]> {
+  const data = await authedFetch("/api/documents", { method: "POST", body: JSON.stringify({ document: draft }) })
+  return data.documents
+}
+
+export async function updateDocument(doc: DocItem): Promise<DocItem[]> {
+  const data = await authedFetch("/api/documents", { method: "PUT", body: JSON.stringify({ document: doc }) })
+  return data.documents
+}
+
+export async function deleteDocument(id: string): Promise<DocItem[]> {
+  const data = await authedFetch("/api/documents", { method: "DELETE", body: JSON.stringify({ id }) })
+  return data.documents
+}
+
+export async function uploadFile(file: File): Promise<string> {
+  const dataBase64 = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = reader.result as string
+      resolve(result.split(",")[1] ?? "")
+    }
+    reader.onerror = () => reject(new Error("Couldn't read file"))
+    reader.readAsDataURL(file)
+  })
+
+  const data = await authedFetch("/api/upload", {
+    method: "POST",
+    body: JSON.stringify({ filename: file.name, contentType: file.type, dataBase64 }),
+  })
+  return data.url as string
+}

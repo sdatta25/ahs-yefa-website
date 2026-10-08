@@ -1,31 +1,11 @@
 import crypto from "crypto"
-import { verifyToken, getBearerToken } from "./_lib/auth.js"
-import { readEvents, writeEvents } from "./_lib/store.js"
+import { requireAuth, parseBody } from "./_lib/http.js"
+import { readCollection, writeCollection } from "./_lib/store.js"
 
+const PREFIX = "data/events-"
 const TYPES = new Set(["meeting", "competition"])
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
-
-function requireAuth(req, res) {
-  const token = getBearerToken(req)
-  if (!verifyToken(token)) {
-    res.status(401).json({ error: "Unauthorized" })
-    return false
-  }
-  return true
-}
-
-function parseBody(req) {
-  let body = req.body
-  if (typeof body === "string") {
-    try {
-      body = JSON.parse(body)
-    } catch {
-      return {}
-    }
-  }
-  return body || {}
-}
 
 function validateEvent(input) {
   if (!input || typeof input !== "object") return "Missing event"
@@ -49,7 +29,7 @@ function sanitize(input) {
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    const events = await readEvents()
+    const events = await readCollection(PREFIX)
     events.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
     return res.status(200).json({ events })
   }
@@ -60,10 +40,10 @@ export default async function handler(req, res) {
     const error = validateEvent(body.event)
     if (error) return res.status(400).json({ error })
 
-    const events = await readEvents()
+    const events = await readCollection(PREFIX)
     const newEvent = { id: crypto.randomUUID(), ...sanitize(body.event) }
     events.push(newEvent)
-    await writeEvents(events)
+    await writeCollection(PREFIX, events)
     return res.status(201).json({ events })
   }
 
@@ -74,11 +54,11 @@ export default async function handler(req, res) {
     const error = validateEvent(body.event)
     if (error) return res.status(400).json({ error })
 
-    const events = await readEvents()
+    const events = await readCollection(PREFIX)
     const idx = events.findIndex((e) => e.id === body.event.id)
     if (idx === -1) return res.status(404).json({ error: "Event not found" })
     events[idx] = { id: body.event.id, ...sanitize(body.event) }
-    await writeEvents(events)
+    await writeCollection(PREFIX, events)
     return res.status(200).json({ events })
   }
 
@@ -87,9 +67,9 @@ export default async function handler(req, res) {
     const body = parseBody(req)
     if (!body.id) return res.status(400).json({ error: "Missing event id" })
 
-    const events = await readEvents()
+    const events = await readCollection(PREFIX)
     const next = events.filter((e) => e.id !== body.id)
-    await writeEvents(next)
+    await writeCollection(PREFIX, next)
     return res.status(200).json({ events: next })
   }
 
