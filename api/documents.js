@@ -3,11 +3,11 @@ import { requireAuth, parseBody } from "./_lib/http.js"
 import { readCollection, writeCollection } from "./_lib/store.js"
 
 const PREFIX = "data/documents-"
-const SECTIONS = new Set(["forms", "resources"])
+const SECTIONS = new Set(["forms", "resources", "social"])
 
 function validateDoc(input) {
   if (!input || typeof input !== "object") return "Missing document"
-  if (!SECTIONS.has(input.section)) return "Section must be 'forms' or 'resources'"
+  if (!SECTIONS.has(input.section)) return "Section must be 'forms', 'resources', or 'social'"
   if (!input.title || typeof input.title !== "string" || !input.title.trim()) return "Title is required"
   if (!input.url || typeof input.url !== "string" || !input.url.trim()) return "A link or uploaded file is required"
   return null
@@ -19,6 +19,7 @@ function sanitize(input) {
     title: input.title.trim(),
     description: typeof input.description === "string" ? input.description.trim() : "",
     url: input.url.trim(),
+    image: typeof input.image === "string" ? input.image.trim() : "",
   }
 }
 

@@ -7,6 +7,7 @@ const TABS = [
   { key: "events", label: "Meetings & Competitions" },
   { key: "forms", label: "Forms" },
   { key: "resources", label: "Resources" },
+  { key: "social", label: "Social Media" },
 ] as const
 
 type TabKey = (typeof TABS)[number]["key"]
@@ -21,7 +22,7 @@ export default function Admin() {
           <p className="text-xs font-semibold uppercase tracking-widest text-yefa-orange-light">Officers Only</p>
           <h1 className="mt-2 text-3xl font-bold">Admin</h1>
           <p className="mt-2 text-slate-300">
-            Manage the calendar, sign-up forms, and resources. Changes go live immediately.
+            Manage the calendar, sign-up forms, resources, and social post previews. Changes go live immediately.
           </p>
         </div>
       </div>
@@ -45,6 +46,7 @@ export default function Admin() {
           {tab === "events" && <EventManager />}
           {tab === "forms" && <DocumentManager section="forms" label="Forms" />}
           {tab === "resources" && <DocumentManager section="resources" label="Resources" />}
+          {tab === "social" && <DocumentManager section="social" label="Social Media" />}
         </AuthGate>
       </section>
     </div>

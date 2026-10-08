@@ -80,7 +80,7 @@ export async function deleteEvent(id: string): Promise<EventItem[]> {
   return data.events
 }
 
-export type DocSection = "forms" | "resources"
+export type DocSection = "forms" | "resources" | "social"
 
 export type DocItem = {
   id: string
@@ -88,6 +88,7 @@ export type DocItem = {
   title: string
   description?: string
   url: string
+  image?: string
 }
 
 export type DocDraft = Omit<DocItem, "id">
