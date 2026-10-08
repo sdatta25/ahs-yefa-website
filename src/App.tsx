@@ -3,8 +3,9 @@ import Layout from "./components/Layout"
 import Home from "./pages/Home"
 import About from "./pages/About"
 import Officers from "./pages/Officers"
-import Competitions from "./pages/Competitions"
-import Events from "./pages/Events"
+import MeetingsCompetitions from "./pages/MeetingsCompetitions"
+import Forms from "./pages/Forms"
+import Resources from "./pages/Resources"
 import Contact from "./pages/Contact"
 
 export default function App() {
@@ -14,8 +15,9 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="officers" element={<Officers />} />
-        <Route path="competitions" element={<Competitions />} />
-        <Route path="events" element={<Events />} />
+        <Route path="meetings-competitions" element={<MeetingsCompetitions />} />
+        <Route path="forms" element={<Forms />} />
+        <Route path="resources" element={<Resources />} />
         <Route path="contact" element={<Contact />} />
       </Route>
     </Routes>

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link, NavLink } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
+import BrandLogo from "./BrandLogo"
 import { NAV_LINKS } from "../data/site"
 
 export default function Navbar() {
@@ -8,21 +9,18 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
-        <NavLink to="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-          <img src="/images/yefa-logo.svg" alt="YEFA logo" className="h-7 w-auto" />
-          <span className="hidden text-sm font-semibold tracking-wide text-yefa-ink sm:block">
-            Youth Economics &amp; Finance Association
-          </span>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
+        <NavLink to="/" onClick={() => setOpen(false)}>
+          <BrandLogo size="sm" />
         </NavLink>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex">
           {NAV_LINKS.slice(0, -1).map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
+                `whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors ${
                   isActive ? "text-yefa-blue" : "text-yefa-ink hover:text-yefa-blue"
                 }`
               }
@@ -32,7 +30,7 @@ export default function Navbar() {
           ))}
           <Link
             to="/contact"
-            className="ml-2 rounded-full bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark"
+            className="ml-2 whitespace-nowrap rounded-full bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark"
           >
             Join
           </Link>
@@ -40,7 +38,7 @@ export default function Navbar() {
 
         <button
           onClick={() => setOpen((v) => !v)}
-          className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 lg:hidden"
           aria-label="Toggle menu"
           aria-expanded={open}
         >
@@ -57,7 +55,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden border-t border-slate-200/80 bg-white md:hidden"
+            className="overflow-hidden border-t border-slate-200/80 bg-white lg:hidden"
           >
             <div className="flex flex-col gap-1 px-5 py-3">
               {NAV_LINKS.map((link) => (

@@ -2,15 +2,16 @@ export const SITE = {
   shortName: "AHS YEFA",
   fullName: "AHS YEFA",
   tagline: "Building the next generation of economists, investors, and leaders.",
-  contactEmail: "yourclub@email.com",
-  instagram: "https://instagram.com/ahsyefa",
+  contactEmail: "alpharettayefa@gmail.com",
+  instagram: "https://www.instagram.com/alpharettayefa/",
 }
 
 export const NAV_LINKS = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Officers", to: "/officers" },
-  { label: "Competitions", to: "/competitions" },
-  { label: "Events & Meetings", to: "/events" },
+  { label: "Meetings & Competitions", to: "/meetings-competitions" },
+  { label: "Forms", to: "/forms" },
+  { label: "Resources", to: "/resources" },
   { label: "Join", to: "/contact" },
 ]

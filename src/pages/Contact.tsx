@@ -28,11 +28,6 @@ export default function Contact() {
             Follow us on Instagram
           </a>
         </div>
-
-        <p className="mt-10 text-xs text-slate-400">
-          Placeholder contact info — update with the real club email and socials in{" "}
-          <code className="rounded bg-slate-100 px-1.5 py-0.5">src/data/site.ts</code>.
-        </p>
       </section>
     </div>
   )

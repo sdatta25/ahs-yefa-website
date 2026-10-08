@@ -1,3 +1,4 @@
+import BrandLogo from "./BrandLogo"
 import { SITE } from "../data/site"
 
 export default function Footer() {
@@ -5,7 +6,7 @@ export default function Footer() {
     <footer className="mt-24 border-t border-white/10 bg-yefa-navy text-slate-300">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-3">
         <div>
-          <img src="/images/yefa-logo.svg" alt="YEFA logo" className="h-7 w-auto brightness-0 invert" />
+          <BrandLogo size="sm" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-400">{SITE.tagline}</p>
         </div>
 
@@ -14,8 +15,9 @@ export default function Footer() {
           <ul className="mt-4 space-y-2.5 text-sm">
             <li><a className="text-slate-300 transition hover:text-white" href="/about">About the Club</a></li>
             <li><a className="text-slate-300 transition hover:text-white" href="/officers">Officers</a></li>
-            <li><a className="text-slate-300 transition hover:text-white" href="/competitions">Competitions</a></li>
-            <li><a className="text-slate-300 transition hover:text-white" href="/events">Events &amp; Meetings</a></li>
+            <li><a className="text-slate-300 transition hover:text-white" href="/meetings-competitions">Meetings &amp; Competitions</a></li>
+            <li><a className="text-slate-300 transition hover:text-white" href="/forms">Forms</a></li>
+            <li><a className="text-slate-300 transition hover:text-white" href="/resources">Resources</a></li>
           </ul>
         </div>
 

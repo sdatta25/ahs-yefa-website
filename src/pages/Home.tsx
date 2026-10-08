@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom"
 import { motion, type Variants } from "framer-motion"
 import BackgroundBlobs from "../components/BackgroundBlobs"
+import BrandLogo from "../components/BrandLogo"
+import TiltCard from "../components/TiltCard"
 import { SITE } from "../data/site"
 
 const QUICK_LINKS = [
@@ -10,14 +12,14 @@ const QUICK_LINKS = [
     to: "/officers",
   },
   {
-    title: "Competitions",
-    desc: "Deadlines, registration info, and prep resources.",
-    to: "/competitions",
+    title: "Meetings & Competitions",
+    desc: "Calendar of meetings, deadlines, and registration info.",
+    to: "/meetings-competitions",
   },
   {
-    title: "Events & Meetings",
-    desc: "Upcoming meetings, guest speakers, and workshops.",
-    to: "/events",
+    title: "Resources",
+    desc: "Guides and materials to help you prep and get involved.",
+    to: "/resources",
   },
 ]
 
@@ -98,10 +100,24 @@ export default function Home() {
             className="relative mx-auto flex w-full max-w-sm items-center justify-center"
           >
             <div className="absolute inset-6 rounded-[2rem] bg-white/60 blur-2xl" />
-            <div className="relative flex w-full items-center justify-center rounded-[2rem] border border-white bg-white/80 p-10 shadow-[0_30px_60px_-20px_rgba(27,47,107,0.25)] backdrop-blur">
-              <img src="/images/yefa-logo.svg" alt="YEFA logo" className="w-full" />
-            </div>
+            <TiltCard className="rounded-[2rem]">
+              <div className="relative flex w-full items-center justify-center rounded-[2rem] border border-white bg-white/90 p-8 shadow-[0_30px_60px_-20px_rgba(27,47,107,0.3)] backdrop-blur">
+                <BrandLogo size="lg" />
+              </div>
+            </TiltCard>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="border-b border-slate-200/70 bg-white px-5 py-16">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-widest text-yefa-orange">Our Mission</p>
+          <h2 className="mt-2 text-2xl font-bold text-yefa-navy sm:text-3xl">What is {SITE.shortName}?</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-yefa-ink">
+            YEFA is a student-led club dedicated to building financial literacy, economic
+            thinking, and real-world investing skills through competitions, guest speakers,
+            and hands-on workshops.
+          </p>
         </div>
       </section>
 
@@ -133,21 +149,6 @@ export default function Home() {
               </Link>
             </motion.div>
           ))}
-        </div>
-      </section>
-
-      <section className="border-t border-white/10 bg-yefa-navy px-5 py-20 text-white">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-yefa-orange-light">
-            Our Mission
-          </p>
-          <h2 className="mt-2 text-2xl font-bold sm:text-3xl">What is {SITE.shortName}?</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-slate-300">
-            YEFA is a student-led club dedicated to building financial literacy, economic
-            thinking, and real-world investing skills through competitions, guest speakers,
-            and hands-on workshops.{" "}
-            <span className="text-yefa-orange-light">Full mission statement coming soon.</span>
-          </p>
         </div>
       </section>
     </div>
