@@ -5,8 +5,6 @@ export const SITE = {
   contactEmail: "alpharettayefa@gmail.com",
   instagram: "https://www.instagram.com/alpharettayefa/",
   memberSignupForm: "https://forms.gle/XJc52ZqHQQbmuN3cA",
-  memberSignupFormEmbed:
-    "https://docs.google.com/forms/d/e/1FAIpQLSdXtfDzmEOVOiwXBDbz0jAIImMO2kreYT4ENskO6qu-p0LEgw/viewform?embedded=true",
 }
 
 // All nav tabs, shown flat in the navbar (no dropdown).
