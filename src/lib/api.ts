@@ -89,6 +89,7 @@ export type DocItem = {
   description?: string
   url: string
   image?: string
+  pinned?: boolean
 }
 
 export type DocDraft = Omit<DocItem, "id">

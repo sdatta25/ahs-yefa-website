@@ -108,6 +108,15 @@ export default function DocumentManager({ section, label }: { section: DocSectio
     }
   }
 
+  async function handleTogglePin(doc: DocItem) {
+    try {
+      const updated = await updateDocument({ ...doc, pinned: !doc.pinned })
+      setDocs(updated.filter((d) => d.section === section))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't update item.")
+    }
+  }
+
   return (
     <div className="space-y-8">
       <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -201,14 +210,23 @@ export default function DocumentManager({ section, label }: { section: DocSectio
             {docs.map((d) => (
               <div
                 key={d.id}
-                className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
+                className={`flex flex-col gap-3 rounded-xl border bg-white p-4 sm:flex-row sm:items-center sm:justify-between ${
+                  d.pinned ? "border-yefa-orange/40" : "border-slate-200"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   {d.image && (
                     <img src={d.image} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />
                   )}
                   <div>
-                    <h4 className="font-semibold text-yefa-navy">{d.title}</h4>
+                    <div className="flex items-center gap-2">
+                      {d.pinned && (
+                        <span className="rounded-full bg-yefa-orange/10 px-2 py-0.5 text-xs font-semibold text-yefa-orange">
+                          📌 Pinned
+                        </span>
+                      )}
+                      <h4 className="font-semibold text-yefa-navy">{d.title}</h4>
+                    </div>
                     {d.description && <p className="text-sm text-yefa-ink">{d.description}</p>}
                     <a href={d.url} target="_blank" rel="noreferrer" className="text-sm text-yefa-blue hover:underline">
                       {d.url}
@@ -217,17 +235,25 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 </div>
                 <div className="flex shrink-0 gap-2">
                   <button
+                    onClick={() => handleTogglePin(d)}
+                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-yefa-orange ring-1 ring-inset ring-yefa-orange/30 transition hover:bg-yefa-orange/10"
+                  >
+                    {d.pinned ? "Unpin" : "Pin"}
+                  </button>
+                  <button
                     onClick={() => startEdit(d)}
                     className="rounded-full px-3 py-1.5 text-sm font-semibold text-yefa-blue ring-1 ring-inset ring-yefa-blue/30 transition hover:bg-yefa-blue-50"
                   >
                     Edit
                   </button>
-                  <button
-                    onClick={() => handleDelete(d.id)}
-                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-red-600 ring-1 ring-inset ring-red-200 transition hover:bg-red-50"
-                  >
-                    Delete
-                  </button>
+                  {!d.pinned && (
+                    <button
+                      onClick={() => handleDelete(d.id)}
+                      className="rounded-full px-3 py-1.5 text-sm font-semibold text-red-600 ring-1 ring-inset ring-red-200 transition hover:bg-red-50"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

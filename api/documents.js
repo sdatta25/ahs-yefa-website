@@ -20,13 +20,21 @@ function sanitize(input) {
     description: typeof input.description === "string" ? input.description.trim() : "",
     url: input.url.trim(),
     image: typeof input.image === "string" ? input.image.trim() : "",
+    pinned: Boolean(input.pinned),
   }
+}
+
+function sortDocs(docs) {
+  return docs.sort((a, b) => {
+    if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1
+    return a.title.localeCompare(b.title)
+  })
 }
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
     const docs = await readCollection(PREFIX)
-    docs.sort((a, b) => a.title.localeCompare(b.title))
+    sortDocs(docs)
     return res.status(200).json({ documents: docs })
   }
 
@@ -39,6 +47,7 @@ export default async function handler(req, res) {
     const docs = await readCollection(PREFIX)
     const newDoc = { id: crypto.randomUUID(), ...sanitize(body.document) }
     docs.push(newDoc)
+    sortDocs(docs)
     await writeCollection(PREFIX, docs)
     return res.status(201).json({ documents: docs })
   }
@@ -54,6 +63,7 @@ export default async function handler(req, res) {
     const idx = docs.findIndex((d) => d.id === body.document.id)
     if (idx === -1) return res.status(404).json({ error: "Document not found" })
     docs[idx] = { id: body.document.id, ...sanitize(body.document) }
+    sortDocs(docs)
     await writeCollection(PREFIX, docs)
     return res.status(200).json({ documents: docs })
   }
@@ -64,6 +74,12 @@ export default async function handler(req, res) {
     if (!body.id) return res.status(400).json({ error: "Missing document id" })
 
     const docs = await readCollection(PREFIX)
+    const target = docs.find((d) => d.id === body.id)
+    if (!target) return res.status(404).json({ error: "Document not found" })
+    if (target.pinned) {
+      return res.status(403).json({ error: "This item is pinned — unpin it first before deleting." })
+    }
+
     const next = docs.filter((d) => d.id !== body.id)
     await writeCollection(PREFIX, next)
     return res.status(200).json({ documents: next })

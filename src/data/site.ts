@@ -4,6 +4,7 @@ export const SITE = {
   tagline: "Building the next generation of economists, investors, and leaders.",
   contactEmail: "alpharettayefa@gmail.com",
   instagram: "https://www.instagram.com/alpharettayefa/",
+  memberSignupForm: "https://forms.gle/XJc52ZqHQQbmuN3cA",
 }
 
 // Shown directly in the navbar.
