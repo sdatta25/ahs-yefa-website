@@ -1,8 +1,9 @@
+import { lazy, Suspense } from "react"
 import { Link } from "react-router-dom"
 import { motion, type Variants } from "framer-motion"
-import BackgroundBlobs from "../components/BackgroundBlobs"
-import RevolvingLogo from "../components/RevolvingLogo"
 import { SITE } from "../data/site"
+
+const HeroCanvas = lazy(() => import("../components/hero3d/HeroCanvas"))
 
 const QUICK_LINKS = [
   {
@@ -55,17 +56,27 @@ const fadeUp: Variants = {
 export default function Home() {
   return (
     <div>
-      <section className="relative isolate overflow-hidden border-b border-slate-200/70 bg-yefa-blue-50">
-        <BackgroundBlobs />
+      {/* ---------------------------------------------------------------- */}
+      {/* Hero                                                             */}
+      {/* ---------------------------------------------------------------- */}
+      <section
+        className="relative isolate overflow-hidden bg-white"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(54,87,201,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(54,87,201,0.05) 1px, transparent 1px)",
+          backgroundSize: "56px 56px",
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_0%,rgba(54,87,201,0.08),transparent)]" />
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-20 pt-16 sm:pb-28 sm:pt-20 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-20 pt-14 sm:pb-28 sm:pt-20 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <motion.p
               variants={fadeUp}
               initial="hidden"
               animate="show"
               custom={0}
-              className="inline-flex items-center gap-2 rounded-full border border-yefa-blue/20 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-yefa-blue"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-yefa-blue"
             >
               Economics &middot; Finance &middot; Investing
             </motion.p>
@@ -75,10 +86,14 @@ export default function Home() {
               initial="hidden"
               animate="show"
               custom={1}
-              className="mt-5 text-4xl font-bold leading-[1.1] text-yefa-navy sm:text-5xl lg:text-[3.4rem]"
+              className="mt-6 font-display text-[3.4rem] font-extrabold leading-[0.95] tracking-tight text-yefa-navy sm:text-[4.6rem] lg:text-[5.2rem]"
             >
-              <span className="text-yefa-ink">AHS</span>{" "}
-              <span className="text-yefa-blue">YEFA</span>
+              AHS
+              <br />
+              <span className="relative inline-block text-yefa-blue">
+                YEFA
+                <span className="absolute -bottom-2 left-0 h-[5px] w-[72%] rounded-full bg-yefa-orange" />
+              </span>
             </motion.h1>
 
             <motion.p
@@ -86,7 +101,7 @@ export default function Home() {
               initial="hidden"
               animate="show"
               custom={2}
-              className="mt-5 max-w-lg text-lg text-yefa-ink"
+              className="mt-8 max-w-md text-lg leading-relaxed text-yefa-ink"
             >
               {SITE.tagline}
             </motion.p>
@@ -100,13 +115,13 @@ export default function Home() {
             >
               <Link
                 to="/contact"
-                className="rounded-full bg-yefa-blue px-7 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(54,87,201,0.55)] transition hover:bg-yefa-blue-dark"
+                className="rounded-full bg-yefa-blue px-7 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(54,87,201,0.55)] transition hover:-translate-y-0.5 hover:bg-yefa-blue-dark"
               >
                 Join YEFA
               </Link>
               <Link
                 to="/about"
-                className="rounded-full px-7 py-3 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:bg-white"
+                className="rounded-full px-7 py-3 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:-translate-y-0.5 hover:bg-slate-50"
               >
                 Learn More
               </Link>
@@ -116,32 +131,68 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+            transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
+            className="mx-auto w-full max-w-xl"
           >
-            <RevolvingLogo />
+            <Suspense
+              fallback={
+                <div className="aspect-square w-full max-w-xl animate-pulse rounded-[2rem] bg-gradient-to-br from-[#10142b] to-[#1b2f6b]" />
+              }
+            >
+              <HeroCanvas />
+            </Suspense>
           </motion.div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 0.6 }}
+          className="relative mx-auto hidden max-w-6xl justify-start px-5 pb-10 sm:flex"
+        >
+          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-slate-400">
+            <span className="h-6 w-px animate-pulse bg-slate-300" />
+            Scroll
+          </div>
+        </motion.div>
       </section>
 
-      <section className="border-b border-slate-200/70 bg-white px-5 py-16">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-yefa-orange">Our Mission</p>
-          <h2 className="mt-2 text-2xl font-bold text-yefa-navy sm:text-3xl">What is {SITE.shortName}?</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-yefa-ink">
-            YEFA is a student-led club dedicated to building financial literacy, economic
-            thinking, and real-world investing skills through competitions, guest speakers,
-            and hands-on workshops.
-          </p>
+      {/* ---------------------------------------------------------------- */}
+      {/* Mission — asymmetric editorial layout                            */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="border-y border-slate-200/70 bg-white px-5 py-20 sm:py-28">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.6fr_1fr] lg:gap-16">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-yefa-orange">Our Mission</p>
+            <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-yefa-navy sm:text-4xl">
+              What is {SITE.shortName}?
+            </h2>
+          </div>
+          <div className="border-l-2 border-yefa-blue/15 pl-6 sm:pl-10">
+            <p className="text-xl font-medium leading-relaxed text-yefa-navy sm:text-2xl">
+              YEFA is a student-led club dedicated to building financial literacy, economic
+              thinking, and real-world investing skills.
+            </p>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-yefa-ink">
+              We get there through competitions, guest speakers, and hands-on workshops —
+              built by students, for students.
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-20">
-        <div className="mx-auto max-w-xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-widest text-yefa-orange">Get Involved</p>
-          <h2 className="mt-2 text-2xl font-bold text-yefa-navy sm:text-3xl">Where to start</h2>
+      {/* ---------------------------------------------------------------- */}
+      {/* Quick links                                                      */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
+        <div className="flex items-end justify-between gap-6">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-yefa-orange">Get Involved</p>
+            <h2 className="mt-3 font-display text-3xl font-bold text-yefa-navy sm:text-4xl">Where to start</h2>
+          </div>
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-3">
+        <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-3">
           {QUICK_LINKS.map((item, i) => (
             <motion.div
               key={item.to}
@@ -149,12 +200,13 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
+              className="bg-white"
             >
-              <Link
-                to={item.to}
-                className="group block h-full rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-yefa-blue-50 text-yefa-blue transition group-hover:bg-yefa-blue group-hover:text-white">
+              <Link to={item.to} className="group block h-full p-8 transition hover:bg-yefa-blue-50/60">
+                <span className="font-display text-sm font-semibold text-slate-300 transition group-hover:text-yefa-blue/40">
+                  0{i + 1}
+                </span>
+                <div className="mt-4 flex h-11 w-11 items-center justify-center rounded-xl bg-yefa-blue-50 text-yefa-blue transition group-hover:bg-yefa-blue group-hover:text-white">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="h-5 w-5">
                     {item.icon}
                   </svg>
@@ -168,6 +220,28 @@ export default function Home() {
               </Link>
             </motion.div>
           ))}
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- */}
+      {/* Closing CTA                                                      */}
+      {/* ---------------------------------------------------------------- */}
+      <section className="relative overflow-hidden bg-yefa-navy px-5 py-20 text-white sm:py-28">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-yefa-blue/25 blur-[100px]" />
+        <div className="pointer-events-none absolute -left-20 bottom-[-5rem] h-64 w-64 rounded-full bg-yefa-orange/15 blur-[100px]" />
+        <div className="relative mx-auto max-w-3xl text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-yefa-orange-light">New members welcome all year</p>
+          <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">Ready to join YEFA?</h2>
+          <p className="mx-auto mt-4 max-w-xl text-slate-300">
+            Fill out the sign-up form and an officer will follow up with next steps and
+            meeting times.
+          </p>
+          <Link
+            to="/contact"
+            className="mt-8 inline-block rounded-full bg-white px-8 py-3 text-sm font-semibold text-yefa-navy transition hover:-translate-y-0.5 hover:bg-slate-100"
+          >
+            Join YEFA
+          </Link>
         </div>
       </section>
     </div>

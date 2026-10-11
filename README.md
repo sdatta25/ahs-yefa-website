@@ -6,7 +6,10 @@ posts, sign-up forms, resources, and how to join.
 
 Built with React + TypeScript + Vite + Tailwind CSS + Framer Motion, plus a small Vercel
 Serverless API (`/api`) backed by Vercel Blob storage for the calendar, forms, and
-resources, all managed through a password-protected Admin page.
+resources, all managed through a password-protected Admin page. The homepage hero has a
+real-time 3D scene (`@react-three/fiber` + `three`), lazy-loaded so it never blocks the
+rest of the site and falls back to a static panel if WebGL isn't available or the visitor
+has `prefers-reduced-motion` on.
 
 ## Running it locally
 
@@ -36,7 +39,8 @@ npm run build
 src/
   components/
     admin/        AuthGate (login), EventManager (calendar CRUD), DocumentManager (forms/resources CRUD)
-    BrandLogo, RevolvingLogo, Navbar, Footer, EventCalendar, OfficerCard, ...
+    hero3d/        The homepage's 3D hero scene (gem, orbit rings, parallax/scroll logic)
+    BrandLogo, Navbar, Footer, EventCalendar, OfficerCard, PostCarousel, ...
   pages/           One file per page (Home, About, Officers, Calendar, Competitions, Forms, Resources, SocialMedia, Partners, Contact, Admin)
   data/            Editable content — site info, officer list, competitions catalog, partners
   lib/             api.ts (calls to /api), date.ts (calendar + Eastern Time formatting helpers)
