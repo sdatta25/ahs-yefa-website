@@ -10,15 +10,18 @@ type RingConfig = {
   radius: number
   tube: number
   tilt: [number, number, number]
+  position: [number, number, number]
   speed: number
   color: string
   delay: number
 }
 
+// Centered on the cluster's visual mid-height, wide enough to wrap the full
+// spread of pillars rather than hug a single centered object.
 const RINGS: RingConfig[] = [
-  { radius: 1.9, tube: 0.012, tilt: [1.3, 0.2, 0], speed: 0.09, color: ORANGE, delay: 0.1 },
-  { radius: 2.3, tube: 0.008, tilt: [1.1, 1.0, 0.3], speed: -0.06, color: BLUE_LIGHT, delay: 0.25 },
-  { radius: 1.6, tube: 0.006, tilt: [0.4, 0.9, 1.2], speed: 0.13, color: ORANGE, delay: 0.4 },
+  { radius: 2.3, tube: 0.012, tilt: [1.4, 0.15, 0], position: [0, -0.3, 0], speed: 0.08, color: ORANGE, delay: 0.1 },
+  { radius: 2.0, tube: 0.008, tilt: [1.15, 0.9, 0.2], position: [0.1, -0.2, 0], speed: -0.055, color: BLUE_LIGHT, delay: 0.25 },
+  { radius: 2.6, tube: 0.006, tilt: [1.5, 0.6, 0.5], position: [-0.1, -0.35, 0], speed: 0.11, color: ORANGE, delay: 0.4 },
 ]
 
 function Ring({ config, reduced }: { config: RingConfig; reduced: boolean }) {
@@ -39,7 +42,7 @@ function Ring({ config, reduced }: { config: RingConfig; reduced: boolean }) {
   })
 
   return (
-    <mesh ref={ref} rotation={config.tilt}>
+    <mesh ref={ref} rotation={config.tilt} position={config.position}>
       <torusGeometry args={[config.radius, config.tube, 16, 120]} />
       <meshBasicMaterial color={config.color} transparent opacity={0} />
     </mesh>

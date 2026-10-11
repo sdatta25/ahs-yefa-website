@@ -69,7 +69,7 @@ export default function HeroCanvas() {
         <Suspense fallback={<StaticFallback />}>
           <Canvas
             dpr={[1, 1.75]}
-            camera={{ position: [0, 0, 5.2], fov: 42 }}
+            camera={{ position: [0, 0.3, 4.4], fov: 45 }}
             gl={{ antialias: true, alpha: true }}
             shadows="basic"
           >

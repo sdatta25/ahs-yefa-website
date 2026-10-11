@@ -69,7 +69,7 @@ export default function Home() {
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_0%,rgba(54,87,201,0.08),transparent)]" />
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-20 pt-14 sm:pb-28 sm:pt-20 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <motion.p
               variants={fadeUp}
@@ -86,7 +86,7 @@ export default function Home() {
               initial="hidden"
               animate="show"
               custom={1}
-              className="mt-6 font-display text-[3.4rem] font-extrabold leading-[0.95] tracking-tight text-yefa-navy sm:text-[4.6rem] lg:text-[5.2rem]"
+              className="mt-6 font-display text-[3.4rem] font-extrabold leading-[0.95] tracking-tight text-yefa-navy sm:text-[4.6rem] lg:text-[5.4rem] xl:text-[6.2rem] 2xl:text-[6.8rem]"
             >
               AHS
               <br />
@@ -143,18 +143,6 @@ export default function Home() {
             </Suspense>
           </motion.div>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.6 }}
-          className="relative mx-auto hidden max-w-6xl justify-start px-5 pb-10 sm:flex"
-        >
-          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-slate-400">
-            <span className="h-6 w-px animate-pulse bg-slate-300" />
-            Scroll
-          </div>
-        </motion.div>
       </section>
 
       {/* ---------------------------------------------------------------- */}
@@ -226,9 +214,15 @@ export default function Home() {
       {/* ---------------------------------------------------------------- */}
       {/* Closing CTA                                                      */}
       {/* ---------------------------------------------------------------- */}
-      <section className="relative overflow-hidden bg-yefa-navy px-5 py-20 text-white sm:py-28">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-yefa-blue/25 blur-[100px]" />
-        <div className="pointer-events-none absolute -left-20 bottom-[-5rem] h-64 w-64 rounded-full bg-yefa-orange/15 blur-[100px]" />
+      <section
+        className="relative overflow-hidden bg-yefa-navy px-5 py-20 text-white sm:py-28"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
+          backgroundSize: "56px 56px",
+        }}
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_100%,rgba(226,145,46,0.1),transparent)]" />
         <div className="relative mx-auto max-w-3xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-yefa-orange-light">New members welcome all year</p>
           <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">Ready to join YEFA?</h2>
