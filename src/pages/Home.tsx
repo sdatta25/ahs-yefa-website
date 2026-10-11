@@ -18,9 +18,9 @@ const QUICK_LINKS = [
     ),
   },
   {
-    title: "Meetings & Competitions",
-    desc: "Calendar of meetings, deadlines, and registration info.",
-    to: "/meetings-competitions",
+    title: "Calendar",
+    desc: "Upcoming meetings and competition deadlines, all in one place.",
+    to: "/calendar",
     icon: (
       <path
         strokeLinecap="round"

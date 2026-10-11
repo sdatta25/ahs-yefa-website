@@ -4,7 +4,7 @@ import EventManager from "../components/admin/EventManager"
 import DocumentManager from "../components/admin/DocumentManager"
 
 const TABS = [
-  { key: "events", label: "Meetings & Competitions" },
+  { key: "events", label: "Calendar" },
   { key: "forms", label: "Forms" },
   { key: "resources", label: "Resources" },
   { key: "social", label: "Social Media" },

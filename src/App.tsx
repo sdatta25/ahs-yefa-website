@@ -1,9 +1,10 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 import Layout from "./components/Layout"
 import Home from "./pages/Home"
 import About from "./pages/About"
 import Officers from "./pages/Officers"
-import MeetingsCompetitions from "./pages/MeetingsCompetitions"
+import Calendar from "./pages/Calendar"
+import Competitions from "./pages/Competitions"
 import Forms from "./pages/Forms"
 import Resources from "./pages/Resources"
 import SocialMedia from "./pages/SocialMedia"
@@ -18,7 +19,9 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="officers" element={<Officers />} />
-        <Route path="meetings-competitions" element={<MeetingsCompetitions />} />
+        <Route path="calendar" element={<Calendar />} />
+        <Route path="meetings-competitions" element={<Navigate to="/calendar" replace />} />
+        <Route path="competitions" element={<Competitions />} />
         <Route path="forms" element={<Forms />} />
         <Route path="resources" element={<Resources />} />
         <Route path="social" element={<SocialMedia />} />

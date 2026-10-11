@@ -10,7 +10,7 @@ import {
   type DocSection,
 } from "../../lib/api"
 
-const EMPTY_DRAFT = { title: "", description: "", url: "", image: "" }
+const EMPTY_DRAFT = { title: "", description: "", url: "", image: "", images: [] as string[] }
 
 export default function DocumentManager({ section, label }: { section: DocSection; label: string }) {
   const isSocial = section === "social"
@@ -38,7 +38,13 @@ export default function DocumentManager({ section, label }: { section: DocSectio
 
   function startEdit(doc: DocItem) {
     setEditingId(doc.id)
-    setDraft({ title: doc.title, description: doc.description || "", url: doc.url, image: doc.image || "" })
+    setDraft({
+      title: doc.title,
+      description: doc.description || "",
+      url: doc.url,
+      image: doc.image || "",
+      images: doc.images || [],
+    })
     setError(null)
     if (fileRef.current) fileRef.current.value = ""
     if (imageRef.current) imageRef.current.value = ""
@@ -77,8 +83,12 @@ export default function DocumentManager({ section, label }: { section: DocSectio
       if (!isSocial && file) url = await uploadFile(file)
 
       let image = draft.image.trim()
-      const imageFile = imageRef.current?.files?.[0]
-      if (imageFile) image = await uploadFile(imageFile)
+      let images = draft.images
+      const imageFiles = imageRef.current?.files
+      if (imageFiles && imageFiles.length > 0) {
+        images = await Promise.all([...imageFiles].map((f) => uploadFile(f)))
+        image = images[0]
+      }
 
       const payload = {
         section,
@@ -86,6 +96,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
         description: draft.description.trim(),
         url,
         image,
+        images,
       }
       const updated = editingId ? await updateDocument({ id: editingId, ...payload }) : await createDocument(payload)
       setDocs(updated.filter((d) => d.section === section))
@@ -157,13 +168,20 @@ export default function DocumentManager({ section, label }: { section: DocSectio
 
           {isSocial ? (
             <label className="text-sm font-medium text-yefa-ink">
-              Preview image (optional, max 4MB)
+              Preview image(s) — select all images from the post, in order (optional, max 4MB each)
               <input
                 ref={imageRef}
                 type="file"
                 accept="image/*"
+                multiple
                 className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-yefa-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-yefa-blue"
               />
+              {draft.images.length > 0 && (
+                <span className="mt-1 block text-xs text-slate-500">
+                  {draft.images.length} image{draft.images.length > 1 ? "s" : ""} currently saved — choose new files to
+                  replace them.
+                </span>
+              )}
             </label>
           ) : (
             <label className="text-sm font-medium text-yefa-ink">

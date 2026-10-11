@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react"
 import PageHeader from "../components/PageHeader"
-import InstagramEmbed from "../components/InstagramEmbed"
+import PostCarousel from "../components/PostCarousel"
 import { fetchDocuments, type DocItem } from "../lib/api"
 import { SITE } from "../data/site"
-
-function isInstagramUrl(url: string) {
-  return /instagram\.com\/([^/]+\/)?(p|reel)\//.test(url)
-}
 
 export default function SocialMedia() {
   const [posts, setPosts] = useState<DocItem[]>([])
@@ -38,24 +34,13 @@ export default function SocialMedia() {
           </div>
         ) : (
           <>
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {posts.map((p) =>
-                isInstagramUrl(p.url) ? (
-                  <div key={p.id} className="relative">
-                    {p.pinned && (
-                      <span className="absolute left-3 top-3 z-10 rounded-full bg-yefa-orange px-2.5 py-1 text-xs font-semibold text-white shadow">
-                        📌 Pinned
-                      </span>
-                    )}
-                    <InstagramEmbed url={p.url} />
-                  </div>
-                ) : (
-                  <a
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {posts.map((p) => {
+                const images = p.images && p.images.length > 0 ? p.images : p.image ? [p.image] : []
+                return (
+                  <div
                     key={p.id}
-                    href={p.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
+                    className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
                   >
                     <div className="relative">
                       {p.pinned && (
@@ -63,8 +48,8 @@ export default function SocialMedia() {
                           📌 Pinned
                         </span>
                       )}
-                      {p.image ? (
-                        <img src={p.image} alt={p.title} className="aspect-square w-full object-cover" />
+                      {images.length > 0 ? (
+                        <PostCarousel images={images} alt={p.title} />
                       ) : (
                         <div className="flex aspect-square w-full items-center justify-center bg-yefa-blue-50 text-yefa-blue">
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.4} stroke="currentColor" className="h-12 w-12">
@@ -77,14 +62,19 @@ export default function SocialMedia() {
                     <div className="p-5">
                       <h3 className="font-semibold text-yefa-navy">{p.title}</h3>
                       {p.description && <p className="mt-1 text-sm text-yefa-ink">{p.description}</p>}
-                      <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue">
-                        View post
+                      <a
+                        href={p.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group mt-3 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue"
+                      >
+                        View on Instagram
                         <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
-                      </span>
+                      </a>
                     </div>
-                  </a>
-                ),
-              )}
+                  </div>
+                )
+              })}
             </div>
 
             <p className="mt-10 text-center text-sm text-yefa-ink">

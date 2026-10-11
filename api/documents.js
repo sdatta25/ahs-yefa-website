@@ -20,6 +20,9 @@ function sanitize(input) {
     description: typeof input.description === "string" ? input.description.trim() : "",
     url: input.url.trim(),
     image: typeof input.image === "string" ? input.image.trim() : "",
+    images: Array.isArray(input.images)
+      ? input.images.filter((x) => typeof x === "string" && x.trim()).map((x) => x.trim())
+      : [],
     pinned: Boolean(input.pinned),
   }
 }

@@ -1,0 +1,33 @@
+// Competitions YEFA members can prep for throughout the year.
+// Specific dates and registration links get added via the Admin page's
+// Calendar once announced — this list is the reference catalog.
+export const COMPETITIONS: string[] = [
+  "Blue Ocean Competition",
+  "National Economics Challenge",
+  "National Personal Finance Competition",
+  "Entrepreneurial Concepts Hands-On",
+  "Harvard Student Agencies Case Competition",
+  "Global Youth Entrepreneurship Competition",
+  "YIS Global Stock Pitch Competition",
+  "Bank of America's Financial Skills Challenge",
+  "Kansas State University High School Investment Competition",
+  "Southern Illinois University's Annual Accounting Challenge",
+  "International Finance Olympiad",
+  "Ithaca College's High School Investment Competition",
+  "Stevens Institute of Technology's Trading Day Competition",
+  "Conrad Challenge",
+  "Stiftung Entrepreneurship's Citizen Entrepreneurship Competition",
+  "The High School Utah Entrepreneur Challenge",
+  "National Youth Entrepreneurship Challenge",
+  "Global Student Entrepreneur Awards",
+  "Cooper Hewitt Design Competition",
+  "Diamond Challenge",
+  "Young Tycoons Business Challenge",
+  "tecBRIDGE High School Business Plan Competition",
+  "Wisconsin High School Business Model Competition",
+  "Pirates Pitch Competition",
+  "The BUILD Design Challenge",
+  "GENIUS Olympiad for Business",
+  "The Paradigm Challenge",
+  "Rise",
+]

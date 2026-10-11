@@ -15,7 +15,8 @@ export default function Footer() {
           <ul className="mt-4 space-y-2.5 text-sm">
             <li><a className="text-slate-300 transition hover:text-white" href="/about">About the Club</a></li>
             <li><a className="text-slate-300 transition hover:text-white" href="/officers">Officers</a></li>
-            <li><a className="text-slate-300 transition hover:text-white" href="/meetings-competitions">Meetings &amp; Competitions</a></li>
+            <li><a className="text-slate-300 transition hover:text-white" href="/calendar">Calendar</a></li>
+            <li><a className="text-slate-300 transition hover:text-white" href="/competitions">Competitions</a></li>
           </ul>
         </div>
 

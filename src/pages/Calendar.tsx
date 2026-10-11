@@ -14,7 +14,7 @@ const TYPE_LABEL: Record<EventItem["type"], string> = {
   competition: "Competition",
 }
 
-export default function MeetingsCompetitions() {
+export default function Calendar() {
   const [events, setEvents] = useState<EventItem[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -43,8 +43,8 @@ export default function MeetingsCompetitions() {
   return (
     <div>
       <PageHeader
-        title="Meetings & Competitions"
-        subtitle="Calendar of upcoming meetings and competition deadlines. All times Eastern."
+        title="Calendar"
+        subtitle="This is where you can find upcoming YEFA meetings and competitions throughout the year. All times Eastern."
       />
 
       <section className="mx-auto max-w-5xl px-5 py-16">
