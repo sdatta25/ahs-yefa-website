@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { Canvas } from "@react-three/fiber"
-import Lattice from "./Lattice"
+import Orbs from "./Orbs"
 import { supportsWebGL, usePrefersReducedMotion } from "../../lib/motion"
 
 export default function SiteBackground({ calm = false }: { calm?: boolean }) {
@@ -38,7 +38,7 @@ export default function SiteBackground({ calm = false }: { calm?: boolean }) {
           gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
           frameloop={reduced ? "demand" : "always"}
         >
-          <Lattice reduced={reduced} dense={dense} calm={calm} scrollRef={scrollRef} />
+          <Orbs reduced={reduced} dense={dense} calm={calm} scrollRef={scrollRef} />
         </Canvas>
       </Suspense>
     </div>
