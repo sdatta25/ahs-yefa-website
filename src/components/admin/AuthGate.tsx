@@ -47,7 +47,7 @@ export default function AuthGate({ children }: { children: ReactNode }) {
           <button
             type="submit"
             disabled={loggingIn}
-            className="w-full rounded-full bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
+            className="w-full rounded-lg bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
           >
             {loggingIn ? "Signing in…" : "Sign In"}
           </button>

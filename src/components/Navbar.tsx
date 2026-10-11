@@ -30,7 +30,7 @@ export default function Navbar() {
           ))}
           <Link
             to="/contact"
-            className="ml-2 shrink-0 whitespace-nowrap rounded-full bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark"
+            className="ml-2 shrink-0 whitespace-nowrap rounded-lg bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark"
           >
             Join
           </Link>

@@ -115,13 +115,13 @@ export default function Home() {
             >
               <Link
                 to="/contact"
-                className="rounded-full bg-yefa-blue px-7 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(54,87,201,0.55)] transition hover:-translate-y-0.5 hover:bg-yefa-blue-dark"
+                className="rounded-xl bg-yefa-blue px-7 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(54,87,201,0.55)] transition hover:-translate-y-0.5 hover:bg-yefa-blue-dark"
               >
                 Join YEFA
               </Link>
               <Link
                 to="/about"
-                className="rounded-full px-7 py-3 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:-translate-y-0.5 hover:bg-slate-50"
+                className="rounded-xl px-7 py-3 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:-translate-y-0.5 hover:bg-slate-50"
               >
                 Learn More
               </Link>
@@ -148,7 +148,7 @@ export default function Home() {
       {/* ---------------------------------------------------------------- */}
       {/* Mission — asymmetric editorial layout                            */}
       {/* ---------------------------------------------------------------- */}
-      <section className="border-y border-slate-200/70 bg-white px-5 py-20 sm:py-28">
+      <section className="border-y border-slate-200/70 px-5 py-20 sm:py-28">
         <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.6fr_1fr] lg:gap-16">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-yefa-orange">Our Mission</p>
@@ -232,7 +232,7 @@ export default function Home() {
           </p>
           <Link
             to="/contact"
-            className="mt-8 inline-block rounded-full bg-white px-8 py-3 text-sm font-semibold text-yefa-navy transition hover:-translate-y-0.5 hover:bg-slate-100"
+            className="mt-8 inline-block rounded-xl bg-white px-8 py-3 text-sm font-semibold text-yefa-navy transition hover:-translate-y-0.5 hover:bg-slate-100"
           >
             Join YEFA
           </Link>

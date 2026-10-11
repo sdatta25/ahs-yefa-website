@@ -26,7 +26,7 @@ export default function Contact() {
         <div className="mt-10 flex flex-col items-center gap-3">
           <a
             href={`mailto:${SITE.contactEmail}?subject=Interested in joining YEFA`}
-            className="w-full max-w-sm rounded-full px-7 py-3 text-center text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
+            className="w-full max-w-sm rounded-xl px-7 py-3 text-center text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
           >
             Email {SITE.contactEmail}
           </a>
@@ -34,7 +34,7 @@ export default function Contact() {
             href={SITE.instagram}
             target="_blank"
             rel="noreferrer"
-            className="w-full max-w-sm rounded-full px-7 py-3 text-center text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
+            className="w-full max-w-sm rounded-xl px-7 py-3 text-center text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
           >
             Follow us on Instagram
           </a>
