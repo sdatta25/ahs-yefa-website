@@ -1,8 +1,15 @@
 import { useRef, useState } from "react"
+import type { PointerEvent as ReactPointerEvent } from "react"
 
 export default function PostCarousel({ images, alt }: { images: string[]; alt: string }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(0)
+  const drag = useRef<{ active: boolean; startX: number; startScrollLeft: number; moved: boolean }>({
+    active: false,
+    startX: 0,
+    startScrollLeft: 0,
+    moved: false,
+  })
 
   function handleScroll() {
     const el = trackRef.current
@@ -14,7 +21,41 @@ export default function PostCarousel({ images, alt }: { images: string[]; alt: s
   function goTo(i: number) {
     const el = trackRef.current
     if (!el) return
-    el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" })
+    const clamped = Math.max(0, Math.min(images.length - 1, i))
+    el.scrollTo({ left: clamped * el.clientWidth, behavior: "smooth" })
+  }
+
+  function snapToNearest() {
+    const el = trackRef.current
+    if (!el) return
+    const i = Math.round(el.scrollLeft / el.clientWidth)
+    goTo(i)
+  }
+
+  // Mouse drag-to-scroll — overflow-x containers don't support this natively
+  // the way they support touch/trackpad swipes, so we drive it manually.
+  function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {
+    if (e.pointerType !== "mouse") return
+    const el = trackRef.current
+    if (!el) return
+    drag.current = { active: true, startX: e.clientX, startScrollLeft: el.scrollLeft, moved: false }
+    el.setPointerCapture(e.pointerId)
+  }
+
+  function handlePointerMove(e: ReactPointerEvent<HTMLDivElement>) {
+    if (!drag.current.active) return
+    const el = trackRef.current
+    if (!el) return
+    const dx = e.clientX - drag.current.startX
+    if (Math.abs(dx) > 3) drag.current.moved = true
+    el.scrollLeft = drag.current.startScrollLeft - dx
+  }
+
+  function handlePointerUp(e: ReactPointerEvent<HTMLDivElement>) {
+    if (!drag.current.active) return
+    drag.current.active = false
+    trackRef.current?.releasePointerCapture(e.pointerId)
+    snapToNearest()
   }
 
   return (
@@ -22,7 +63,14 @@ export default function PostCarousel({ images, alt }: { images: string[]; alt: s
       <div
         ref={trackRef}
         onScroll={handleScroll}
-        className="flex aspect-square w-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onClickCapture={(e) => {
+          if (drag.current.moved) e.preventDefault()
+        }}
+        className="flex aspect-square w-full cursor-grab snap-x snap-mandatory overflow-x-auto scroll-smooth active:cursor-grabbing"
         style={{
           scrollbarWidth: "none",
           touchAction: "pan-x",
@@ -85,6 +133,10 @@ export default function PostCarousel({ images, alt }: { images: string[]; alt: s
               </button>
             ))}
           </div>
+
+          <span className="absolute right-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-xs font-medium text-white">
+            {index + 1}/{images.length}
+          </span>
         </>
       )}
     </div>
