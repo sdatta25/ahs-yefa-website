@@ -25,19 +25,16 @@ export default function PostCarousel({ images, alt }: { images: string[]; alt: s
     el.scrollTo({ left: clamped * el.clientWidth, behavior: "smooth" })
   }
 
-  function snapToNearest() {
-    const el = trackRef.current
-    if (!el) return
-    const i = Math.round(el.scrollLeft / el.clientWidth)
-    goTo(i)
-  }
-
   // Mouse drag-to-scroll — overflow-x containers don't support this natively
   // the way they support touch/trackpad swipes, so we drive it manually.
+  // Snap is turned off while dragging: CSS scroll-snap fights any scrollLeft
+  // that isn't already aligned to a snap point, which silently cancels drag
+  // movement if left on (snaps straight back to the nearest image).
   function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {
     if (e.pointerType !== "mouse") return
     const el = trackRef.current
     if (!el) return
+    el.style.scrollSnapType = "none"
     drag.current = { active: true, startX: e.clientX, startScrollLeft: el.scrollLeft, moved: false }
     el.setPointerCapture(e.pointerId)
   }
@@ -54,8 +51,13 @@ export default function PostCarousel({ images, alt }: { images: string[]; alt: s
   function handlePointerUp(e: ReactPointerEvent<HTMLDivElement>) {
     if (!drag.current.active) return
     drag.current.active = false
-    trackRef.current?.releasePointerCapture(e.pointerId)
-    snapToNearest()
+    const el = trackRef.current
+    el?.releasePointerCapture(e.pointerId)
+    if (el) {
+      const i = Math.round(el.scrollLeft / el.clientWidth)
+      el.style.scrollSnapType = ""
+      goTo(i)
+    }
   }
 
   return (
@@ -70,7 +72,7 @@ export default function PostCarousel({ images, alt }: { images: string[]; alt: s
         onClickCapture={(e) => {
           if (drag.current.moved) e.preventDefault()
         }}
-        className="flex aspect-square w-full cursor-grab snap-x snap-mandatory overflow-x-auto scroll-smooth active:cursor-grabbing"
+        className="flex aspect-square w-full cursor-grab snap-x snap-proximity overflow-x-auto scroll-smooth active:cursor-grabbing"
         style={{
           scrollbarWidth: "none",
           touchAction: "pan-x",
