@@ -86,9 +86,13 @@ export default function PostCarousel({
             {index > 0 && (
               <button
                 type="button"
-                onClick={() => setIndex(clamp(index - 1))}
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIndex(clamp(index - 1))
+                }}
                 aria-label="Previous image"
-                className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-yefa-navy shadow transition hover:bg-white"
+                className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-yefa-navy shadow transition hover:bg-white"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="h-4 w-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -98,9 +102,13 @@ export default function PostCarousel({
             {index < images.length - 1 && (
               <button
                 type="button"
-                onClick={() => setIndex(clamp(index + 1))}
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIndex(clamp(index + 1))
+                }}
                 aria-label="Next image"
-                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-yefa-navy shadow transition hover:bg-white"
+                className="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-yefa-navy shadow transition hover:bg-white"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="h-4 w-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
