@@ -7,5 +7,5 @@ export type Partner = {
 
 // Edit this list to add/remove partner organizations.
 export const PARTNERS: Partner[] = [
-  { name: "Youth Economics Initiative", logo: "/images/partner-yei.png" },
+  { name: "Youth Economics Initiative", logo: "/images/partner-yei.png", url: "https://www.theyei.org" },
 ]
