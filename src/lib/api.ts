@@ -90,6 +90,7 @@ export type DocItem = {
   url: string
   image?: string
   images?: string[]
+  captions?: string[]
   pinned?: boolean
 }
 

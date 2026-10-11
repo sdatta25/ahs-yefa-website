@@ -23,6 +23,9 @@ function sanitize(input) {
     images: Array.isArray(input.images)
       ? input.images.filter((x) => typeof x === "string" && x.trim()).map((x) => x.trim())
       : [],
+    captions: Array.isArray(input.captions)
+      ? input.captions.map((x) => (typeof x === "string" ? x.trim() : ""))
+      : [],
     pinned: Boolean(input.pinned),
   }
 }

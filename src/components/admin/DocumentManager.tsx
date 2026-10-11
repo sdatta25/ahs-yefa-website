@@ -11,7 +11,7 @@ import {
   type DocSection,
 } from "../../lib/api"
 
-const EMPTY_DRAFT = { title: "", description: "", url: "", image: "", images: [] as string[] }
+const EMPTY_DRAFT = { title: "", description: "", url: "", image: "", images: [] as string[], captionsText: "" }
 
 export default function DocumentManager({ section, label }: { section: DocSection; label: string }) {
   const isSocial = section === "social"
@@ -47,6 +47,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
       url: doc.url,
       image: doc.image || "",
       images: doc.images || [],
+      captionsText: (doc.captions || []).join("\n"),
     })
     setPreviewUrl(doc.url)
     setError(null)
@@ -119,6 +120,8 @@ export default function DocumentManager({ section, label }: { section: DocSectio
         image = images[0]
       }
 
+      const captions = isSocial && draft.captionsText.trim() ? draft.captionsText.split("\n") : []
+
       const payload = {
         section,
         title: draft.title.trim(),
@@ -126,6 +129,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
         url,
         image,
         images,
+        captions,
       }
       const updated = editingId ? await updateDocument({ id: editingId, ...payload }) : await createDocument(payload)
       setDocs(updated.filter((d) => d.section === section))
@@ -240,6 +244,21 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                     to replace them.
                   </span>
                 )}
+              </label>
+
+              <label className="mt-3 block text-sm font-medium text-yefa-ink">
+                Caption for each image (optional) — one line per image, same order as the files above
+                <textarea
+                  value={draft.captionsText}
+                  onChange={(e) => setDraft({ ...draft, captionsText: e.target.value })}
+                  rows={4}
+                  placeholder={"President — Jane Doe\nVP of Operations — John Smith\n…"}
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+                />
+                <span className="mt-1 block text-xs text-slate-500">
+                  Shown under each photo as you page through it — handy for officer team posts (e.g. "President —
+                  Jane Doe"). Leave a line blank to skip a caption for that image.
+                </span>
               </label>
             </details>
           </div>

@@ -49,7 +49,7 @@ export default function SocialMedia() {
                         </span>
                       )}
                       {images.length > 0 ? (
-                        <PostCarousel images={images} alt={p.title} />
+                        <PostCarousel images={images} captions={p.captions} alt={p.title} />
                       ) : (
                         <div className="flex aspect-square w-full items-center justify-center bg-yefa-blue-50 text-yefa-blue">
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.4} stroke="currentColor" className="h-12 w-12">
