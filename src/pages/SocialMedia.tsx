@@ -5,7 +5,7 @@ import { fetchDocuments, type DocItem } from "../lib/api"
 import { SITE } from "../data/site"
 
 function isInstagramUrl(url: string) {
-  return /instagram\.com\/(p|reel)\//.test(url)
+  return /instagram\.com\/([^/]+\/)?(p|reel)\//.test(url)
 }
 
 export default function SocialMedia() {
