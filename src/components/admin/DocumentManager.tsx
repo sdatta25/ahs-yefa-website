@@ -4,6 +4,7 @@ import {
   createDocument,
   deleteDocument,
   fetchDocuments,
+  fetchLinkPreview,
   updateDocument,
   uploadFile,
   type DocItem,
@@ -21,6 +22,8 @@ export default function DocumentManager({ section, label }: { section: DocSectio
   const [editingId, setEditingId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fetchingPreview, setFetchingPreview] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState("")
   const fileRef = useRef<HTMLInputElement>(null)
   const imageRef = useRef<HTMLInputElement>(null)
 
@@ -45,6 +48,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
       image: doc.image || "",
       images: doc.images || [],
     })
+    setPreviewUrl(doc.url)
     setError(null)
     if (fileRef.current) fileRef.current.value = ""
     if (imageRef.current) imageRef.current.value = ""
@@ -53,27 +57,52 @@ export default function DocumentManager({ section, label }: { section: DocSectio
   function resetForm() {
     setEditingId(null)
     setDraft(EMPTY_DRAFT)
+    setPreviewUrl("")
     setError(null)
     if (fileRef.current) fileRef.current.value = ""
     if (imageRef.current) imageRef.current.value = ""
+  }
+
+  async function handleFetchPreview() {
+    const url = draft.url.trim()
+    if (!url) return
+    setError(null)
+    setFetchingPreview(true)
+    try {
+      const preview = await fetchLinkPreview(url)
+      setDraft((d) => ({
+        ...d,
+        title: preview.title || d.title,
+        image: preview.image || d.image,
+        images: preview.image ? [preview.image] : d.images,
+      }))
+      setPreviewUrl(url)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't fetch a preview for that link.")
+    } finally {
+      setFetchingPreview(false)
+    }
   }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
 
-    if (!draft.title.trim()) {
+    if (isSocial && !draft.url.trim()) {
+      setError("Link to the post is required.")
+      return
+    }
+    if (!isSocial && !draft.title.trim()) {
       setError("Title is required.")
       return
     }
-
     const file = fileRef.current?.files?.[0]
     if (!isSocial && !file && !draft.url.trim()) {
       setError("Upload a file or paste a link.")
       return
     }
-    if (isSocial && !draft.url.trim()) {
-      setError("Link to the post is required.")
+    if (isSocial && !draft.title.trim()) {
+      setError("Fetch a preview first (or type a caption) before adding.")
       return
     }
 
@@ -128,62 +157,126 @@ export default function DocumentManager({ section, label }: { section: DocSectio
     }
   }
 
+  const showAutoPreview = isSocial && draft.url.trim() && draft.url.trim() !== previewUrl
+
   return (
     <div className="space-y-8">
       <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-white p-6">
         <h3 className="font-semibold text-yefa-navy">{editingId ? `Edit ${label}` : `Add to ${label}`}</h3>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          <label className="text-sm font-medium text-yefa-ink sm:col-span-2">
-            {isSocial ? "Caption" : "Title"}
-            <input
-              type="text"
-              value={draft.title}
-              onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
-              required
-            />
-          </label>
-
-          <label className="text-sm font-medium text-yefa-ink sm:col-span-2">
-            Description (optional)
-            <input
-              type="text"
-              value={draft.description}
-              onChange={(e) => setDraft({ ...draft, description: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
-            />
-          </label>
-
-          <label className="text-sm font-medium text-yefa-ink">
-            {isSocial ? "Link to the post" : "Link (Google Form, Drive, etc.)"}
-            <input
-              type="url"
-              value={draft.url}
-              onChange={(e) => setDraft({ ...draft, url: e.target.value })}
-              placeholder="https://…"
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
-            />
-          </label>
-
-          {isSocial ? (
-            <label className="text-sm font-medium text-yefa-ink">
-              Preview image(s) — select all images from the post, in order (optional, max 4MB each)
-              <input
-                ref={imageRef}
-                type="file"
-                accept="image/*"
-                multiple
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-yefa-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-yefa-blue"
-              />
-              {draft.images.length > 0 && (
-                <span className="mt-1 block text-xs text-slate-500">
-                  {draft.images.length} image{draft.images.length > 1 ? "s" : ""} currently saved — choose new files to
-                  replace them.
-                </span>
-              )}
+        {isSocial ? (
+          <div className="mt-4 space-y-4">
+            <label className="block text-sm font-medium text-yefa-ink">
+              Paste the Instagram post link
+              <div className="mt-1 flex gap-2">
+                <input
+                  type="url"
+                  value={draft.url}
+                  onChange={(e) => setDraft({ ...draft, url: e.target.value })}
+                  onBlur={handleFetchPreview}
+                  placeholder="https://www.instagram.com/p/…"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+                />
+                <button
+                  type="button"
+                  onClick={handleFetchPreview}
+                  disabled={fetchingPreview || !draft.url.trim()}
+                  className="shrink-0 rounded-lg bg-yefa-blue-50 px-4 text-sm font-semibold text-yefa-blue transition hover:bg-yefa-blue/10 disabled:opacity-60"
+                >
+                  {fetchingPreview ? "Fetching…" : "Fetch preview"}
+                </button>
+              </div>
+              <span className="mt-1 block text-xs text-slate-500">
+                We'll automatically pull the caption and photo from the post.
+              </span>
             </label>
-          ) : (
+
+            {showAutoPreview && !fetchingPreview && (
+              <p className="text-xs text-yefa-orange">Click "Fetch preview" (or click out of the field) to load it.</p>
+            )}
+
+            {(draft.image || draft.title) && (
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                {draft.image ? (
+                  <img src={draft.image} alt="" className="h-16 w-16 shrink-0 rounded-lg object-cover" />
+                ) : (
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-slate-200 text-xs text-slate-500">
+                    No image
+                  </div>
+                )}
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Preview</p>
+                  <p className="truncate text-sm text-yefa-navy">{draft.title || "No caption found"}</p>
+                </div>
+              </div>
+            )}
+
+            <label className="block text-sm font-medium text-yefa-ink">
+              Caption {draft.title ? "(fetched automatically — edit if you'd like)" : ""}
+              <input
+                type="text"
+                value={draft.title}
+                onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+              />
+            </label>
+
+            <details className="rounded-lg border border-slate-200 p-3">
+              <summary className="cursor-pointer text-sm font-medium text-yefa-ink">
+                Advanced: upload your own image(s) instead
+              </summary>
+              <label className="mt-3 block text-sm font-medium text-yefa-ink">
+                Select all images from the post, in order (optional, max 4MB each)
+                <input
+                  ref={imageRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-yefa-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-yefa-blue"
+                />
+                {draft.images.length > 0 && (
+                  <span className="mt-1 block text-xs text-slate-500">
+                    {draft.images.length} image{draft.images.length > 1 ? "s" : ""} currently saved — choose new files
+                    to replace them.
+                  </span>
+                )}
+              </label>
+            </details>
+          </div>
+        ) : (
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <label className="text-sm font-medium text-yefa-ink sm:col-span-2">
+              Title
+              <input
+                type="text"
+                value={draft.title}
+                onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+                required
+              />
+            </label>
+
+            <label className="text-sm font-medium text-yefa-ink sm:col-span-2">
+              Description (optional)
+              <input
+                type="text"
+                value={draft.description}
+                onChange={(e) => setDraft({ ...draft, description: e.target.value })}
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+              />
+            </label>
+
+            <label className="text-sm font-medium text-yefa-ink">
+              Link (Google Form, Drive, etc.)
+              <input
+                type="url"
+                value={draft.url}
+                onChange={(e) => setDraft({ ...draft, url: e.target.value })}
+                placeholder="https://…"
+                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+              />
+            </label>
+
             <label className="text-sm font-medium text-yefa-ink">
               Or upload a file (max 4MB)
               <input
@@ -192,8 +285,8 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-yefa-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-yefa-blue"
               />
             </label>
-          )}
-        </div>
+          </div>
+        )}
 
         {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 

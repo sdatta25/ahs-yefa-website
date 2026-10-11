@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import PageHeader from "../components/PageHeader"
 import EventCalendar from "../components/EventCalendar"
 import { fetchEvents, type EventItem } from "../lib/api"
@@ -19,6 +19,8 @@ export default function Calendar() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selected, setSelected] = useState(todayISO())
+  const [highlightId, setHighlightId] = useState<string | null>(null)
+  const calendarRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetchEvents()
@@ -40,6 +42,13 @@ export default function Calendar() {
       .slice(0, 5)
   }, [events])
 
+  function jumpToEvent(e: EventItem) {
+    setSelected(e.date)
+    setHighlightId(e.id)
+    calendarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    window.setTimeout(() => setHighlightId(null), 1800)
+  }
+
   return (
     <div>
       <PageHeader
@@ -57,7 +66,7 @@ export default function Calendar() {
         {loading ? (
           <p className="text-sm text-yefa-ink">Loading calendar&hellip;</p>
         ) : (
-          <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
+          <div ref={calendarRef} className="grid scroll-mt-20 gap-8 lg:grid-cols-[1fr_1fr]">
             <EventCalendar events={events} selected={selected} onSelect={setSelected} />
 
             <div className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -68,7 +77,14 @@ export default function Calendar() {
               ) : (
                 <ul className="mt-4 space-y-3">
                   {selectedEvents.map((e) => (
-                    <li key={e.id} className="rounded-xl border border-slate-200 p-4">
+                    <li
+                      key={e.id}
+                      className={`rounded-xl border p-4 transition-colors ${
+                        e.id === highlightId
+                          ? "border-yefa-blue bg-yefa-blue-50"
+                          : "border-slate-200"
+                      }`}
+                    >
                       <div className="flex items-center justify-between gap-2">
                         <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${TYPE_STYLES[e.type]}`}>
                           {TYPE_LABEL[e.type]}
@@ -89,11 +105,14 @@ export default function Calendar() {
         {!loading && upcoming.length > 0 && (
           <div className="mt-12">
             <h2 className="text-lg font-bold text-yefa-navy">Coming Up</h2>
+            <p className="mt-1 text-sm text-yefa-ink">Click an item to jump to it on the calendar above.</p>
             <div className="mt-4 space-y-3">
               {upcoming.map((e) => (
-                <div
+                <button
                   key={e.id}
-                  className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between"
+                  type="button"
+                  onClick={() => jumpToEvent(e)}
+                  className="flex w-full flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-5 text-left transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)] sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex items-center gap-3">
                     <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${TYPE_STYLES[e.type]}`}>
@@ -105,7 +124,7 @@ export default function Calendar() {
                     </div>
                   </div>
                   <span className="text-sm font-semibold text-yefa-ink">{formatTime12h(e.time)}</span>
-                </div>
+                </button>
               ))}
             </div>
           </div>

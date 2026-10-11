@@ -135,3 +135,11 @@ export async function uploadFile(file: File): Promise<string> {
   })
   return data.url as string
 }
+
+export async function fetchLinkPreview(url: string): Promise<{ title: string; image: string }> {
+  const data = await authedFetch("/api/link-preview", {
+    method: "POST",
+    body: JSON.stringify({ url }),
+  })
+  return { title: data.title || "", image: data.image || "" }
+}

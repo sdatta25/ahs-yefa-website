@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import type { EventItem } from "../lib/api"
 import { buildMonthGrid, formatMonthLabel, todayISO } from "../lib/date"
 
@@ -18,6 +18,13 @@ export default function EventCalendar({
     const [y, m] = selected.split("-").map(Number)
     return { year: y, month: m - 1 }
   })
+
+  // Jump the displayed month whenever `selected` changes to a date outside
+  // it (e.g. clicking an upcoming event below navigates the calendar too).
+  useEffect(() => {
+    const [y, m] = selected.split("-").map(Number)
+    setCursor((c) => (c.year === y && c.month === m - 1 ? c : { year: y, month: m - 1 }))
+  }, [selected])
 
   const eventsByDate = useMemo(() => {
     const map = new Map<string, EventItem[]>()
