@@ -1,9 +1,6 @@
-import { lazy, Suspense } from "react"
 import { Link } from "react-router-dom"
 import { motion, type Variants } from "framer-motion"
 import { SITE } from "../data/site"
-
-const HeroCanvas = lazy(() => import("../components/hero3d/HeroCanvas"))
 
 const QUICK_LINKS = [
   {
@@ -60,87 +57,70 @@ export default function Home() {
       {/* Hero                                                             */}
       {/* ---------------------------------------------------------------- */}
       <section
-        className="relative isolate overflow-hidden bg-white"
+        className="relative isolate overflow-hidden"
         style={{
           backgroundImage:
             "linear-gradient(to right, rgba(54,87,201,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(54,87,201,0.05) 1px, transparent 1px)",
           backgroundSize: "56px 56px",
         }}
       >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_20%_0%,rgba(54,87,201,0.08),transparent)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(54,87,201,0.07),transparent)]" />
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.05fr_0.95fr]">
-          <div>
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              animate="show"
-              custom={0}
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-yefa-blue"
-            >
-              Economics &middot; Finance &middot; Investing
-            </motion.p>
+        <div className="relative mx-auto max-w-3xl px-5 py-28 text-center sm:py-36">
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={0}
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-yefa-blue"
+          >
+            Economics &middot; Finance &middot; Investing
+          </motion.p>
 
-            <motion.h1
-              variants={fadeUp}
-              initial="hidden"
-              animate="show"
-              custom={1}
-              className="mt-6 font-display text-[3.4rem] font-extrabold leading-[0.95] tracking-tight text-yefa-navy sm:text-[4.6rem] lg:text-[5.4rem] xl:text-[6.2rem] 2xl:text-[6.8rem]"
-            >
-              AHS
-              <br />
-              <span className="relative inline-block text-yefa-blue">
-                YEFA
-                <span className="absolute -bottom-2 left-0 h-[5px] w-[72%] rounded-full bg-yefa-orange" />
-              </span>
-            </motion.h1>
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={1}
+            className="mt-6 font-display text-[3.4rem] font-extrabold leading-[0.95] tracking-tight text-yefa-navy sm:text-[4.6rem] lg:text-[5.4rem] xl:text-[6.2rem]"
+          >
+            AHS
+            <br />
+            <span className="relative inline-block text-yefa-blue">
+              YEFA
+              <span className="absolute -bottom-2 left-1/2 h-[5px] w-[72%] -translate-x-1/2 rounded-full bg-yefa-orange" />
+            </span>
+          </motion.h1>
 
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              animate="show"
-              custom={2}
-              className="mt-8 max-w-md text-lg leading-relaxed text-yefa-ink"
-            >
-              {SITE.tagline}
-            </motion.p>
-
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="show"
-              custom={3}
-              className="mt-9 flex flex-wrap items-center gap-4"
-            >
-              <Link
-                to="/contact"
-                className="rounded-xl bg-yefa-blue px-7 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(54,87,201,0.55)] transition hover:-translate-y-0.5 hover:bg-yefa-blue-dark"
-              >
-                Join YEFA
-              </Link>
-              <Link
-                to="/about"
-                className="rounded-xl px-7 py-3 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:-translate-y-0.5 hover:bg-slate-50"
-              >
-                Learn More
-              </Link>
-            </motion.div>
-          </div>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={2}
+            className="mx-auto mt-8 max-w-lg text-lg leading-relaxed text-yefa-ink"
+          >
+            {SITE.tagline}
+          </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.94 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.1, ease: "easeOut" }}
-            className="mx-auto w-full max-w-xl"
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={3}
+            className="mt-9 flex flex-wrap items-center justify-center gap-4"
           >
-            <Suspense
-              fallback={
-                <div className="aspect-square w-full max-w-xl animate-pulse rounded-[2rem] bg-gradient-to-br from-[#10142b] to-[#1b2f6b]" />
-              }
+            <Link
+              to="/contact"
+              className="rounded-xl bg-yefa-blue px-7 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(54,87,201,0.55)] transition hover:-translate-y-0.5 hover:bg-yefa-blue-dark"
             >
-              <HeroCanvas />
-            </Suspense>
+              Join YEFA
+            </Link>
+            <Link
+              to="/about"
+              className="rounded-xl px-7 py-3 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:-translate-y-0.5 hover:bg-slate-50"
+            >
+              Learn More
+            </Link>
           </motion.div>
         </div>
       </section>

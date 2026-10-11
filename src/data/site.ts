@@ -1,7 +1,8 @@
 export const SITE = {
   shortName: "AHS YEFA",
   fullName: "AHS YEFA",
-  tagline: "Building the next generation of economists, investors, and leaders.",
+  tagline:
+    "AHS's student-run club for economics, finance, and investing — where members prep for national competitions and build real-world skills.",
   contactEmail: "alpharettayefa@gmail.com",
   instagram: "https://www.instagram.com/alpharettayefa/",
   memberSignupForm: "https://forms.gle/XJc52ZqHQQbmuN3cA",
