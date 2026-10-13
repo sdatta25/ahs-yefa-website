@@ -11,6 +11,9 @@ import SocialMedia from "./pages/SocialMedia"
 import Partners from "./pages/Partners"
 import Contact from "./pages/Contact"
 import Admin from "./pages/Admin"
+import Login from "./pages/Login"
+import Member from "./pages/Member"
+import RequireAuth from "./components/RequireAuth"
 
 export default function App() {
   return (
@@ -28,6 +31,15 @@ export default function App() {
         <Route path="partners" element={<Partners />} />
         <Route path="contact" element={<Contact />} />
         <Route path="admin" element={<Admin />} />
+        <Route path="login" element={<Login />} />
+        <Route
+          path="member"
+          element={
+            <RequireAuth>
+              <Member />
+            </RequireAuth>
+          }
+        />
       </Route>
     </Routes>
   )

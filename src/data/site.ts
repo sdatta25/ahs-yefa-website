@@ -21,5 +21,6 @@ export const NAV_LINKS = [
   { label: "Resources", to: "/resources" },
   { label: "Social Media", to: "/social" },
   { label: "Partners", to: "/partners" },
+  { label: "Sign In", to: "/login" },
   { label: "Join", to: "/contact" },
 ]
