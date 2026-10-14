@@ -30,7 +30,8 @@ export default function Login() {
     try {
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email: trimmed,
-        options: { shouldCreateUser: true },
+        // The email's link (if the template includes one) brings them back here signed in.
+        options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}${from}` },
       })
       if (otpError) throw otpError
       setStep("code")
@@ -133,7 +134,8 @@ export default function Login() {
             <form onSubmit={handleVerifyCode} className="space-y-3">
               <h2 className="text-base font-semibold text-yefa-navy">Check your email</h2>
               <p className="text-sm text-yefa-ink">
-                We sent a 6-digit code to <span className="font-semibold">{email}</span>.
+                We sent an email to <span className="font-semibold">{email}</span>. Enter the 6-digit code
+                from it, or just click the sign-in link in the email.
               </p>
               <label className="block text-sm font-medium text-yefa-ink">
                 Code
