@@ -1,25 +1,22 @@
 import { useState } from "react"
 import type { FormEvent } from "react"
-import { useNavigate, useLocation, Link } from "react-router-dom"
+import { useLocation, Link } from "react-router-dom"
 import PageHeader from "../components/PageHeader"
 import { supabase } from "../lib/supabase"
 
-type Step = "email" | "code"
+type Step = "email" | "sent"
 
 export default function Login() {
-  const navigate = useNavigate()
   const location = useLocation()
   const from = (location.state as { from?: string } | null)?.from || "/member"
 
   const [step, setStep] = useState<Step>("email")
   const [email, setEmail] = useState("")
-  const [code, setCode] = useState("")
   const [sending, setSending] = useState(false)
-  const [verifying, setVerifying] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [googleLoading, setGoogleLoading] = useState(false)
 
-  async function handleSendCode(e: FormEvent) {
+  async function handleSendLink(e: FormEvent) {
     e.preventDefault()
     setError(null)
 
@@ -30,36 +27,15 @@ export default function Login() {
     try {
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email: trimmed,
-        // The email's link (if the template includes one) brings them back here signed in.
+        // Clicking the link in the email brings them back here, signed in.
         options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}${from}` },
       })
       if (otpError) throw otpError
-      setStep("code")
+      setStep("sent")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn't send a code. Try again.")
+      setError(err instanceof Error ? err.message : "Couldn't send the sign-in link. Try again.")
     } finally {
       setSending(false)
-    }
-  }
-
-  async function handleVerifyCode(e: FormEvent) {
-    e.preventDefault()
-    setError(null)
-    if (!code.trim()) return
-
-    setVerifying(true)
-    try {
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        email: email.trim().toLowerCase(),
-        token: code.trim(),
-        type: "email",
-      })
-      if (verifyError) throw verifyError
-      navigate(from, { replace: true })
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "That code didn't work. Check it and try again.")
-    } finally {
-      setVerifying(false)
     }
   }
 
@@ -107,7 +83,7 @@ export default function Login() {
                 <span className="h-px flex-1 bg-slate-200" />
               </div>
 
-              <form onSubmit={handleSendCode} className="space-y-3">
+              <form onSubmit={handleSendLink} className="space-y-3">
                 <label className="block text-sm font-medium text-yefa-ink">
                   Email
                   <input
@@ -126,50 +102,32 @@ export default function Login() {
                   disabled={sending}
                   className="w-full rounded-lg bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
                 >
-                  {sending ? "Sending…" : "Email me a code"}
+                  {sending ? "Sending…" : "Email me a sign-in link"}
                 </button>
               </form>
             </>
           ) : (
-            <form onSubmit={handleVerifyCode} className="space-y-3">
+            <div className="space-y-3 text-center">
               <h2 className="text-base font-semibold text-yefa-navy">Check your email</h2>
               <p className="text-sm text-yefa-ink">
-                We sent an email to <span className="font-semibold">{email}</span>. Enter the 6-digit code
-                from it, or just click the sign-in link in the email.
+                We sent a sign-in link to <span className="font-semibold">{email}</span>. Open the email and
+                click <span className="font-semibold">Sign in</span> — it'll bring you straight to the member
+                portal.
               </p>
-              <label className="block text-sm font-medium text-yefa-ink">
-                Code
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder="123456"
-                  autoFocus
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-center text-lg tracking-[0.4em] focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
-                  required
-                />
-              </label>
-              {error && <p className="text-sm text-red-600">{error}</p>}
-              <button
-                type="submit"
-                disabled={verifying}
-                className="w-full rounded-lg bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
-              >
-                {verifying ? "Verifying…" : "Sign in"}
-              </button>
+              <p className="text-xs text-slate-500">
+                Don't see it? Check your spam folder. The link expires soon and only works once.
+              </p>
               <button
                 type="button"
                 onClick={() => {
                   setStep("email")
-                  setCode("")
                   setError(null)
                 }}
                 className="w-full text-center text-sm font-medium text-yefa-ink hover:text-yefa-blue"
               >
                 Use a different email
               </button>
-            </form>
+            </div>
           )}
         </div>
 
