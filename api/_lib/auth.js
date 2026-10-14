@@ -34,12 +34,25 @@ export function verifyToken(token) {
   }
 }
 
-export function checkPassword(password) {
-  const expected = process.env.OFFICER_PASSWORD || ""
-  const a = Buffer.from(String(password || ""))
-  const b = Buffer.from(expected)
+function safeEqual(given, expected) {
+  const a = Buffer.from(String(given || ""))
+  const b = Buffer.from(String(expected || ""))
   if (a.length !== b.length) return false
   return crypto.timingSafeEqual(a, b)
+}
+
+// Officer credentials live in Vercel env vars (OFFICER_USERNAME / OFFICER_PASSWORD).
+// If OFFICER_USERNAME isn't set yet, only the password is checked so the
+// portal keeps working until the username is added.
+export function checkCredentials(username, password) {
+  const expectedPassword = process.env.OFFICER_PASSWORD || ""
+  if (!expectedPassword) return false
+  const passwordOk = safeEqual(password, expectedPassword)
+  const expectedUsername = process.env.OFFICER_USERNAME || ""
+  const usernameOk = expectedUsername
+    ? safeEqual(String(username || "").trim().toLowerCase(), expectedUsername.trim().toLowerCase())
+    : true
+  return passwordOk && usernameOk
 }
 
 export function getBearerToken(req) {

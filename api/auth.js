@@ -1,4 +1,4 @@
-import { createToken, checkPassword } from "./_lib/auth.js"
+import { createToken, checkCredentials } from "./_lib/auth.js"
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -14,10 +14,11 @@ export default async function handler(req, res) {
       body = {}
     }
   }
+  const username = body && body.username
   const password = body && body.password
 
-  if (!password || !checkPassword(password)) {
-    return res.status(401).json({ error: "Incorrect password" })
+  if (!password || !checkCredentials(username, password)) {
+    return res.status(401).json({ error: "Incorrect username or password" })
   }
 
   return res.status(200).json({ token: createToken() })

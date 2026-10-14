@@ -2,7 +2,7 @@ import { useState } from "react"
 import type { FormEvent } from "react"
 import { useNavigate, useLocation, Link } from "react-router-dom"
 import PageHeader from "../components/PageHeader"
-import { supabase, isAllowedEmail, ALLOWED_EMAIL_DOMAIN } from "../lib/supabase"
+import { supabase } from "../lib/supabase"
 
 type Step = "email" | "code"
 
@@ -25,10 +25,6 @@ export default function Login() {
 
     const trimmed = email.trim().toLowerCase()
     if (!trimmed) return
-    if (!isAllowedEmail(trimmed)) {
-      setError(`Use your school email${ALLOWED_EMAIL_DOMAIN ? ` (ends in ${ALLOWED_EMAIL_DOMAIN})` : ""}.`)
-      return
-    }
 
     setSending(true)
     try {
@@ -83,7 +79,7 @@ export default function Login() {
 
   return (
     <div>
-      <PageHeader title="Member Sign In" subtitle="Use your school email to access the member portal." />
+      <PageHeader title="Member Sign In" subtitle="Sign in with Google or any email to access the member portal." />
 
       <section className="mx-auto max-w-sm px-5 py-16">
         <div className="rounded-2xl border border-slate-200 bg-white p-7">
@@ -112,12 +108,12 @@ export default function Login() {
 
               <form onSubmit={handleSendCode} className="space-y-3">
                 <label className="block text-sm font-medium text-yefa-ink">
-                  School email
+                  Email
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@school.org"
+                    placeholder="you@example.com"
                     autoFocus
                     className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
                     required

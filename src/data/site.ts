@@ -10,17 +10,19 @@ export const SITE = {
     "https://docs.google.com/forms/d/e/1FAIpQLSdXtfDzmEOVOiwXBDbz0jAIImMO2kreYT4ENskO6qu-p0LEgw/viewform?embedded=true",
 }
 
-// All nav tabs, shown flat in the navbar (no dropdown).
-export const NAV_LINKS = [
+// Main nav tabs, always visible on desktop.
+export const NAV_PRIMARY = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Officers", to: "/officers" },
   { label: "Calendar", to: "/calendar" },
   { label: "Competitions", to: "/competitions" },
+]
+
+// Tucked under the "More" dropdown so the top bar doesn't overcrowd.
+export const NAV_MORE = [
   { label: "Forms", to: "/forms" },
   { label: "Resources", to: "/resources" },
   { label: "Social Media", to: "/social" },
   { label: "Partners", to: "/partners" },
-  { label: "Sign In", to: "/login" },
-  { label: "Join", to: "/contact" },
 ]

@@ -4,7 +4,7 @@ import CalendarView from "../components/views/CalendarView"
 import DocumentListView from "../components/views/DocumentListView"
 import SocialFeedView from "../components/views/SocialFeedView"
 import CompetitionsView from "../components/views/CompetitionsView"
-import { useSession } from "../lib/useSession"
+import { useSession, displayName } from "../lib/useSession"
 import { supabase } from "../lib/supabase"
 import { SITE } from "../data/site"
 
@@ -22,10 +22,10 @@ type TabKey = (typeof TABS)[number]["key"]
 function PointsTab() {
   return (
     <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-      <h2 className="text-lg font-semibold text-yefa-navy">Points tracking is coming soon.</h2>
+      <h2 className="text-lg font-semibold text-yefa-navy">Earn points for YEFA activities.</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-yefa-ink">
-        Submit the Points Form below for now — your running total, and whether each submission has
-        been approved, will show up here once it's wired in.
+        Went to a meeting, competed, or helped out? Log it with the Points Form and officers will add
+        it to the points sheet.
       </p>
       <a
         href="https://docs.google.com/forms/d/e/1FAIpQLSeH1X8mb9AURMvHldkyc6kSoFuMypFYzIxQZkBeJy2XGrfdSA/viewform"
@@ -49,7 +49,7 @@ function FormsTab() {
         className="group block rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
       >
         <h3 className="text-lg font-semibold text-yefa-navy">Points Form</h3>
-        <p className="mt-1 text-sm text-yefa-ink">Log a point opportunity for officer approval.</p>
+        <p className="mt-1 text-sm text-yefa-ink">Log a meeting, competition, or event you took part in.</p>
         <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue">
           Open form
           <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
@@ -75,11 +75,12 @@ function FormsTab() {
 export default function Member() {
   const { session } = useSession()
   const email = session?.user.email ?? ""
+  const name = displayName(session?.user)
   const [tab, setTab] = useState<TabKey>("calendar")
 
   return (
     <div>
-      <PageHeader title="Member Portal" subtitle={`Signed in as ${email}`} />
+      <PageHeader title={name ? `Welcome, ${name}!` : "Member Portal"} subtitle={`Signed in as ${email}`} />
 
       <section className="mx-auto max-w-5xl px-5 py-12">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">

@@ -34,11 +34,11 @@ export async function fetchEvents(): Promise<EventItem[]> {
   return data.events as EventItem[]
 }
 
-export async function login(password: string): Promise<string> {
+export async function login(username: string, password: string): Promise<string> {
   const res = await fetch("/api/auth", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password }),
+    body: JSON.stringify({ username, password }),
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(data.error || "Login failed")
@@ -143,4 +143,19 @@ export async function fetchLinkPreview(url: string): Promise<{ title: string; im
     body: JSON.stringify({ url }),
   })
   return { title: data.title || "", image: data.image || "" }
+}
+
+export type OfficerSettings = {
+  pointsSheetUrl: string
+  membersSheetUrl: string
+}
+
+export async function fetchSettings(): Promise<OfficerSettings> {
+  const data = await authedFetch("/api/settings", { method: "GET" })
+  return data.settings
+}
+
+export async function saveSettings(settings: Partial<OfficerSettings>): Promise<OfficerSettings> {
+  const data = await authedFetch("/api/settings", { method: "PUT", body: JSON.stringify({ settings }) })
+  return data.settings
 }

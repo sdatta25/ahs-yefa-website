@@ -70,8 +70,13 @@ After editing, run `npx vercel dev` to preview changes before publishing.
 The Admin page lives at **`/admin`** — it is intentionally **not** in the main navigation
 or listed anywhere members would stumble onto it, so regular visitors never see it. There's
 a small "Officer Login" link in the footer for officers to find it. Officers sign in there
-with a shared password, then manage everything from one place — changes go live on the
-public site immediately, no redeploy needed:
+with a shared officer-team username and password, then manage everything from one place —
+changes go live on the public site immediately, no redeploy needed:
+
+- **Points** — read-only preview of the Points Form responses Google Sheet (paste the
+  sheet's link once; officers need view access to the sheet). No approve/decline — points
+  are edited in the sheet itself.
+- **Members** — read-only preview of the membership sign-up responses Google Sheet.
 
 - **Calendar** — add/edit/delete/pin meetings and competition deadlines. All times are
   entered and displayed in **Eastern Time**.
@@ -85,9 +90,10 @@ public site immediately, no redeploy needed:
 
 Notes:
 
-- The password is **not stored in the code** — it's a Vercel environment variable called
-  `OFFICER_PASSWORD`, set in the Vercel project dashboard (Project → Settings →
-  Environment Variables). To change it, update that value there and redeploy.
+- The credentials are **not stored in the code** — they're Vercel environment variables
+  called `OFFICER_USERNAME` and `OFFICER_PASSWORD`, set in the Vercel project dashboard
+  (Project → Settings → Environment Variables). To change them, update the values there and
+  redeploy. (If `OFFICER_USERNAME` isn't set, only the password is checked.)
 - `SESSION_SECRET` (also an env var) signs officer login sessions — don't need to touch it
   unless you want to invalidate all logged-in officers at once (change it and everyone is
   logged out).
@@ -106,6 +112,6 @@ This project is deployed on **Vercel** (not just any static host, since it needs
 
 1. Add them as a collaborator on this GitHub repo (Settings → Collaborators).
 2. Add them to the Vercel project (Vercel dashboard → Project → Settings → Members).
-3. Share the Admin password separately (not through GitHub/this README), and let them know
+3. Share the officer username and password separately (not through GitHub/this README), and let them know
    the Admin page is at `/admin` (or the "Officer Login" link in the footer).
 4. Point them to this README for how the content is organized.
