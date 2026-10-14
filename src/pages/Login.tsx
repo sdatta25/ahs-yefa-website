@@ -173,7 +173,7 @@ export default function Login() {
 
         <p className="mt-6 text-center text-sm text-yefa-ink">
           Officer?{" "}
-          <Link to="/admin" className="font-semibold text-yefa-blue hover:underline">
+          <Link to="/officer" className="font-semibold text-yefa-blue hover:underline">
             Sign in here
           </Link>
         </p>

@@ -13,6 +13,7 @@ import Contact from "./pages/Contact"
 import Admin from "./pages/Admin"
 import Login from "./pages/Login"
 import Member from "./pages/Member"
+import OfficerPortal from "./pages/OfficerPortal"
 import RequireAuth from "./components/RequireAuth"
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
         <Route path="partners" element={<Partners />} />
         <Route path="contact" element={<Contact />} />
         <Route path="admin" element={<Admin />} />
+        <Route path="officer" element={<OfficerPortal />} />
         <Route path="login" element={<Login />} />
         <Route
           path="member"

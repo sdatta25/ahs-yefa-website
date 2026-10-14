@@ -4,6 +4,7 @@ import CalendarView from "../components/views/CalendarView"
 import DocumentListView from "../components/views/DocumentListView"
 import SocialFeedView from "../components/views/SocialFeedView"
 import CompetitionsView from "../components/views/CompetitionsView"
+import LinkCard from "../components/views/LinkCard"
 import { useSession, displayName } from "../lib/useSession"
 import { supabase } from "../lib/supabase"
 import { SITE } from "../data/site"
@@ -28,7 +29,7 @@ function PointsTab() {
         it to the points sheet.
       </p>
       <a
-        href="https://docs.google.com/forms/d/e/1FAIpQLSeH1X8mb9AURMvHldkyc6kSoFuMypFYzIxQZkBeJy2XGrfdSA/viewform"
+        href={SITE.pointsForm}
         target="_blank"
         rel="noreferrer"
         className="mt-6 inline-block rounded-lg bg-yefa-blue px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark"
@@ -42,32 +43,16 @@ function PointsTab() {
 function FormsTab() {
   return (
     <div className="space-y-4">
-      <a
-        href="https://docs.google.com/forms/d/e/1FAIpQLSeH1X8mb9AURMvHldkyc6kSoFuMypFYzIxQZkBeJy2XGrfdSA/viewform"
-        target="_blank"
-        rel="noreferrer"
-        className="group block rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
-      >
-        <h3 className="text-lg font-semibold text-yefa-navy">Points Form</h3>
-        <p className="mt-1 text-sm text-yefa-ink">Log a meeting, competition, or event you took part in.</p>
-        <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue">
-          Open form
-          <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
-        </span>
-      </a>
-      <a
+      <LinkCard
+        href={SITE.pointsForm}
+        title="Points Form"
+        description="Log a meeting, competition, or event you took part in."
+      />
+      <LinkCard
         href={SITE.memberSignupForm}
-        target="_blank"
-        rel="noreferrer"
-        className="group block rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
-      >
-        <h3 className="text-lg font-semibold text-yefa-navy">Membership Sign-Up</h3>
-        <p className="mt-1 text-sm text-yefa-ink">Share this with a friend who wants to join YEFA.</p>
-        <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue">
-          Open form
-          <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
-        </span>
-      </a>
+        title="Membership Sign-Up"
+        description="Share this with a friend who wants to join YEFA."
+      />
     </div>
   )
 }

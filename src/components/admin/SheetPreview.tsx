@@ -31,9 +31,10 @@ export default function SheetPreview({
   useEffect(() => {
     fetchSettings()
       .then((s) => {
-        setUrl(s[field])
-        setDraft(s[field])
-        setEditing(!s[field])
+        const saved = s?.[field] ?? ""
+        setUrl(saved)
+        setDraft(saved)
+        setEditing(!saved)
       })
       .catch((err) => setError(err instanceof Error ? err.message : "Couldn't load the sheet link."))
       .finally(() => setLoading(false))
@@ -50,8 +51,9 @@ export default function SheetPreview({
     setSaving(true)
     try {
       const next = await saveSettings({ [field]: trimmed })
-      setUrl(next[field])
-      setEditing(!next[field])
+      const saved = next?.[field] ?? ""
+      setUrl(saved)
+      setEditing(!saved)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't save.")
     } finally {

@@ -43,7 +43,7 @@ export default function Footer() {
         <span className="mx-auto sm:mx-0">
           © {new Date().getFullYear()} {SITE.shortName}. All rights reserved.
         </span>
-        <a href="/admin" className="mx-auto text-slate-600 transition hover:text-slate-400 sm:mx-0">
+        <a href="/officer" className="mx-auto text-slate-600 transition hover:text-slate-400 sm:mx-0">
           Officer Login
         </a>
       </div>

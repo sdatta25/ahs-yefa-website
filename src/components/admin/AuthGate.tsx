@@ -2,7 +2,7 @@ import { useState } from "react"
 import type { FormEvent, ReactNode } from "react"
 import { clearToken, hasToken, login } from "../../lib/api"
 
-export default function AuthGate({ children }: { children: ReactNode }) {
+export default function AuthGate({ children, onLogout }: { children: ReactNode; onLogout?: () => void }) {
   const [unlocked, setUnlocked] = useState(hasToken())
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
@@ -28,6 +28,7 @@ export default function AuthGate({ children }: { children: ReactNode }) {
   function handleLogout() {
     clearToken()
     setUnlocked(false)
+    onLogout?.()
   }
 
   if (!unlocked) {

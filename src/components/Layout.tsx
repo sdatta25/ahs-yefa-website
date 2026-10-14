@@ -7,7 +7,7 @@ const SiteBackground = lazy(() => import("./sitebg/SiteBackground"))
 
 export default function Layout() {
   const { pathname } = useLocation()
-  const calm = pathname.startsWith("/admin")
+  const calm = pathname.startsWith("/admin") || pathname.startsWith("/officer")
 
   return (
     <div className="relative flex min-h-screen flex-col">

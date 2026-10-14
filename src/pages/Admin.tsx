@@ -2,11 +2,8 @@ import { useState } from "react"
 import AuthGate from "../components/admin/AuthGate"
 import EventManager from "../components/admin/EventManager"
 import DocumentManager from "../components/admin/DocumentManager"
-import SheetPreview from "../components/admin/SheetPreview"
 
 const TABS = [
-  { key: "points", label: "Points" },
-  { key: "members", label: "Members" },
   { key: "events", label: "Calendar" },
   { key: "forms", label: "Forms" },
   { key: "resources", label: "Resources" },
@@ -16,16 +13,16 @@ const TABS = [
 type TabKey = (typeof TABS)[number]["key"]
 
 export default function Admin() {
-  const [tab, setTab] = useState<TabKey>("points")
+  const [tab, setTab] = useState<TabKey>("events")
 
   return (
     <div>
       <div className="border-b border-white/10 bg-yefa-navy px-5 py-12 text-white">
         <div className="mx-auto max-w-5xl">
           <p className="text-xs font-semibold uppercase tracking-widest text-yefa-orange-light">Officers Only</p>
-          <h1 className="mt-2 text-3xl font-bold">Officer Portal</h1>
+          <h1 className="mt-2 text-3xl font-bold">Admin</h1>
           <p className="mt-2 text-slate-300">
-            See member points and the member list, and manage the calendar, forms, resources, and social posts. Changes go live immediately.
+            Edit the public website — the calendar, sign-up forms, resources, and social post previews. Changes go live immediately.
           </p>
         </div>
       </div>
@@ -46,20 +43,6 @@ export default function Admin() {
             ))}
           </div>
 
-          {tab === "points" && (
-            <SheetPreview
-              field="pointsSheetUrl"
-              title="Points"
-              description="Read-only preview of the Points Form responses spreadsheet. Edit points in Google Sheets."
-            />
-          )}
-          {tab === "members" && (
-            <SheetPreview
-              field="membersSheetUrl"
-              title="Members"
-              description="Read-only preview of the membership sign-up spreadsheet."
-            />
-          )}
           {tab === "events" && <EventManager />}
           {tab === "forms" && <DocumentManager section="forms" label="Forms" />}
           {tab === "resources" && <DocumentManager section="resources" label="Resources" />}

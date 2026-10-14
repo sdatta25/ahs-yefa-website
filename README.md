@@ -65,18 +65,27 @@ api/               Serverless functions: events.js, documents.js, upload.js, aut
 
 After editing, run `npx vercel dev` to preview changes before publishing.
 
-## Admin page
+## Officer Portal
 
-The Admin page lives at **`/admin`** — it is intentionally **not** in the main navigation
-or listed anywhere members would stumble onto it, so regular visitors never see it. There's
-a small "Officer Login" link in the footer for officers to find it. Officers sign in there
-with a shared officer-team username and password, then manage everything from one place —
-changes go live on the public site immediately, no redeploy needed:
+The Officer Portal lives at **`/officer`** (the "Officer Login" link in the footer and the
+"Officer? Sign in here" link on the member sign-in page). It's the officers' own view, not
+for editing the site. Officers sign in with the shared officer-team username and password,
+pick their name from the officer list (it greets them by name), and get:
 
 - **Points** — read-only preview of the Points Form responses Google Sheet (paste the
   sheet's link once; officers need view access to the sheet). No approve/decline — points
   are edited in the sheet itself.
 - **Members** — read-only preview of the membership sign-up responses Google Sheet.
+- **Calendar, Forms, Resources, Competitions, Social Media** — the same content members see.
+- An **Edit website (Admin)** button that jumps to the Admin page.
+
+## Admin page
+
+The Admin page lives at **`/admin`** — it is intentionally **not** in the main navigation
+or listed anywhere members would stumble onto it, so regular visitors never see it. Officers
+reach it from the "Edit website (Admin)" button in the Officer Portal. They sign in there
+with a shared officer-team username and password, then manage everything from one place —
+changes go live on the public site immediately, no redeploy needed:
 
 - **Calendar** — add/edit/delete/pin meetings and competition deadlines. All times are
   entered and displayed in **Eastern Time**.
@@ -113,5 +122,5 @@ This project is deployed on **Vercel** (not just any static host, since it needs
 1. Add them as a collaborator on this GitHub repo (Settings → Collaborators).
 2. Add them to the Vercel project (Vercel dashboard → Project → Settings → Members).
 3. Share the officer username and password separately (not through GitHub/this README), and let them know
-   the Admin page is at `/admin` (or the "Officer Login" link in the footer).
+   the Officer Portal is at `/officer` and the Admin page at `/admin`.
 4. Point them to this README for how the content is organized.
