@@ -73,7 +73,7 @@ change a password (Supabase emails a verification code first), and delete their 
 Their email can't be changed.
 
 - Deleting an account runs through `api/delete-account.js`, which needs a Vercel env var
-  `SUPABASE_SECRET_KEY` (Supabase → Project Settings → API Keys → a secret key). Never put
+  `SUPABASE_SECRET_KEY` or `SUPABASE_SERVICE_ROLE_KEY` (Supabase → Project Settings → API Keys → a secret key, from the same project as `VITE_SUPABASE_URL`). Never put
   this key in the frontend or in a `VITE_` variable.
 - Supabase only delivers its emails (sign-in links, password codes, sign-up confirmations)
   to the project's own team until custom SMTP is set up (Authentication → Emails).

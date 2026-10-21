@@ -10,8 +10,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" })
   }
 
-  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
-  const secretKey = process.env.SUPABASE_SECRET_KEY
+  // Prefer the URL the site itself signs in with, so the key and the
+  // member's token belong to the same project. Accept the key under the
+  // names Supabase's Vercel integration uses too.
+  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL
+  const secretKey =
+    process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY
   if (!url || !secretKey) {
     return res.status(500).json({ error: "Account deletion isn't set up yet. Ask an officer." })
   }
