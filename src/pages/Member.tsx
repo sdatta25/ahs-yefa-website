@@ -5,6 +5,7 @@ import DocumentListView from "../components/views/DocumentListView"
 import SocialFeedView from "../components/views/SocialFeedView"
 import CompetitionsView from "../components/views/CompetitionsView"
 import LinkCard from "../components/views/LinkCard"
+import AccountSettings from "../components/member/AccountSettings"
 import { useSession, displayName } from "../lib/useSession"
 import { supabase } from "../lib/supabase"
 import { SITE } from "../data/site"
@@ -16,6 +17,7 @@ const TABS = [
   { key: "competitions", label: "Competitions" },
   { key: "social", label: "Social Media" },
   { key: "forms", label: "Forms" },
+  { key: "account", label: "Account" },
 ] as const
 
 type TabKey = (typeof TABS)[number]["key"]
@@ -102,6 +104,7 @@ export default function Member() {
         {tab === "competitions" && <CompetitionsView />}
         {tab === "social" && <SocialFeedView />}
         {tab === "forms" && <FormsTab />}
+        {tab === "account" && session && <AccountSettings user={session.user} />}
       </section>
     </div>
   )

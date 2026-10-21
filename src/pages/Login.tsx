@@ -1,17 +1,30 @@
 import { useState } from "react"
 import type { FormEvent } from "react"
-import { useLocation, Link } from "react-router-dom"
+import { useLocation, useNavigate, Link } from "react-router-dom"
 import PageHeader from "../components/PageHeader"
+import PasswordInput from "../components/PasswordInput"
 import { supabase } from "../lib/supabase"
 
-type Step = "email" | "sent"
+type Step = "email" | "sent" | "confirm"
+type Method = "password" | "link"
+type PasswordMode = "signin" | "signup"
+
+const MIN_PASSWORD = 8
+const fieldClass =
+  "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
 
 export default function Login() {
   const location = useLocation()
+  const navigate = useNavigate()
   const from = (location.state as { from?: string } | null)?.from || "/member"
 
   const [step, setStep] = useState<Step>("email")
+  const [method, setMethod] = useState<Method>("password")
+  const [mode, setMode] = useState<PasswordMode>("signin")
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirm, setConfirm] = useState("")
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [googleLoading, setGoogleLoading] = useState(false)
@@ -39,6 +52,56 @@ export default function Login() {
     }
   }
 
+  async function handlePassword(e: FormEvent) {
+    e.preventDefault()
+    setError(null)
+    const trimmed = email.trim().toLowerCase()
+    if (!trimmed || !password) return
+
+    if (mode === "signup") {
+      if (!name.trim()) {
+        setError("Enter your name.")
+        return
+      }
+      if (password.length < MIN_PASSWORD) {
+        setError(`Use at least ${MIN_PASSWORD} characters for your password.`)
+        return
+      }
+      if (password !== confirm) {
+        setError("The passwords don't match.")
+        return
+      }
+    }
+
+    setSending(true)
+    try {
+      if (mode === "signin") {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email: trimmed, password })
+        if (signInError) throw signInError
+        navigate(from, { replace: true })
+      } else {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: trimmed,
+          password,
+          options: { data: { full_name: name.trim() }, emailRedirectTo: `${window.location.origin}${from}` },
+        })
+        if (signUpError) throw signUpError
+        // No session back means Supabase wants the email confirmed first.
+        if (data.session) navigate(from, { replace: true })
+        else setStep("confirm")
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Try again.")
+    } finally {
+      setSending(false)
+    }
+  }
+
+  function switchMethod(next: Method) {
+    setMethod(next)
+    setError(null)
+  }
+
   async function handleGoogle() {
     setError(null)
     setGoogleLoading(true)
@@ -56,7 +119,7 @@ export default function Login() {
 
   return (
     <div>
-      <PageHeader title="Member Sign In" subtitle="Sign in with Google or any email to access the member portal." />
+      <PageHeader title="Member Sign In" subtitle="Sign in with Google, or with any email and a password." />
 
       <section className="mx-auto max-w-sm px-5 py-16">
         <div className="rounded-2xl border border-slate-200 bg-white p-7">
@@ -83,29 +146,145 @@ export default function Login() {
                 <span className="h-px flex-1 bg-slate-200" />
               </div>
 
-              <form onSubmit={handleSendLink} className="space-y-3">
-                <label className="block text-sm font-medium text-yefa-ink">
-                  Email
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    autoFocus
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
-                    required
-                  />
-                </label>
-                {error && <p className="text-sm text-red-600">{error}</p>}
-                <button
-                  type="submit"
-                  disabled={sending}
-                  className="w-full rounded-lg bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
-                >
-                  {sending ? "Sending…" : "Email me a sign-in link"}
-                </button>
-              </form>
+              <div className="mb-4 grid grid-cols-2 gap-1 rounded-full bg-slate-100 p-1 text-sm font-semibold">
+                {(["password", "link"] as const).map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => switchMethod(m)}
+                    className={`rounded-full px-3 py-1.5 transition ${
+                      method === m ? "bg-white text-yefa-blue shadow-sm" : "text-yefa-ink hover:text-yefa-blue"
+                    }`}
+                  >
+                    {m === "password" ? "Password" : "Email link"}
+                  </button>
+                ))}
+              </div>
+
+              {method === "password" ? (
+                <form onSubmit={handlePassword} className="space-y-3">
+                  {mode === "signup" && (
+                    <label className="block text-sm font-medium text-yefa-ink">
+                      Name
+                      <input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        autoComplete="name"
+                        className={`mt-1 ${fieldClass}`}
+                        required
+                      />
+                    </label>
+                  )}
+                  <label className="block text-sm font-medium text-yefa-ink">
+                    Email
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                      className={`mt-1 ${fieldClass}`}
+                      required
+                    />
+                  </label>
+                  <label className="block text-sm font-medium text-yefa-ink">
+                    Password
+                    <div className="mt-1">
+                      <PasswordInput
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                        className={fieldClass}
+                        required
+                      />
+                    </div>
+                  </label>
+                  {mode === "signup" && (
+                    <label className="block text-sm font-medium text-yefa-ink">
+                      Confirm password
+                      <div className="mt-1">
+                        <PasswordInput
+                          value={confirm}
+                          onChange={(e) => setConfirm(e.target.value)}
+                          autoComplete="new-password"
+                          className={fieldClass}
+                          required
+                        />
+                      </div>
+                    </label>
+                  )}
+                  {error && <p className="text-sm text-red-600">{error}</p>}
+                  <button
+                    type="submit"
+                    disabled={sending}
+                    className="w-full rounded-lg bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
+                  >
+                    {sending ? "One moment…" : mode === "signin" ? "Sign in" : "Create account"}
+                  </button>
+                  <p className="text-center text-sm text-yefa-ink">
+                    {mode === "signin" ? "New here? " : "Already have an account? "}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMode(mode === "signin" ? "signup" : "signin")
+                        setError(null)
+                      }}
+                      className="font-semibold text-yefa-blue hover:underline"
+                    >
+                      {mode === "signin" ? "Create an account" : "Sign in"}
+                    </button>
+                  </p>
+                  {mode === "signin" && (
+                    <p className="text-center text-xs text-slate-500">
+                      Forgot your password, or signed up with Google? Use the email link, then set a password
+                      under Account.
+                    </p>
+                  )}
+                </form>
+              ) : (
+                <form onSubmit={handleSendLink} className="space-y-3">
+                  <label className="block text-sm font-medium text-yefa-ink">
+                    Email
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                      className={`mt-1 ${fieldClass}`}
+                      required
+                    />
+                  </label>
+                  {error && <p className="text-sm text-red-600">{error}</p>}
+                  <button
+                    type="submit"
+                    disabled={sending}
+                    className="w-full rounded-lg bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
+                  >
+                    {sending ? "Sending…" : "Email me a sign-in link"}
+                  </button>
+                </form>
+              )}
             </>
+          ) : step === "confirm" ? (
+            <div className="space-y-3 text-center">
+              <h2 className="text-base font-semibold text-yefa-navy">Confirm your email</h2>
+              <p className="text-sm text-yefa-ink">
+                We sent a confirmation link to <span className="font-semibold">{email}</span>. Click it, then
+                come back and sign in with your password.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setStep("email")
+                  setMode("signin")
+                  setError(null)
+                }}
+                className="w-full text-center text-sm font-medium text-yefa-ink hover:text-yefa-blue"
+              >
+                Back to sign in
+              </button>
+            </div>
           ) : (
             <div className="space-y-3 text-center">
               <h2 className="text-base font-semibold text-yefa-navy">Check your email</h2>

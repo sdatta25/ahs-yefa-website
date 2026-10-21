@@ -65,6 +65,19 @@ api/               Serverless functions: events.js, documents.js, upload.js, aut
 
 After editing, run `npx vercel dev` to preview changes before publishing.
 
+## Member accounts
+
+Members sign in at `/login` with Google, an email + password, or an emailed sign-in link
+(Supabase Auth). The Member Portal's **Account** tab lets them change their name, set or
+change a password (Supabase emails a verification code first), and delete their account.
+Their email can't be changed.
+
+- Deleting an account runs through `api/delete-account.js`, which needs a Vercel env var
+  `SUPABASE_SECRET_KEY` (Supabase → Project Settings → API Keys → a secret key). Never put
+  this key in the frontend or in a `VITE_` variable.
+- Supabase only delivers its emails (sign-in links, password codes, sign-up confirmations)
+  to the project's own team until custom SMTP is set up (Authentication → Emails).
+
 ## Officer Portal
 
 The Officer Portal lives at **`/officer`** (the "Officer Login" link in the footer and the
