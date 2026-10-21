@@ -86,6 +86,15 @@ export default function Login() {
           options: { data: { full_name: name.trim() }, emailRedirectTo: `${window.location.origin}${from}` },
         })
         if (signUpError) throw signUpError
+        // Supabase answers a sign-up for an existing email with a user that
+        // has no identities, and sends no email.
+        if (data.user && data.user.identities?.length === 0) {
+          setMode("signin")
+          setError(
+            "There's already an account with this email. Sign in with Google or the email link, then set a password under Account.",
+          )
+          return
+        }
         // No session back means Supabase wants the email confirmed first.
         if (data.session) navigate(from, { replace: true })
         else setStep("confirm")
