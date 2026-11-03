@@ -78,6 +78,16 @@ Their email can't be changed.
 - Supabase only delivers its emails (sign-in links, password codes, sign-up confirmations)
   to the project's own team until custom SMTP is set up (Authentication → Emails).
 
+### Inactivity timeout and keeping Supabase awake
+
+- Members and officers are signed out after **30 minutes** with no activity
+  (`src/lib/idleTimeout.ts`). It's tracked across tabs and also applies when someone
+  reopens the site later.
+- Free Supabase projects pause after 7 days without activity. A Vercel Cron job
+  (`vercel.json`) calls `api/keep-alive.js` once a day at 13:00 UTC, which runs a small
+  query against Supabase so the project never goes idle. Check it under Vercel →
+  Settings → Cron Jobs. Optionally set a `CRON_SECRET` env var so only Vercel can call it.
+
 ## Officer Portal
 
 The Officer Portal lives at **`/officer`** (the "Officer Login" link in the footer and the

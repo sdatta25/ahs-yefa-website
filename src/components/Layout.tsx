@@ -2,11 +2,13 @@ import { lazy, Suspense } from "react"
 import { Outlet, useLocation } from "react-router-dom"
 import Navbar from "./Navbar"
 import Footer from "./Footer"
+import { useIdleSignOut } from "../lib/idleTimeout"
 
 const SiteBackground = lazy(() => import("./sitebg/SiteBackground"))
 
 export default function Layout() {
   const { pathname } = useLocation()
+  useIdleSignOut()
   const calm = pathname.startsWith("/admin") || pathname.startsWith("/officer")
 
   return (

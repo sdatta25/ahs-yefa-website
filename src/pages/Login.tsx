@@ -4,6 +4,7 @@ import { useLocation, useNavigate, Link } from "react-router-dom"
 import PageHeader from "../components/PageHeader"
 import PasswordInput from "../components/PasswordInput"
 import { supabase } from "../lib/supabase"
+import { takeIdleNotice } from "../lib/idleTimeout"
 
 type Step = "email" | "sent" | "confirm"
 type Method = "password" | "link"
@@ -27,6 +28,7 @@ export default function Login() {
   const [confirm, setConfirm] = useState("")
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [idleNotice] = useState(takeIdleNotice)
   const [googleLoading, setGoogleLoading] = useState(false)
 
   async function handleSendLink(e: FormEvent) {
@@ -131,6 +133,11 @@ export default function Login() {
       <PageHeader title="Member Sign In" subtitle="Sign in with Google, or with any email and a password." />
 
       <section className="mx-auto max-w-sm px-5 py-16">
+        {idleNotice && (
+          <p className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-center text-sm text-amber-800">
+            You were signed out after 30 minutes of inactivity.
+          </p>
+        )}
         <div className="rounded-2xl border border-slate-200 bg-white p-7">
           {step === "email" ? (
             <>

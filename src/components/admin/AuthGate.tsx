@@ -1,7 +1,8 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { FormEvent, ReactNode } from "react"
 import { clearToken, hasToken, login } from "../../lib/api"
 import PasswordInput from "../PasswordInput"
+import { OFFICER_LOGOUT_EVENT, takeIdleNotice } from "../../lib/idleTimeout"
 
 export default function AuthGate({ children, onLogout }: { children: ReactNode; onLogout?: () => void }) {
   const [unlocked, setUnlocked] = useState(hasToken())
@@ -9,6 +10,17 @@ export default function AuthGate({ children, onLogout }: { children: ReactNode; 
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loggingIn, setLoggingIn] = useState(false)
+  const [idleNotice, setIdleNotice] = useState(takeIdleNotice)
+
+  useEffect(() => {
+    function onIdleLogout() {
+      setUnlocked(false)
+      setIdleNotice(true)
+      onLogout?.()
+    }
+    window.addEventListener(OFFICER_LOGOUT_EVENT, onIdleLogout)
+    return () => window.removeEventListener(OFFICER_LOGOUT_EVENT, onIdleLogout)
+  }, [onLogout])
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -17,6 +29,7 @@ export default function AuthGate({ children, onLogout }: { children: ReactNode; 
     try {
       await login(username.trim(), password)
       setUnlocked(true)
+      setIdleNotice(false)
       setUsername("")
       setPassword("")
     } catch (err) {
@@ -37,6 +50,11 @@ export default function AuthGate({ children, onLogout }: { children: ReactNode; 
       <div className="mx-auto max-w-sm rounded-2xl border border-slate-200 bg-white p-7">
         <h2 className="text-base font-semibold text-yefa-navy">Officer Sign In</h2>
         <p className="mt-1 text-sm text-yefa-ink">Use the officer team's username and password.</p>
+        {idleNotice && (
+          <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+            You were signed out after 30 minutes of inactivity.
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="mt-4 space-y-3">
           <input
             type="text"
