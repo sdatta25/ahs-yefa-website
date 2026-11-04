@@ -7,7 +7,7 @@ import { OFFICERS } from "../data/officers"
 import { fetchEvents, type EventItem } from "../lib/api"
 import { formatTime12h, todayISO } from "../lib/date"
 
-const HeroMarket = lazy(() => import("../components/hero/HeroMarket"))
+const HeroObjects = lazy(() => import("../components/hero/HeroObjects"))
 
 function dateParts(iso: string) {
   const [y, m, d] = iso.split("-").map(Number)
@@ -58,11 +58,11 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero: the 3D market rises behind the right side, text holds the left. */}
+      {/* Hero: 3D finance objects float in on the right, text holds the left. */}
       <section className="relative isolate overflow-hidden border-b border-yefa-rule">
-        <div className="relative h-[40vh] min-h-[280px] lg:absolute lg:inset-y-0 lg:left-[34%] lg:right-0 lg:h-auto lg:[mask-image:linear-gradient(to_right,transparent,black_18%)]">
+        <div className="relative h-[40vh] min-h-[280px] lg:absolute lg:inset-y-0 lg:left-[38%] lg:right-0 lg:h-auto">
           <Suspense fallback={null}>
-            <HeroMarket />
+            <HeroObjects />
           </Suspense>
         </div>
 

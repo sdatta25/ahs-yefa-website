@@ -1,39 +1,31 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { Canvas } from "@react-three/fiber"
-import MarketScene from "./MarketScene"
-import { buildMarket, COLS, ROWS } from "./marketData"
+import FinanceScene from "./FinanceScene"
 import { supportsWebGL, usePrefersReducedMotion } from "../../lib/motion"
 
-// Flat version of the same market for devices without WebGL: the front row
-// as a bar chart.
-function FlatMarket() {
-  const bars = useMemo(() => buildMarket().filter((b) => b.row === ROWS - 1), [])
-  const max = Math.max(...bars.map((b) => b.height))
+// Flat stand-in for devices without WebGL: a globe and a coin stack.
+function FlatObjects() {
   return (
-    <svg viewBox={`0 0 ${COLS * 10} 120`} className="h-full w-full" preserveAspectRatio="xMidYMax meet">
-      {bars.map((b) => {
-        const h = (b.height / max) * 110
-        return (
-          <rect
-            key={b.col}
-            x={b.col * 10 + 2}
-            y={120 - h}
-            width={6}
-            height={h}
-            fill={b.today ? "#e2861c" : b.up ? "#2b4fc2" : "#b9c3dc"}
-          />
-        )
-      })}
+    <svg viewBox="0 0 320 220" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
+      <circle cx="120" cy="90" r="58" fill="#2b4fc2" />
+      <ellipse cx="120" cy="90" rx="84" ry="22" fill="none" stroke="#e2861c" strokeWidth="5" transform="rotate(-18 120 90)" />
+      {[0, 1, 2, 3, 4].map((i) => (
+        <g key={i}>
+          <rect x="196" y={178 - i * 13} width="80" height="13" fill="#e2861c" />
+          <ellipse cx="236" cy={178 - i * 13} rx="40" ry="9" fill="#f0a64d" />
+        </g>
+      ))}
     </svg>
   )
 }
 
-export default function HeroMarket() {
+export default function HeroObjects() {
   const reduced = usePrefersReducedMotion()
   const webgl = useMemo(() => supportsWebGL(), [])
   const wrap = useRef<HTMLDivElement>(null)
   const pointer = useRef({ x: 0, y: 0 })
   const [visible, setVisible] = useState(true)
+  const [narrow, setNarrow] = useState(() => window.innerWidth < 1024)
 
   useEffect(() => {
     const el = wrap.current
@@ -46,10 +38,15 @@ export default function HeroMarket() {
         y: -((e.clientY / window.innerHeight) * 2 - 1),
       }
     }
+    function onResize() {
+      setNarrow(window.innerWidth < 1024)
+    }
     window.addEventListener("pointermove", onMove, { passive: true })
+    window.addEventListener("resize", onResize)
     return () => {
       io.disconnect()
       window.removeEventListener("pointermove", onMove)
+      window.removeEventListener("resize", onResize)
     }
   }, [])
 
@@ -59,16 +56,16 @@ export default function HeroMarket() {
         <Suspense fallback={null}>
           <Canvas
             dpr={[1, 1.75]}
-            camera={{ fov: 38, near: 0.1, far: 60 }}
+            camera={{ position: [0, 0.2, 8.5], fov: 36 }}
             gl={{ antialias: true, alpha: true }}
             frameloop={visible ? (reduced ? "demand" : "always") : "never"}
           >
-            <MarketScene reduced={reduced} pointer={pointer} />
+            <FinanceScene reduced={reduced} pointer={pointer} narrow={narrow} />
           </Canvas>
         </Suspense>
       ) : (
-        <div className="absolute inset-x-0 bottom-0 h-2/3 px-6">
-          <FlatMarket />
+        <div className="absolute inset-0 p-8">
+          <FlatObjects />
         </div>
       )}
     </div>
