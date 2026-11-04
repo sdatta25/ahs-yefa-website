@@ -39,7 +39,7 @@ npm run build
 src/
   components/
     admin/        AuthGate (login), EventManager (calendar CRUD), DocumentManager (forms/resources CRUD)
-    hero3d/        The homepage's 3D hero scene (gem, orbit rings, parallax/scroll logic)
+    hero/          The homepage's 3D intro: floating finance objects (globe, piggy bank, calculator, coins)
     BrandLogo, Navbar, Footer, EventCalendar, OfficerCard, PostCarousel, ...
   pages/           One file per page (Home, About, Officers, Calendar, Competitions, Forms, Resources, SocialMedia, Partners, Contact, Admin)
   data/            Editable content — site info, officer list, competitions catalog, partners

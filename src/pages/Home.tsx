@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { motion, useReducedMotion } from "framer-motion"
 import { SITE } from "../data/site"
+import ErrorBoundary from "../components/ErrorBoundary"
 import { COMPETITIONS } from "../data/competitions"
 import { OFFICERS } from "../data/officers"
 import { fetchEvents, type EventItem } from "../lib/api"
@@ -61,9 +62,11 @@ export default function Home() {
       {/* Hero: 3D finance objects float in on the right, text holds the left. */}
       <section className="relative isolate overflow-hidden border-b border-yefa-rule">
         <div className="relative h-[40vh] min-h-[280px] lg:absolute lg:inset-y-0 lg:left-[38%] lg:right-0 lg:h-auto">
-          <Suspense fallback={null}>
-            <HeroObjects />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={null}>
+              <HeroObjects />
+            </Suspense>
+          </ErrorBoundary>
         </div>
 
         <div className="relative mx-auto max-w-7xl px-5 pb-16 lg:flex lg:min-h-[min(calc(100vh-4.25rem),50rem)] lg:items-center lg:py-24">

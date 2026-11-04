@@ -12,7 +12,7 @@ export default function OfficerCard({ officer }: { officer: Officer }) {
     <div className="rounded-md border border-yefa-rule bg-white p-5 text-center">
       <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-yefa-blue-50 text-xl font-bold text-yefa-blue ring-1 ring-yefa-blue/15">
         {officer.photo ? (
-          <img src={officer.photo} alt={officer.name} className="h-full w-full rounded-full object-cover" />
+          <img src={officer.photo} alt={officer.name} width={96} height={96} loading="lazy" decoding="async" className="h-full w-full rounded-full object-cover" />
         ) : (
           <span>{initials}</span>
         )}

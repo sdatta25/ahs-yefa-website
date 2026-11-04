@@ -21,7 +21,9 @@ function FlatObjects() {
 
 export default function HeroObjects() {
   const reduced = usePrefersReducedMotion()
-  const webgl = useMemo(() => supportsWebGL(), [])
+  const webglSupported = useMemo(() => supportsWebGL(), [])
+  const [contextLost, setContextLost] = useState(false)
+  const webgl = webglSupported && !contextLost
   const wrap = useRef<HTMLDivElement>(null)
   const pointer = useRef({ x: 0, y: 0 })
   const [visible, setVisible] = useState(true)
@@ -55,10 +57,14 @@ export default function HeroObjects() {
       {webgl ? (
         <Suspense fallback={null}>
           <Canvas
-            dpr={[1, 1.75]}
+            dpr={[1, 1.5]}
             camera={{ position: [0, 0.2, 8.5], fov: 36 }}
             gl={{ antialias: true, alpha: true }}
             frameloop={visible ? (reduced ? "demand" : "always") : "never"}
+            onCreated={({ gl }) => {
+              // If the GPU drops the canvas, show the flat drawing instead.
+              gl.domElement.addEventListener("webglcontextlost", () => setContextLost(true), { once: true })
+            }}
           >
             <FinanceScene reduced={reduced} pointer={pointer} narrow={narrow} />
           </Canvas>
