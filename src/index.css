@@ -1,17 +1,25 @@
 @import "tailwindcss";
 
+/*
+  One family, two widths: Archivo wide and heavy for headings (reads like a
+  financial paper's masthead), normal width for text. Colors come from the
+  YEFA logo: its blue and orange, on a cool paper white with deep navy ink.
+*/
 @theme {
-  --font-display: "Fraunces", "Georgia", serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Archivo", system-ui, sans-serif;
+  --font-sans: "Archivo", system-ui, sans-serif;
 
-  --color-yefa-blue: #3657c9;
-  --color-yefa-blue-dark: #1b2f6b;
-  --color-yefa-blue-light: #7893e8;
-  --color-yefa-blue-50: #eef1fb;
-  --color-yefa-orange: #e2912e;
-  --color-yefa-orange-light: #f5c583;
-  --color-yefa-navy: #10142b;
-  --color-yefa-ink: #4a5068;
+  --color-yefa-blue: #2b4fc2;
+  --color-yefa-blue-dark: #1c3486;
+  --color-yefa-blue-light: #7d93e0;
+  --color-yefa-blue-50: #ecf0fb;
+  --color-yefa-orange: #e2861c;
+  --color-yefa-orange-light: #f4c27f;
+  --color-yefa-orange-ink: #9a5507; /* orange for text: readable on white */
+  --color-yefa-navy: #0f1b3d;
+  --color-yefa-ink: #4b5572;
+  --color-yefa-paper: #f4f6fa;
+  --color-yefa-rule: #d8dde8;
 }
 
 html {
@@ -19,16 +27,46 @@ html {
 }
 
 body {
-  background-color: #fcfcfd;
+  background-color: var(--color-yefa-paper);
   color: var(--color-yefa-navy);
   font-family: var(--font-sans);
+  font-feature-settings: "tnum" 0;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: var(--font-display);
+  font-stretch: 112%;
+  letter-spacing: -0.01em;
+}
+
+/* The widest, heaviest cut, used once per page for its title. */
+.display-wide {
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 0.92;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-yefa-blue);
+  outline-offset: 2px;
 }
 
 ::selection {
   background: var(--color-yefa-orange-light);
   color: var(--color-yefa-navy);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

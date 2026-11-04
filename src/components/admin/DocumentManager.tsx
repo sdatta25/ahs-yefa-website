@@ -196,7 +196,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
             </label>
 
             {showAutoPreview && !fetchingPreview && (
-              <p className="text-xs text-yefa-orange">Click "Fetch preview" (or click out of the field) to load it.</p>
+              <p className="text-xs text-yefa-orange-ink">Click "Fetch preview" (or click out of the field) to load it.</p>
             )}
 
             {(draft.image || draft.title) && (
@@ -209,7 +209,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                   </div>
                 )}
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Preview</p>
+                  <p className="text-xs font-semibold text-slate-500">Preview</p>
                   <p className="truncate text-sm text-yefa-navy">{draft.title || "No caption found"}</p>
                 </div>
               </div>
@@ -351,7 +351,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                   <div>
                     <div className="flex items-center gap-2">
                       {d.pinned && (
-                        <span className="rounded-full bg-yefa-orange/10 px-2 py-0.5 text-xs font-semibold text-yefa-orange">
+                        <span className="rounded-full bg-yefa-orange/10 px-2 py-0.5 text-xs font-semibold text-yefa-orange-ink">
                           📌 Pinned
                         </span>
                       )}
@@ -366,7 +366,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 <div className="flex shrink-0 gap-2">
                   <button
                     onClick={() => handleTogglePin(d)}
-                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-yefa-orange ring-1 ring-inset ring-yefa-orange/30 transition hover:bg-yefa-orange/10"
+                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-yefa-orange-ink ring-1 ring-inset ring-yefa-orange/30 transition hover:bg-yefa-orange/10"
                   >
                     {d.pinned ? "Unpin" : "Pin"}
                   </button>

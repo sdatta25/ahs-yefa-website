@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import AuthGate from "../components/admin/AuthGate"
+import PageHeader from "../components/PageHeader"
 import SheetPreview from "../components/admin/SheetPreview"
 import CalendarView from "../components/views/CalendarView"
 import DocumentListView from "../components/views/DocumentListView"
@@ -151,24 +152,21 @@ export default function OfficerPortal() {
 
   return (
     <div>
-      <div className="border-b border-white/10 bg-yefa-navy px-5 py-12 text-white">
-        <div className="mx-auto max-w-5xl">
-          <p className="text-xs font-semibold uppercase tracking-widest text-yefa-orange-light">Officer Portal</p>
-          <h1 className="mt-2 text-3xl font-bold">{officer ? `Welcome, ${officer.name}!` : "Officer Portal"}</h1>
-          <p className="mt-2 text-slate-300">
-            {officer ? (
-              <>
-                {officer.position} ·{" "}
-                <button onClick={forget} className="underline decoration-slate-500 underline-offset-2 hover:text-white">
-                  Not you?
-                </button>
-              </>
-            ) : (
-              "Points, members, and everything else officers need in one place."
-            )}
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title={officer ? `Welcome, ${officer.name}` : "Officer Portal"}
+        subtitle={
+          officer ? (
+            <>
+              {officer.position}.{" "}
+              <button onClick={forget} className="font-semibold text-yefa-blue hover:underline">
+                Not you?
+              </button>
+            </>
+          ) : (
+            "Points, members and everything else officers need in one place."
+          )
+        }
+      />
 
       <section className="mx-auto max-w-5xl px-5 py-12">
         <AuthGate onLogout={forget}>{officer ? <Dashboard /> : <WhoAreYou onPick={pick} />}</AuthGate>

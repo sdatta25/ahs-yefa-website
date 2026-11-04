@@ -6,7 +6,7 @@ import { NAV_MORE, NAV_PRIMARY } from "../data/site"
 import { firstName, useSession } from "../lib/useSession"
 
 function linkClass(isActive: boolean) {
-  return `whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+  return `whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors ${
     isActive ? "text-yefa-blue" : "text-yefa-ink hover:text-yefa-blue"
   }`
 }
@@ -54,7 +54,7 @@ function MoreMenu() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg"
+            className="absolute right-0 top-full mt-2 w-48 rounded-md border border-yefa-rule bg-white p-1 shadow-[0_8px_24px_-12px_rgba(15,27,61,0.35)]"
           >
             {NAV_MORE.map((link) => (
               <NavLink
@@ -87,7 +87,7 @@ export default function Navbar() {
     : { label: "Sign In", to: "/login" }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/85 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-yefa-rule bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-3">
         <NavLink to="/" onClick={() => setOpen(false)} className="shrink-0">
           <BrandLogo size="sm" />
@@ -100,13 +100,13 @@ export default function Navbar() {
             </NavLink>
           ))}
           <MoreMenu />
-          <span className="mx-2 h-5 w-px bg-slate-200" />
+          <span className="mx-2 h-5 w-px bg-yefa-rule" />
           <NavLink to={account.to} className={({ isActive }) => linkClass(isActive)}>
             {account.label}
           </NavLink>
           <Link
             to="/contact"
-            className="ml-1 shrink-0 whitespace-nowrap rounded-lg bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark"
+            className="ml-1 shrink-0 whitespace-nowrap rounded-md bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-yefa-blue-dark"
           >
             Join
           </Link>
@@ -131,7 +131,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden border-t border-slate-200/80 bg-white lg:hidden"
+            className="overflow-hidden border-t border-yefa-rule bg-white lg:hidden"
           >
             <div className="flex max-h-[70vh] flex-col gap-1 overflow-y-auto px-5 py-3">
               {[...NAV_PRIMARY, ...NAV_MORE, account].map((link) => (
@@ -152,7 +152,7 @@ export default function Navbar() {
               <Link
                 to="/contact"
                 onClick={() => setOpen(false)}
-                className="mt-1 rounded-lg bg-yefa-blue px-3 py-2.5 text-center text-sm font-semibold text-white"
+                className="mt-1 rounded-md bg-yefa-blue px-3 py-2.5 text-center text-sm font-semibold text-white"
               >
                 Join
               </Link>

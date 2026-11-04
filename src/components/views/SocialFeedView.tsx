@@ -67,7 +67,6 @@ export default function SocialFeedView() {
                   className="group mt-3 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue"
                 >
                   View on Instagram
-                  <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
                 </a>
               </div>
             </div>

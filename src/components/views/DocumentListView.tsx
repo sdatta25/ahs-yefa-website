@@ -26,7 +26,7 @@ export default function DocumentListView({
 
   if (docs.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+      <div className="rounded-md border border-dashed border-yefa-rule bg-white p-10 text-center">
         <h2 className="text-lg font-semibold text-yefa-navy">{emptyTitle}</h2>
         <p className="mt-2 text-sm text-yefa-ink">{emptyBody}</p>
       </div>
@@ -41,13 +41,12 @@ export default function DocumentListView({
           href={d.url}
           target="_blank"
           rel="noreferrer"
-          className="group block rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
+          className="group block rounded-md border border-yefa-rule bg-white p-5 transition-colors hover:border-yefa-blue/50"
         >
           <h3 className="text-lg font-semibold text-yefa-navy">{d.title}</h3>
           {d.description && <p className="mt-1 text-sm text-yefa-ink">{d.description}</p>}
-          <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue">
+          <span className="mt-3 inline-block text-sm font-semibold text-yefa-blue group-hover:underline">
             {openLabel}
-            <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
           </span>
         </a>
       ))}

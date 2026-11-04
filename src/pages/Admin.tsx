@@ -1,5 +1,6 @@
 import { useState } from "react"
 import AuthGate from "../components/admin/AuthGate"
+import PageHeader from "../components/PageHeader"
 import EventManager from "../components/admin/EventManager"
 import DocumentManager from "../components/admin/DocumentManager"
 
@@ -17,15 +18,10 @@ export default function Admin() {
 
   return (
     <div>
-      <div className="border-b border-white/10 bg-yefa-navy px-5 py-12 text-white">
-        <div className="mx-auto max-w-5xl">
-          <p className="text-xs font-semibold uppercase tracking-widest text-yefa-orange-light">Officers Only</p>
-          <h1 className="mt-2 text-3xl font-bold">Admin</h1>
-          <p className="mt-2 text-slate-300">
-            Edit the public website — the calendar, sign-up forms, resources, and social post previews. Changes go live immediately.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Admin"
+        subtitle="Edit the public website: the calendar, sign-up forms, resources and social posts. Changes go live right away."
+      />
 
       <section className="mx-auto max-w-5xl px-5 py-12">
         <AuthGate>

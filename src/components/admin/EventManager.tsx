@@ -191,7 +191,7 @@ export default function EventManager() {
                 className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-wide text-yefa-orange">{e.type}</span>
+                  <span className="text-xs font-semibold text-yefa-orange-ink">{e.type === "competition" ? "Competition" : "Meeting"}</span>
                   <h4 className="font-semibold text-yefa-navy">{e.title}</h4>
                   <p className="text-sm text-yefa-ink">
                     {formatDateLabel(e.date)} &middot; {formatTime12h(e.time)}

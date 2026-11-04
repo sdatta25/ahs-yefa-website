@@ -1,218 +1,203 @@
+import { lazy, Suspense, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { motion, type Variants } from "framer-motion"
+import { motion, useReducedMotion } from "framer-motion"
 import { SITE } from "../data/site"
+import { COMPETITIONS } from "../data/competitions"
+import { OFFICERS } from "../data/officers"
+import { fetchEvents, type EventItem } from "../lib/api"
+import { formatTime12h, todayISO } from "../lib/date"
 
-const QUICK_LINKS = [
+const HeroMarket = lazy(() => import("../components/hero/HeroMarket"))
+
+function dateParts(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number)
+  const date = new Date(y, m - 1, d)
+  return {
+    month: date.toLocaleDateString("en-US", { month: "short" }),
+    day: d,
+    weekday: date.toLocaleDateString("en-US", { weekday: "long" }),
+  }
+}
+
+function useUpcoming(limit: number) {
+  const [events, setEvents] = useState<EventItem[] | null>(null)
+  useEffect(() => {
+    fetchEvents()
+      .then((all) => {
+        const today = todayISO()
+        setEvents(
+          all
+            .filter((e) => e.date >= today)
+            .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
+            .slice(0, limit),
+        )
+      })
+      .catch(() => setEvents([]))
+  }, [limit])
+  return events
+}
+
+const DOES = [
   {
-    title: "Meet the Officers",
-    desc: "Get to know the students leading YEFA this year.",
-    to: "/officers",
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM15.75 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-      />
-    ),
+    term: "Compete",
+    body: `Members enter national economics, finance and business competitions, from the National Economics Challenge to stock pitches and case competitions. We track ${COMPETITIONS.length} of them.`,
   },
   {
-    title: "Calendar",
-    desc: "Upcoming meetings and competition deadlines, all in one place.",
-    to: "/calendar",
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008Z"
-      />
-    ),
+    term: "Learn",
+    body: "Meetings, guest speakers and hands-on workshops on personal finance, markets and how the economy works. No experience needed.",
   },
   {
-    title: "Resources",
-    desc: "Guides and materials to help you prep and get involved.",
-    to: "/resources",
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"
-      />
-    ),
+    term: "Lead",
+    body: `YEFA is run entirely by students. A team of ${OFFICERS.length} officers plans meetings, tracks deadlines and keeps the club going.`,
   },
 ]
 
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, delay: 0.1 + i * 0.08, ease: "easeOut" },
-  }),
-}
-
 export default function Home() {
+  const upcoming = useUpcoming(3)
+  const reduceMotion = useReducedMotion()
+
   return (
     <div>
-      {/* ---------------------------------------------------------------- */}
-      {/* Hero                                                             */}
-      {/* ---------------------------------------------------------------- */}
-      <section
-        className="relative isolate overflow-hidden"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(54,87,201,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(54,87,201,0.05) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-        }}
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(54,87,201,0.07),transparent)]" />
+      {/* Hero: the 3D market rises behind the right side, text holds the left. */}
+      <section className="relative isolate overflow-hidden border-b border-yefa-rule">
+        <div className="relative h-[40vh] min-h-[280px] lg:absolute lg:inset-y-0 lg:left-[34%] lg:right-0 lg:h-auto lg:[mask-image:linear-gradient(to_right,transparent,black_18%)]">
+          <Suspense fallback={null}>
+            <HeroMarket />
+          </Suspense>
+        </div>
 
-        <div className="relative mx-auto max-w-3xl px-5 py-28 text-center sm:py-36">
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={0}
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-yefa-blue"
-          >
-            Economics &middot; Finance &middot; Investing
-          </motion.p>
-
-          <motion.h1
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={1}
-            className="mt-6 font-display text-[3.4rem] font-extrabold leading-[0.95] tracking-tight text-yefa-navy sm:text-[4.6rem] lg:text-[5.4rem] xl:text-[6.2rem]"
-          >
-            AHS
-            <br />
-            <span className="relative inline-block text-yefa-blue">
-              YEFA
-              <span className="absolute -bottom-2 left-1/2 h-[5px] w-[72%] -translate-x-1/2 rounded-full bg-yefa-orange" />
-            </span>
-          </motion.h1>
-
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={2}
-            className="mx-auto mt-8 max-w-lg text-lg leading-relaxed text-yefa-ink"
-          >
-            {SITE.tagline}
-          </motion.p>
-
+        <div className="relative mx-auto max-w-7xl px-5 pb-16 lg:flex lg:min-h-[min(calc(100vh-4.25rem),50rem)] lg:items-center lg:py-24">
           <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={3}
-            className="mt-9 flex flex-wrap items-center justify-center gap-4"
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.5, ease: "easeOut" }}
+            className="max-w-md"
           >
-            <Link
-              to="/contact"
-              className="rounded-xl bg-yefa-blue px-7 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_-6px_rgba(54,87,201,0.55)] transition hover:-translate-y-0.5 hover:bg-yefa-blue-dark"
-            >
-              Join YEFA
-            </Link>
-            <Link
-              to="/about"
-              className="rounded-xl px-7 py-3 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:-translate-y-0.5 hover:bg-slate-50"
-            >
-              Learn More
-            </Link>
+            <h1 className="display-wide text-[4.5rem] text-yefa-navy sm:text-[6rem] lg:text-[7.25rem]">
+              AHS
+              <br />
+              YEFA
+            </h1>
+            <p className="mt-6 text-lg leading-relaxed text-yefa-ink">
+              The Youth Economics &amp; Finance Association at Alpharetta High School. Members learn how
+              markets work and compete in national economics, finance and investing competitions.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/contact"
+                className="rounded-md bg-yefa-blue px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-yefa-blue-dark"
+              >
+                Join YEFA
+              </Link>
+              <Link
+                to="/calendar"
+                className="rounded-md px-6 py-3 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-yefa-navy/20 transition-colors hover:bg-white"
+              >
+                See the calendar
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Mission — asymmetric editorial layout                            */}
-      {/* ---------------------------------------------------------------- */}
-      <section className="border-y border-slate-200/70 px-5 py-20 sm:py-28">
-        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.6fr_1fr] lg:gap-16">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-yefa-orange">Our Mission</p>
-            <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-yefa-navy sm:text-4xl">
-              What is {SITE.shortName}?
-            </h2>
-          </div>
-          <div className="border-l-2 border-yefa-blue/15 pl-6 sm:pl-10">
-            <p className="text-xl font-medium leading-relaxed text-yefa-navy sm:text-2xl">
-              YEFA is a student-led club dedicated to building financial literacy, economic
-              thinking, and real-world investing skills.
-            </p>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-yefa-ink">
-              We get there through competitions, guest speakers, and hands-on workshops —
-              built by students, for students.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------------------------------------------------------------- */}
-      {/* Quick links                                                      */}
-      {/* ---------------------------------------------------------------- */}
-      <section className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-yefa-orange">Get Involved</p>
-            <h2 className="mt-3 font-display text-3xl font-bold text-yefa-navy sm:text-4xl">Where to start</h2>
-          </div>
-        </div>
-
-        <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 sm:grid-cols-3">
-          {QUICK_LINKS.map((item, i) => (
-            <motion.div
-              key={item.to}
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="bg-white"
-            >
-              <Link to={item.to} className="group block h-full p-8 transition hover:bg-yefa-blue-50/60">
-                <span className="font-display text-sm font-semibold text-slate-300 transition group-hover:text-yefa-blue/40">
-                  0{i + 1}
-                </span>
-                <div className="mt-4 flex h-11 w-11 items-center justify-center rounded-xl bg-yefa-blue-50 text-yefa-blue transition group-hover:bg-yefa-blue group-hover:text-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.6} stroke="currentColor" className="h-5 w-5">
-                    {item.icon}
-                  </svg>
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-yefa-navy">{item.title}</h3>
-                <p className="mt-2 text-sm text-yefa-ink">{item.desc}</p>
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue">
-                  Explore
-                  <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
-                </span>
-              </Link>
-            </motion.div>
+      {/* What members do */}
+      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-20 lg:grid-cols-[1fr_2fr] lg:gap-16 lg:py-28">
+        <h2 className="text-3xl font-bold sm:text-4xl">What members do</h2>
+        <dl className="divide-y divide-yefa-rule border-y border-yefa-rule">
+          {DOES.map((item) => (
+            <div key={item.term} className="grid gap-2 py-7 sm:grid-cols-[10rem_1fr] sm:gap-8">
+              <dt className="font-display text-xl font-bold [font-stretch:118%]">{item.term}</dt>
+              <dd className="max-w-xl leading-relaxed text-yefa-ink">{item.body}</dd>
+            </div>
           ))}
+        </dl>
+      </section>
+
+      {/* Next up + competitions */}
+      <section className="border-t border-yefa-rule bg-white">
+        <div className="mx-auto grid max-w-7xl gap-14 px-5 py-20 lg:grid-cols-2 lg:gap-20 lg:py-28">
+          <div>
+            <div className="flex items-baseline justify-between gap-4">
+              <h2 className="text-3xl font-bold sm:text-4xl">Next up</h2>
+              <Link to="/calendar" className="text-sm font-semibold text-yefa-blue hover:underline">
+                Full calendar
+              </Link>
+            </div>
+            {upcoming === null ? (
+              <p className="mt-8 text-yefa-ink">Loading the calendar…</p>
+            ) : upcoming.length === 0 ? (
+              <p className="mt-8 max-w-md leading-relaxed text-yefa-ink">
+                Nothing is scheduled yet. New meetings and competition deadlines go on the calendar as soon as
+                they're set.
+              </p>
+            ) : (
+              <ol className="mt-8 divide-y divide-yefa-rule border-y border-yefa-rule">
+                {upcoming.map((e) => {
+                  const d = dateParts(e.date)
+                  return (
+                    <li key={e.id} className="flex gap-6 py-5">
+                      <div className="w-14 shrink-0 text-center">
+                        <div className="text-xs font-semibold text-yefa-ink">{d.month}</div>
+                        <div className="tabular font-display text-3xl font-extrabold leading-none [font-stretch:125%]">
+                          {d.day}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold">
+                          {e.title}
+                          {e.type === "competition" && (
+                            <span className="ml-2 rounded bg-yefa-orange/15 px-1.5 py-0.5 align-middle text-xs font-semibold text-yefa-orange-ink">
+                              Competition
+                            </span>
+                          )}
+                        </p>
+                        <p className="mt-1 text-sm text-yefa-ink">
+                          {d.weekday}, {formatTime12h(e.time)}
+                          {e.location ? `, ${e.location}` : ""}
+                        </p>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ol>
+            )}
+          </div>
+
+          <div>
+            <div className="flex items-baseline justify-between gap-4">
+              <h2 className="text-3xl font-bold sm:text-4xl">Competitions</h2>
+              <Link to="/competitions" className="text-sm font-semibold text-yefa-blue hover:underline">
+                All {COMPETITIONS.length}
+              </Link>
+            </div>
+            <ul className="mt-8 divide-y divide-yefa-rule border-y border-yefa-rule">
+              {COMPETITIONS.slice(0, 6).map((name) => (
+                <li key={name} className="py-3.5 text-yefa-navy">
+                  {name}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* Closing CTA                                                      */}
-      {/* ---------------------------------------------------------------- */}
-      <section
-        className="relative overflow-hidden bg-yefa-navy px-5 py-20 text-white sm:py-28"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-        }}
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_80%_100%,rgba(226,145,46,0.1),transparent)]" />
-        <div className="relative mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-yefa-orange-light">New members welcome all year</p>
-          <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">Ready to join YEFA?</h2>
-          <p className="mx-auto mt-4 max-w-xl text-slate-300">
-            Fill out the sign-up form and an officer will follow up with next steps and
-            meeting times.
-          </p>
+      {/* Join */}
+      <section className="bg-yefa-navy text-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-16 sm:flex-row sm:items-end sm:justify-between lg:py-20">
+          <div className="max-w-xl">
+            <h2 className="text-3xl font-bold sm:text-4xl">Anyone at AHS can join.</h2>
+            <p className="mt-4 leading-relaxed text-slate-300">
+              Fill out the sign-up form and an officer will reach out with meeting times. New members are
+              welcome all year. Questions? Email{" "}
+              <a href={`mailto:${SITE.contactEmail}`} className="text-white underline underline-offset-2">
+                {SITE.contactEmail}
+              </a>
+              .
+            </p>
+          </div>
           <Link
             to="/contact"
-            className="mt-8 inline-block rounded-xl bg-white px-8 py-3 text-sm font-semibold text-yefa-navy transition hover:-translate-y-0.5 hover:bg-slate-100"
+            className="shrink-0 self-start rounded-md bg-white px-6 py-3 text-sm font-semibold text-yefa-navy transition-colors hover:bg-yefa-blue-50 sm:self-auto"
           >
             Join YEFA
           </Link>

@@ -5,7 +5,7 @@ import { formatDateLabel, formatTime12h, todayISO } from "../../lib/date"
 
 const TYPE_STYLES: Record<EventItem["type"], string> = {
   meeting: "bg-yefa-blue/10 text-yefa-blue",
-  competition: "bg-yefa-orange/10 text-yefa-orange",
+  competition: "bg-yefa-orange/10 text-yefa-orange-ink",
 }
 
 const TYPE_LABEL: Record<EventItem["type"], string> = {

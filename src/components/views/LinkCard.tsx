@@ -14,13 +14,12 @@ export default function LinkCard({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="group block rounded-2xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
+      className="group block rounded-md border border-yefa-rule bg-white p-5 transition-colors hover:border-yefa-blue/50"
     >
       <h3 className="text-lg font-semibold text-yefa-navy">{title}</h3>
       <p className="mt-1 text-sm text-yefa-ink">{description}</p>
-      <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-yefa-blue">
+      <span className="mt-3 inline-block text-sm font-semibold text-yefa-blue group-hover:underline">
         {openLabel}
-        <span className="transition-transform group-hover:translate-x-1">&rarr;</span>
       </span>
     </a>
   )
