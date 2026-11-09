@@ -1,4 +1,6 @@
-import { Outlet, useLocation } from "react-router-dom"
+import { useEffect } from "react"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { supabase } from "../lib/supabase"
 import Navbar from "./Navbar"
 import Footer from "./Footer"
 import ErrorBoundary from "./ErrorBoundary"
@@ -24,6 +26,18 @@ function PageCrashed() {
 export default function Layout() {
   useIdleSignOut()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+
+  // Coming back from Google (or an email link) onto the homepage: once the
+  // sign-in finishes, go to the member dashboard.
+  useEffect(() => {
+    const { pathname: path, search, hash } = window.location
+    if (path !== "/" || !/[?&#](code|access_token)=/.test(search + hash)) return
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) navigate("/member", { replace: true })
+    })
+    return () => data.subscription.unsubscribe()
+  }, [navigate])
 
   return (
     <div className="flex min-h-screen flex-col">
