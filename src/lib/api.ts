@@ -92,6 +92,7 @@ export type DocItem = {
   images?: string[]
   captions?: string[]
   pinned?: boolean
+  order?: number
 }
 
 export type DocDraft = Omit<DocItem, "id">
@@ -111,6 +112,11 @@ export async function createDocument(draft: DocDraft): Promise<DocItem[]> {
 
 export async function updateDocument(doc: DocItem): Promise<DocItem[]> {
   const data = await authedFetch("/api/documents", { method: "PUT", body: JSON.stringify({ document: doc }) })
+  return data.documents
+}
+
+export async function reorderDocuments(ids: string[]): Promise<DocItem[]> {
+  const data = await authedFetch("/api/documents", { method: "PUT", body: JSON.stringify({ order: ids }) })
   return data.documents
 }
 

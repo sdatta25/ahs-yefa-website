@@ -5,6 +5,7 @@ import {
   deleteDocument,
   fetchDocuments,
   fetchLinkPreview,
+  reorderDocuments,
   updateDocument,
   uploadFile,
   type DocItem,
@@ -149,6 +150,25 @@ export default function DocumentManager({ section, label }: { section: DocSectio
       if (editingId === id) resetForm()
     } catch (err) {
       setError(err instanceof Error ? err.message : "Couldn't delete item.")
+    }
+  }
+
+  // Drag-to-order: move the dragged item to where it's dropped, then save.
+  const [dragId, setDragId] = useState<string | null>(null)
+  async function handleDrop(targetId: string) {
+    if (!dragId || dragId === targetId) return setDragId(null)
+    const next = [...docs]
+    const from = next.findIndex((d) => d.id === dragId)
+    const to = next.findIndex((d) => d.id === targetId)
+    next.splice(to, 0, next.splice(from, 1)[0])
+    setDocs(next)
+    setDragId(null)
+    try {
+      const updated = await reorderDocuments(next.map((d) => d.id))
+      setDocs(updated.filter((d) => d.section === section))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't save the new order.")
+      load()
     }
   }
 
@@ -331,6 +351,9 @@ export default function DocumentManager({ section, label }: { section: DocSectio
 
       <div>
         <h3 className="font-semibold text-yefa-navy">{label} — All Items</h3>
+        {docs.length > 1 && (
+          <p className="mt-1 text-xs text-slate-500">Drag items by the ⠿ handle to change their order on the site. Pinned items stay first.</p>
+        )}
         {loading ? (
           <p className="mt-3 text-sm text-yefa-ink">Loading&hellip;</p>
         ) : docs.length === 0 ? (
@@ -340,11 +363,17 @@ export default function DocumentManager({ section, label }: { section: DocSectio
             {docs.map((d) => (
               <div
                 key={d.id}
-                className={`flex flex-col gap-3 rounded-xl border bg-white p-4 sm:flex-row sm:items-center sm:justify-between ${
+                draggable
+                onDragStart={() => setDragId(d.id)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => handleDrop(d.id)}
+                onDragEnd={() => setDragId(null)}
+                className={`flex cursor-grab flex-col gap-3 rounded-xl border bg-white p-4 active:cursor-grabbing sm:flex-row sm:items-center sm:justify-between ${
                   d.pinned ? "border-yefa-orange/40" : "border-slate-200"
-                }`}
+                } ${dragId === d.id ? "opacity-40" : ""}`}
               >
                 <div className="flex items-center gap-3">
+                  <span aria-hidden="true" className="select-none text-lg leading-none text-slate-400">⠿</span>
                   {d.image && (
                     <img src={d.image} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />
                   )}

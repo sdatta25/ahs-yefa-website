@@ -27,12 +27,16 @@ function sanitize(input) {
       ? input.captions.map((x) => (typeof x === "string" ? x.trim() : ""))
       : [],
     pinned: Boolean(input.pinned),
+    ...(Number.isFinite(input.order) ? { order: input.order } : {}),
   }
 }
 
 function sortDocs(docs) {
   return docs.sort((a, b) => {
     if (Boolean(a.pinned) !== Boolean(b.pinned)) return a.pinned ? -1 : 1
+    const ao = Number.isFinite(a.order) ? a.order : Infinity
+    const bo = Number.isFinite(b.order) ? b.order : Infinity
+    if (ao !== bo) return ao - bo
     return a.title.localeCompare(b.title)
   })
 }
@@ -61,6 +65,17 @@ export default async function handler(req, res) {
   if (req.method === "PUT") {
     if (!requireAuth(req, res)) return
     const body = parseBody(req)
+    // Drag-to-order: { order: [id, id, ...] } sets each listed item's position.
+    if (Array.isArray(body.order)) {
+      const docs = await readCollection(PREFIX)
+      body.order.forEach((id, i) => {
+        const doc = docs.find((d) => d.id === id)
+        if (doc) doc.order = i
+      })
+      sortDocs(docs)
+      await writeCollection(PREFIX, docs)
+      return res.status(200).json({ documents: docs })
+    }
     if (!body.document || !body.document.id) return res.status(400).json({ error: "Missing document id" })
     const error = validateDoc(body.document)
     if (error) return res.status(400).json({ error })
@@ -68,7 +83,8 @@ export default async function handler(req, res) {
     const docs = await readCollection(PREFIX)
     const idx = docs.findIndex((d) => d.id === body.document.id)
     if (idx === -1) return res.status(404).json({ error: "Document not found" })
-    docs[idx] = { id: body.document.id, ...sanitize(body.document) }
+    const kept = Number.isFinite(docs[idx].order) ? { order: docs[idx].order } : {}
+    docs[idx] = { id: body.document.id, ...kept, ...sanitize(body.document) }
     sortDocs(docs)
     await writeCollection(PREFIX, docs)
     return res.status(200).json({ documents: docs })
