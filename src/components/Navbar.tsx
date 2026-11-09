@@ -101,15 +101,15 @@ export default function Navbar() {
           ))}
           <MoreMenu />
           <span className="mx-2 h-5 w-px bg-yefa-rule" />
-          <NavLink to={account.to} className={({ isActive }) => linkClass(isActive)}>
-            {account.label}
-          </NavLink>
           <Link
             to="/contact"
-            className="ml-1 shrink-0 whitespace-nowrap rounded-md bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-yefa-blue-dark"
+            className="mr-1 shrink-0 whitespace-nowrap rounded-md bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-yefa-blue-dark"
           >
             Join
           </Link>
+          <NavLink to={account.to} className={({ isActive }) => linkClass(isActive)}>
+            {account.label}
+          </NavLink>
         </nav>
 
         <button
