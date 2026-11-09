@@ -155,6 +155,17 @@ export default function DocumentManager({ section, label }: { section: DocSectio
 
   // Drag-to-order: move the dragged item to where it's dropped, then save.
   const [dragId, setDragId] = useState<string | null>(null)
+  // While dragging, scroll the page when the pointer nears the top or bottom.
+  useEffect(() => {
+    if (!dragId) return
+    function onDragOver(e: DragEvent) {
+      const edge = 90
+      if (e.clientY < edge) window.scrollBy(0, -Math.ceil((edge - e.clientY) / 4))
+      else if (e.clientY > window.innerHeight - edge) window.scrollBy(0, Math.ceil((e.clientY - (window.innerHeight - edge)) / 4))
+    }
+    window.addEventListener("dragover", onDragOver)
+    return () => window.removeEventListener("dragover", onDragOver)
+  }, [dragId])
   async function handleDrop(targetId: string) {
     if (!dragId || dragId === targetId) return setDragId(null)
     const next = [...docs]
@@ -370,7 +381,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 onDragEnd={() => setDragId(null)}
                 className={`flex cursor-grab flex-col gap-3 rounded-xl border bg-white p-4 active:cursor-grabbing sm:flex-row sm:items-center sm:justify-between ${
                   d.pinned ? "border-yefa-orange/40" : "border-slate-200"
-                } ${dragId === d.id ? "opacity-40" : ""}`}
+                } ${dragId === d.id ? "ring-2 ring-yefa-blue" : ""}`}
               >
                 <div className="flex items-center gap-3">
                   <span aria-hidden="true" className="select-none text-lg leading-none text-slate-400">⠿</span>
