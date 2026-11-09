@@ -27,7 +27,7 @@ export default function Footer() {
     <footer className="bg-yefa-navy text-slate-300">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
         <div>
-          <p className="font-display text-2xl font-extrabold text-white [font-stretch:125%]">AHS YEFA</p>
+          <p className="font-display text-2xl font-extrabold text-white [font-stretch:125%]">AHS YEFA X YEI</p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-slate-400">
             Youth Economics &amp; Finance Association at Alpharetta High School.
           </p>

@@ -108,6 +108,7 @@ function Dashboard() {
             title="Points Form"
             description="The form members use to log points."
           />
+          <LinkCard href={SITE.econBowlForm} title="Econ Bowl Sign-Up" description="The form members use to sign up for the Econ Bowl." />
           <DocumentListView
             section="forms"
             emptyTitle="No other forms right now."

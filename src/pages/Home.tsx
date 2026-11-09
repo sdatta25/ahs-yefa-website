@@ -77,12 +77,12 @@ export default function Home() {
             className="max-w-md"
           >
             <h1 className="display-wide text-[4.5rem] text-yefa-navy sm:text-[6rem] lg:text-[7.25rem]">
-              AHS
+              AHS YEFA
               <br />
-              YEFA
+              X YEI
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-yefa-ink">
-              The Youth Economics &amp; Finance Association at Alpharetta High School. Members learn how
+              The Youth Economics &amp; Finance Association at Alpharetta High School, officially partnered with the Youth Economics Initiative. Members learn how
               markets work and compete in national economics, finance and investing competitions.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">

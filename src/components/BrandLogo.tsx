@@ -9,6 +9,8 @@ export default function BrandLogo({ size = "sm" }: { size?: "sm" | "lg" }) {
     <div className={`inline-flex items-center ${s.gap}`}>
       <img src="/images/ahs-crest.png" alt="Alpharetta High School" className={`${s.crest} w-auto`} />
       <img src="/images/yefa-wordmark.png" alt="YEFA" className={`${s.word} w-auto`} />
+      <span className="text-sm font-semibold text-yefa-ink" aria-label="and">X</span>
+      <img src="/images/partner-yei.png" alt="Youth Economics Initiative" className={`${s.crest} w-auto`} />
     </div>
   )
 }

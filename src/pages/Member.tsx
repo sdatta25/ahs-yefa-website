@@ -51,6 +51,11 @@ function FormsTab() {
         description="Log a meeting, competition, or event you took part in."
       />
       <LinkCard
+        href={SITE.econBowlForm}
+        title="Econ Bowl Sign-Up"
+        description="Sign up to compete in the Econ Bowl."
+      />
+      <LinkCard
         href={SITE.memberSignupForm}
         title="Membership Sign-Up"
         description="Share this with a friend who wants to join YEFA."
