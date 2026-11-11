@@ -30,6 +30,11 @@ export default function Layout() {
   const navigate = useNavigate()
   const reduceMotion = useReducedMotion()
 
+  // Every page opens at the top, not where the last page was scrolled to.
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" })
+  }, [pathname])
+
   // Coming back from Google (or an email link) onto the homepage: once the
   // sign-in finishes, go to the member dashboard.
   useEffect(() => {
