@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react"
 import type { FormEvent, ReactNode } from "react"
 import { clearToken, hasToken, login } from "../../lib/api"
+import { Link } from "react-router-dom"
 import PasswordInput from "../PasswordInput"
+import AuthLayout from "../auth/AuthLayout"
 import { OFFICER_LOGOUT_EVENT, takeIdleNotice } from "../../lib/idleTimeout"
 
 export default function AuthGate({
   children,
+  header,
   onLogout,
 }: {
   children: (logout: () => void) => ReactNode
+  header?: ReactNode // shown above the content once signed in
   onLogout?: () => void
 }) {
   const [unlocked, setUnlocked] = useState(hasToken())
@@ -53,48 +57,63 @@ export default function AuthGate({
 
   if (!unlocked) {
     return (
-      <div className="px-5 py-12">
-      <div className="mx-auto max-w-sm rounded-md border border-yefa-rule bg-white p-7">
-        <h2 className="text-base font-semibold text-yefa-navy">Officer Sign In</h2>
-        <p className="mt-1 text-sm text-yefa-ink">Use the officer team's username and password.</p>
+      <AuthLayout>
         {idleNotice && (
-          <p className="mt-3 rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
-            You were signed out after 30 minutes of inactivity.
-          </p>
+          <p className="auth-alert mb-5 bg-amber-50 text-amber-900">You were signed out after 30 minutes of inactivity.</p>
         )}
-        <form onSubmit={handleSubmit} className="mt-4 space-y-3">
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            autoComplete="username"
-            autoCapitalize="none"
-            autoFocus
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
-            required
-          />
-          <PasswordInput
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            autoComplete="current-password"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
-            required
-          />
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <button
-            type="submit"
-            disabled={loggingIn}
-            className="w-full rounded-md bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
-          >
-            {loggingIn ? "Signing in…" : "Sign In"}
-          </button>
-        </form>
-      </div>
-      </div>
+        <div className="auth-card">
+          <h1 className="text-3xl font-bold sm:text-4xl">Officer sign in</h1>
+          <p className="mt-3 text-lg leading-relaxed text-yefa-ink">Use the officer team's username and password.</p>
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <div>
+              <label htmlFor="officer-username" className="auth-label">Username</label>
+              <input
+                id="officer-username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+                autoCapitalize="none"
+                className="auth-field"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="officer-password" className="auth-label">Password</label>
+              <PasswordInput
+                id="officer-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                className="auth-field"
+                required
+              />
+            </div>
+            {error && (
+              <p role="alert" className="auth-alert bg-red-50 text-red-700">
+                {error}
+              </p>
+            )}
+            <button type="submit" disabled={loggingIn} className="btn btn-primary">
+              {loggingIn && <span className="spinner" aria-hidden="true" />}
+              {loggingIn ? "Signing in…" : "Sign in"}
+            </button>
+          </form>
+        </div>
+        <p className="mt-7 text-center text-base text-yefa-ink">
+          Member?{" "}
+          <Link to="/login" className="font-semibold text-yefa-blue underline-offset-4 hover:underline">
+            Sign in to the Member Portal
+          </Link>
+        </p>
+      </AuthLayout>
     )
   }
 
-  return <>{children(handleLogout)}</>
+  return (
+    <>
+      {header}
+      {children(handleLogout)}
+    </>
+  )
 }

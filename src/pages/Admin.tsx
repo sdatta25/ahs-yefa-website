@@ -8,10 +8,26 @@ const GROUPS: PortalGroup[] = [
   {
     heading: "Website content",
     items: [
-      { key: "events", label: "Calendar", description: "Add, edit and delete meetings and competition deadlines. Times are Eastern." },
-      { key: "forms", label: "Forms", description: "Sign-up forms shown on the Forms page. Drag to reorder." },
-      { key: "resources", label: "Resources", description: "Guides and links shown on the Resources page. Drag to reorder." },
-      { key: "social", label: "Social Media", description: "Instagram post previews. Drag to reorder." },
+      {
+        key: "events",
+        label: "Calendar",
+        description: "Add, edit and delete meetings and competition deadlines. Times are Eastern.",
+      },
+      {
+        key: "forms",
+        label: "Forms",
+        description: "Sign-up forms shown on the Forms page. Drag to reorder.",
+      },
+      {
+        key: "resources",
+        label: "Resources",
+        description: "Guides and links shown on the Resources page. Drag to reorder.",
+      },
+      {
+        key: "social",
+        label: "Social Media",
+        description: "Instagram post previews. Drag to reorder.",
+      },
     ],
   },
 ]
@@ -22,12 +38,7 @@ export default function Admin() {
 
   return (
     <div>
-      <PageHeader
-        title="Admin"
-        subtitle="Edit the public website. Changes go live right away."
-      />
-
-      <AuthGate>
+      <AuthGate header={<PageHeader title="Admin" subtitle="Edit the public website. Changes go live right away." />}>
         {(logout) => (
           <PortalShell
             groups={GROUPS}

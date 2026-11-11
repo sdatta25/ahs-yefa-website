@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+import { motion, useReducedMotion } from "framer-motion"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { supabase } from "../lib/supabase"
 import Navbar from "./Navbar"
@@ -27,6 +28,7 @@ export default function Layout() {
   useIdleSignOut()
   const { pathname } = useLocation()
   const navigate = useNavigate()
+  const reduceMotion = useReducedMotion()
 
   // Coming back from Google (or an email link) onto the homepage: once the
   // sign-in finishes, go to the member dashboard.
@@ -44,7 +46,14 @@ export default function Layout() {
       <Navbar />
       <main className="flex-1">
         <ErrorBoundary resetKey={pathname} fallback={<PageCrashed />}>
-          <Outlet />
+          <motion.div
+            key={pathname}
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.28, ease: "easeOut" }}
+          >
+            <Outlet />
+          </motion.div>
         </ErrorBoundary>
       </main>
       <Footer />

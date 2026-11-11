@@ -18,23 +18,57 @@ const NAME_KEY = "yefa_officer_name"
 const GROUPS: PortalGroup[] = [
   {
     heading: "Dashboard",
-    items: [{ key: "overview", label: "Overview", description: "What's coming up and the officer tools." }],
+    items: [
+      {
+        key: "overview",
+        label: "Overview",
+        description: "What's coming up and the officer tools.",
+      },
+    ],
   },
   {
     heading: "Team",
     items: [
-      { key: "points", label: "Points", description: "Read-only preview of the Points Form responses. Edit points in Google Sheets." },
-      { key: "members", label: "Members", description: "Read-only preview of the membership sign-up responses." },
+      {
+        key: "points",
+        label: "Points",
+        description: "Read-only preview of the Points Form responses. Edit points in Google Sheets.",
+      },
+      {
+        key: "members",
+        label: "Members",
+        description: "Read-only preview of the membership sign-up responses.",
+      },
     ],
   },
   {
     heading: "Club",
     items: [
-      { key: "calendar", label: "Calendar", description: "Meetings and competition deadlines. All times Eastern." },
-      { key: "forms", label: "Forms", description: "The forms members fill out." },
-      { key: "resources", label: "Resources", description: "What members see under Resources." },
-      { key: "competitions", label: "Competitions", description: "Every competition YEFA is tracking this year." },
-      { key: "social", label: "Social Media", description: "The latest posts from YEFA's Instagram." },
+      {
+        key: "calendar",
+        label: "Calendar",
+        description: "Meetings and competition deadlines. All times Eastern.",
+      },
+      {
+        key: "forms",
+        label: "Forms",
+        description: "The forms members fill out.",
+      },
+      {
+        key: "resources",
+        label: "Resources",
+        description: "What members see under Resources.",
+      },
+      {
+        key: "competitions",
+        label: "Competitions",
+        description: "Every competition YEFA is tracking this year.",
+      },
+      {
+        key: "social",
+        label: "Social Media",
+        description: "The latest posts from YEFA's Instagram.",
+      },
     ],
   },
 ]
@@ -95,8 +129,12 @@ function Overview({ go }: { go: (key: string) => void }) {
             className="group block rounded-md border border-yefa-rule bg-white p-5 transition-colors hover:border-yefa-blue/50"
           >
             <span className="block text-lg font-semibold text-yefa-navy">Edit the website</span>
-            <span className="mt-1 block text-sm text-yefa-ink">Add meetings, forms, resources and social posts in Admin.</span>
-            <span className="mt-3 inline-block text-sm font-semibold text-yefa-blue group-hover:underline">Open Admin</span>
+            <span className="mt-1 block text-sm text-yefa-ink">
+              Add meetings, forms, resources and social posts in Admin.
+            </span>
+            <span className="mt-3 inline-block text-sm font-semibold text-yefa-blue group-hover:underline">
+              Open Admin
+            </span>
           </Link>
         </div>
       </div>
@@ -174,23 +212,26 @@ export default function OfficerPortal() {
 
   return (
     <div>
-      <PageHeader
-        title={officer ? `Welcome, ${officer.name}` : "Officer Portal"}
-        subtitle={
-          officer ? (
-            <>
-              {officer.position}.{" "}
-              <button onClick={forget} className="font-semibold text-yefa-blue hover:underline">
-                Not you?
-              </button>
-            </>
-          ) : (
-            "Points, members and everything else officers need in one place."
-          )
+      <AuthGate
+        onLogout={forget}
+        header={
+          <PageHeader
+            title={officer ? `Welcome, ${officer.name}` : "Officer Portal"}
+            subtitle={
+              officer ? (
+                <>
+                  {officer.position}.{" "}
+                  <button onClick={forget} className="font-semibold text-yefa-blue hover:underline">
+                    Not you?
+                  </button>
+                </>
+              ) : (
+                "Points, members and everything else officers need in one place."
+              )
+            }
+          />
         }
-      />
-
-      <AuthGate onLogout={forget}>
+      >
         {(logout) =>
           officer ? (
             <Dashboard logout={logout} />
