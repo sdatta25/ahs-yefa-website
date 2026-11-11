@@ -38,7 +38,7 @@ export default function Admin() {
 
   return (
     <div>
-      <AuthGate header={<PageHeader title="Admin" subtitle="Edit the public website. Changes go live right away." />}>
+      <AuthGate header={<PageHeader tone="dark" title="Admin" subtitle="Edit the public website. Changes go live right away." />}>
         {(logout) => (
           <PortalShell
             groups={GROUPS}

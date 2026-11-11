@@ -1,11 +1,11 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { Canvas } from "@react-three/fiber"
-import AuthScene from "./AuthScene"
+import OrbitScene from "./OrbitScene"
 import { supportsWebGL, usePrefersReducedMotion } from "../../lib/motion"
 
-// Canvas for the sign-in visual. Without WebGL (or if the GPU drops the
+// Canvas for the homepage orbit. Without WebGL (or if the GPU drops the
 // canvas) the panel's gradient simply shows on its own.
-export default function AuthVisual() {
+export default function OrbitVisual() {
   const reduced = usePrefersReducedMotion()
   const supported = useMemo(() => supportsWebGL(), [])
   const [lost, setLost] = useState(false)
@@ -44,7 +44,7 @@ export default function AuthVisual() {
               gl.domElement.addEventListener("webglcontextlost", () => setLost(true), { once: true })
             }}
           >
-            <AuthScene reduced={reduced} pointer={pointer} />
+            <OrbitScene reduced={reduced} pointer={pointer} />
           </Canvas>
         </Suspense>
       )}

@@ -7,7 +7,7 @@ import { COMPETITIONS } from "../data/competitions"
 import { OFFICERS } from "../data/officers"
 import UpcomingList from "../components/views/UpcomingList"
 
-const HeroObjects = lazy(() => import("../components/hero/HeroObjects"))
+const OrbitVisual = lazy(() => import("../components/hero/OrbitVisual"))
 
 const DOES = [
   {
@@ -29,12 +29,15 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero: 3D finance objects float in on the right, text holds the left. */}
-      <section className="relative isolate overflow-hidden border-b border-yefa-rule">
-        <div className="relative h-[40vh] min-h-[280px] lg:absolute lg:inset-y-0 lg:left-[38%] lg:right-0 lg:h-auto">
+      {/* Hero: the 3D orbit on a deep navy stage, headline on the left. */}
+      <section
+        className="relative isolate overflow-hidden text-white"
+        style={{ background: "radial-gradient(60% 50% at 78% 88%, rgba(226,134,28,0.22), transparent 70%), radial-gradient(120% 90% at 28% 18%, #1c3486 0%, #0f1b3d 46%, #070d22 100%)" }}
+      >
+        <div className="relative h-[40vh] min-h-[280px] lg:absolute lg:inset-y-0 lg:left-[40%] lg:right-0 lg:h-auto">
           <ErrorBoundary>
             <Suspense fallback={null}>
-              <HeroObjects />
+              <OrbitVisual />
             </Suspense>
           </ErrorBoundary>
         </div>
@@ -46,25 +49,25 @@ export default function Home() {
             transition={{ duration: 0.7, delay: 0.5, ease: "easeOut" }}
             className="max-w-md"
           >
-            <h1 className="display-wide text-[4.5rem] text-yefa-navy sm:text-[6rem] lg:text-[7.25rem]">
+            <h1 className="display-wide text-[4rem] text-white sm:text-[6rem] lg:text-[7.25rem]">
               AHS YEFA
               <br />
               X YEI
             </h1>
-            <p className="mt-6 text-lg leading-relaxed text-yefa-ink">
+            <p className="mt-6 text-lg leading-relaxed text-slate-300">
               The Youth Economics &amp; Finance Association at Alpharetta High School, officially partnered with the Youth Economics Initiative. Members learn how
               markets work and compete in national economics, finance and investing competitions.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/contact"
-                className="rounded-md bg-yefa-blue px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-yefa-blue-dark"
+                className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-yefa-navy transition-colors hover:bg-yefa-blue-50"
               >
                 Join YEFA
               </Link>
               <Link
                 to="/calendar"
-                className="rounded-md px-6 py-3 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-yefa-navy/20 transition-colors hover:bg-white"
+                className="rounded-md px-6 py-3 text-sm font-semibold text-white ring-1 ring-inset ring-white/30 transition-colors hover:bg-white/10"
               >
                 See the calendar
               </Link>

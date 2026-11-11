@@ -74,7 +74,7 @@ function Globe({ clock }: { clock: MutableRefObject<number> }) {
   )
 }
 
-export default function AuthScene({
+export default function OrbitScene({
   reduced,
   pointer,
 }: {

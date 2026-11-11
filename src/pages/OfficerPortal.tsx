@@ -216,6 +216,7 @@ export default function OfficerPortal() {
         onLogout={forget}
         header={
           <PageHeader
+            tone="dark"
             title={officer ? `Welcome, ${officer.name}` : "Officer Portal"}
             subtitle={
               officer ? (

@@ -93,7 +93,7 @@ export default function Member() {
 
   return (
     <div>
-      <PageHeader title={name ? `Welcome, ${name}` : "Member Portal"} subtitle={`Signed in as ${email}`} />
+      <PageHeader tone="dark" title={name ? `Welcome, ${name}` : "Member Portal"} subtitle={`Signed in as ${email}`} />
 
       <PortalShell
         groups={GROUPS}
