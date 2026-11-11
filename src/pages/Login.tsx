@@ -12,7 +12,7 @@ type PasswordMode = "signin" | "signup"
 
 const MIN_PASSWORD = 8
 const fieldClass =
-  "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+  "w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
 
 export default function Login() {
   const location = useLocation()
@@ -134,18 +134,18 @@ export default function Login() {
 
       <section className="mx-auto max-w-sm px-5 py-16">
         {idleNotice && (
-          <p className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-center text-sm text-amber-800">
+          <p className="mb-4 rounded-md bg-amber-50 px-3 py-2 text-center text-sm text-amber-800">
             You were signed out after 30 minutes of inactivity.
           </p>
         )}
-        <div className="rounded-2xl border border-slate-200 bg-white p-7">
+        <div className="rounded-md border border-yefa-rule bg-white p-7">
           {step === "email" ? (
             <>
               <button
                 type="button"
                 onClick={handleGoogle}
                 disabled={googleLoading}
-                className="flex w-full items-center justify-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 disabled:opacity-60"
+                className="flex w-full items-center justify-center gap-3 rounded-md px-4 py-2.5 text-sm font-semibold text-yefa-navy ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 disabled:opacity-60"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="h-4 w-4">
                   <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z" />
@@ -233,7 +233,7 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={sending}
-                    className="w-full rounded-lg bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
+                    className="w-full rounded-md bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
                   >
                     {sending ? "One moment…" : mode === "signin" ? "Sign in" : "Create account"}
                   </button>
@@ -275,7 +275,7 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={sending}
-                    className="w-full rounded-lg bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
+                    className="w-full rounded-md bg-yefa-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
                   >
                     {sending ? "Sending…" : "Email me a sign-in link"}
                   </button>

@@ -17,7 +17,7 @@ export default function SocialFeedView() {
 
   if (posts.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+      <div className="rounded-md border border-dashed border-slate-300 bg-white p-12 text-center">
         <h2 className="text-lg font-semibold text-yefa-navy">No recent posts yet.</h2>
         <p className="mt-2 text-sm text-yefa-ink">
           Follow us on Instagram{" "}
@@ -38,7 +38,7 @@ export default function SocialFeedView() {
           return (
             <div
               key={p.id}
-              className="overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
+              className="overflow-hidden rounded-md border border-yefa-rule bg-white transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]"
             >
               <div className="relative">
                 {p.pinned && (

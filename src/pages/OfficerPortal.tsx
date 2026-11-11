@@ -2,6 +2,8 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import AuthGate from "../components/admin/AuthGate"
 import PageHeader from "../components/PageHeader"
+import PortalShell, { PortalCard, usePortalTab, type PortalGroup } from "../components/PortalShell"
+import UpcomingList from "../components/views/UpcomingList"
 import SheetPreview from "../components/admin/SheetPreview"
 import CalendarView from "../components/views/CalendarView"
 import DocumentListView from "../components/views/DocumentListView"
@@ -13,17 +15,29 @@ import { SITE } from "../data/site"
 
 const NAME_KEY = "yefa_officer_name"
 
-const TABS = [
-  { key: "points", label: "Points" },
-  { key: "members", label: "Members" },
-  { key: "calendar", label: "Calendar" },
-  { key: "forms", label: "Forms" },
-  { key: "resources", label: "Resources" },
-  { key: "competitions", label: "Competitions" },
-  { key: "social", label: "Social Media" },
-] as const
-
-type TabKey = (typeof TABS)[number]["key"]
+const GROUPS: PortalGroup[] = [
+  {
+    heading: "Dashboard",
+    items: [{ key: "overview", label: "Overview", description: "What's coming up and the officer tools." }],
+  },
+  {
+    heading: "Team",
+    items: [
+      { key: "points", label: "Points", description: "Read-only preview of the Points Form responses. Edit points in Google Sheets." },
+      { key: "members", label: "Members", description: "Read-only preview of the membership sign-up responses." },
+    ],
+  },
+  {
+    heading: "Club",
+    items: [
+      { key: "calendar", label: "Calendar", description: "Meetings and competition deadlines. All times Eastern." },
+      { key: "forms", label: "Forms", description: "The forms members fill out." },
+      { key: "resources", label: "Resources", description: "What members see under Resources." },
+      { key: "competitions", label: "Competitions", description: "Every competition YEFA is tracking this year." },
+      { key: "social", label: "Social Media", description: "The latest posts from YEFA's Instagram." },
+    ],
+  },
+]
 
 function readStoredOfficer(): Officer | null {
   try {
@@ -45,7 +59,7 @@ function WhoAreYou({ onPick }: { onPick: (o: Officer) => void }) {
           <button
             key={o.name}
             onClick={() => onPick(o)}
-            className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left transition hover:border-yefa-blue/40 hover:shadow-sm"
+            className="flex items-center gap-3 rounded-md border border-yefa-rule bg-white p-3 text-left transition hover:border-yefa-blue/40 hover:shadow-sm"
           >
             {o.photo && <img src={o.photo} alt="" className="h-10 w-10 shrink-0 rounded-full object-cover" />}
             <span>
@@ -59,56 +73,63 @@ function WhoAreYou({ onPick }: { onPick: (o: Officer) => void }) {
   )
 }
 
-function Dashboard() {
-  const [tab, setTab] = useState<TabKey>("points")
+function Overview({ go }: { go: (key: string) => void }) {
+  return (
+    <div className="grid gap-12 xl:grid-cols-2">
+      <div>
+        <div className="mb-5 flex items-baseline justify-between gap-4">
+          <h3 className="text-xl font-bold">Next up</h3>
+          <button onClick={() => go("calendar")} className="text-sm font-semibold text-yefa-blue hover:underline">
+            Full calendar
+          </button>
+        </div>
+        <UpcomingList limit={3} />
+      </div>
+      <div>
+        <h3 className="mb-5 text-xl font-bold">Officer tools</h3>
+        <div className="space-y-3">
+          <PortalCard title="Points" description="See the Points Form responses." onClick={() => go("points")} />
+          <PortalCard title="Members" description="See who has signed up." onClick={() => go("members")} />
+          <Link
+            to="/admin"
+            className="group block rounded-md border border-yefa-rule bg-white p-5 transition-colors hover:border-yefa-blue/50"
+          >
+            <span className="block text-lg font-semibold text-yefa-navy">Edit the website</span>
+            <span className="mt-1 block text-sm text-yefa-ink">Add meetings, forms, resources and social posts in Admin.</span>
+            <span className="mt-3 inline-block text-sm font-semibold text-yefa-blue group-hover:underline">Open Admin</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Dashboard({ logout }: { logout: () => void }) {
+  const { active, select } = usePortalTab(GROUPS)
+  const tab = active.key
 
   return (
-    <div>
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex gap-1 overflow-x-auto rounded-full bg-slate-100 p-1">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${
-                tab === t.key ? "bg-white text-yefa-blue shadow-sm" : "text-yefa-ink hover:text-yefa-blue"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-        <Link
-          to="/admin"
-          className="shrink-0 rounded-lg px-4 py-2 text-sm font-semibold text-yefa-ink ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
-        >
-          Edit website (Admin)
-        </Link>
-      </div>
-
-      {tab === "points" && (
-        <SheetPreview
-          field="pointsSheetUrl"
-          title="Points"
-          description="Read-only preview of the Points Form responses spreadsheet. Edit points in Google Sheets."
-        />
-      )}
-      {tab === "members" && (
-        <SheetPreview
-          field="membersSheetUrl"
-          title="Members"
-          description="Read-only preview of the membership sign-up spreadsheet."
-        />
-      )}
+    <PortalShell
+      groups={GROUPS}
+      active={active}
+      onSelect={select}
+      actions={[
+        { label: "Edit website (Admin)", to: "/admin" },
+        { label: "Log out", onClick: logout },
+      ]}
+    >
+      {tab === "overview" && <Overview go={select} />}
+      {tab === "points" && <SheetPreview field="pointsSheetUrl" title="Points" />}
+      {tab === "members" && <SheetPreview field="membersSheetUrl" title="Members" />}
       {tab === "calendar" && <CalendarView />}
       {tab === "forms" && (
-        <div className="space-y-4">
+        <div className="space-y-3">
+          <LinkCard href={SITE.pointsForm} title="Points Form" description="The form members use to log points." />
           <LinkCard
-            href={SITE.pointsForm}
-            title="Points Form"
-            description="The form members use to log points."
+            href={SITE.econBowlForm}
+            title="Econ Bowl Sign-Up"
+            description="The form members use to sign up for the Econ Bowl."
           />
-          <LinkCard href={SITE.econBowlForm} title="Econ Bowl Sign-Up" description="The form members use to sign up for the Econ Bowl." />
           <DocumentListView
             section="forms"
             emptyTitle="No other forms right now."
@@ -126,7 +147,7 @@ function Dashboard() {
       )}
       {tab === "competitions" && <CompetitionsView />}
       {tab === "social" && <SocialFeedView />}
-    </div>
+    </PortalShell>
   )
 }
 
@@ -169,9 +190,17 @@ export default function OfficerPortal() {
         }
       />
 
-      <section className="mx-auto max-w-5xl px-5 py-12">
-        <AuthGate onLogout={forget}>{officer ? <Dashboard /> : <WhoAreYou onPick={pick} />}</AuthGate>
-      </section>
+      <AuthGate onLogout={forget}>
+        {(logout) =>
+          officer ? (
+            <Dashboard logout={logout} />
+          ) : (
+            <div className="px-5 py-12">
+              <WhoAreYou onPick={pick} />
+            </div>
+          )
+        }
+      </AuthGate>
     </div>
   )
 }

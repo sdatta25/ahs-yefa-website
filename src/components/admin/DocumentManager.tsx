@@ -196,7 +196,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
 
   return (
     <div className="space-y-8">
-      <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-white p-6">
+      <form onSubmit={handleSubmit} className="rounded-md border border-yefa-rule bg-white p-6">
         <h3 className="font-semibold text-yefa-navy">{editingId ? `Edit ${label}` : `Add to ${label}`}</h3>
 
         {isSocial ? (
@@ -210,13 +210,13 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                   onChange={(e) => setDraft({ ...draft, url: e.target.value })}
                   onBlur={handleFetchPreview}
                   placeholder="https://www.instagram.com/p/…"
-                  className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
                 />
                 <button
                   type="button"
                   onClick={handleFetchPreview}
                   disabled={fetchingPreview || !draft.url.trim()}
-                  className="shrink-0 rounded-lg bg-yefa-blue-50 px-4 text-sm font-semibold text-yefa-blue transition hover:bg-yefa-blue/10 disabled:opacity-60"
+                  className="shrink-0 rounded-md bg-yefa-blue-50 px-4 text-sm font-semibold text-yefa-blue transition hover:bg-yefa-blue/10 disabled:opacity-60"
                 >
                   {fetchingPreview ? "Fetching…" : "Fetch preview"}
                 </button>
@@ -231,11 +231,11 @@ export default function DocumentManager({ section, label }: { section: DocSectio
             )}
 
             {(draft.image || draft.title) && (
-              <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <div className="flex items-center gap-3 rounded-md border border-yefa-rule bg-slate-50 p-3">
                 {draft.image ? (
-                  <img src={draft.image} alt="" className="h-16 w-16 shrink-0 rounded-lg object-cover" />
+                  <img src={draft.image} alt="" className="h-16 w-16 shrink-0 rounded-md object-cover" />
                 ) : (
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-slate-200 text-xs text-slate-500">
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-slate-200 text-xs text-slate-500">
                     No image
                   </div>
                 )}
@@ -252,11 +252,11 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 type="text"
                 value={draft.title}
                 onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
               />
             </label>
 
-            <details className="rounded-lg border border-slate-200 p-3">
+            <details className="rounded-md border border-yefa-rule p-3">
               <summary className="cursor-pointer text-sm font-medium text-yefa-ink">
                 Advanced: upload your own image(s) instead
               </summary>
@@ -267,7 +267,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                   type="file"
                   accept="image/*"
                   multiple
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-yefa-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-yefa-blue"
+                  className="mt-1 w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-yefa-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-yefa-blue"
                 />
                 {draft.images.length > 0 && (
                   <span className="mt-1 block text-xs text-slate-500">
@@ -284,7 +284,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                   onChange={(e) => setDraft({ ...draft, captionsText: e.target.value })}
                   rows={4}
                   placeholder={"President — Jane Doe\nVP of Operations — John Smith\n…"}
-                  className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+                  className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
                 />
                 <span className="mt-1 block text-xs text-slate-500">
                   Shown under each photo as you page through it — handy for officer team posts (e.g. "President —
@@ -301,7 +301,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 type="text"
                 value={draft.title}
                 onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
                 required
               />
             </label>
@@ -312,7 +312,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 type="text"
                 value={draft.description}
                 onChange={(e) => setDraft({ ...draft, description: e.target.value })}
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
               />
             </label>
 
@@ -323,7 +323,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 value={draft.url}
                 onChange={(e) => setDraft({ ...draft, url: e.target.value })}
                 placeholder="https://…"
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
               />
             </label>
 
@@ -332,7 +332,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
               <input
                 ref={fileRef}
                 type="file"
-                className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-yefa-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-yefa-blue"
+                className="mt-1 w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-yefa-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-yefa-blue"
               />
             </label>
           </div>
@@ -352,7 +352,7 @@ export default function DocumentManager({ section, label }: { section: DocSectio
             <button
               type="button"
               onClick={resetForm}
-              className="rounded-full px-5 py-2.5 text-sm font-semibold text-yefa-ink ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
+              className="rounded-md px-5 py-2.5 text-sm font-semibold text-yefa-ink ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
             >
               Cancel
             </button>
@@ -379,14 +379,14 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={() => handleDrop(d.id)}
                 onDragEnd={() => setDragId(null)}
-                className={`flex cursor-grab flex-col gap-3 rounded-xl border bg-white p-4 active:cursor-grabbing sm:flex-row sm:items-center sm:justify-between ${
-                  d.pinned ? "border-yefa-orange/40" : "border-slate-200"
+                className={`flex cursor-grab flex-col gap-3 rounded-md border bg-white p-4 active:cursor-grabbing sm:flex-row sm:items-center sm:justify-between ${
+                  d.pinned ? "border-yefa-orange/40" : "border-yefa-rule"
                 } ${dragId === d.id ? "ring-2 ring-yefa-blue" : ""}`}
               >
                 <div className="flex items-center gap-3">
                   <span aria-hidden="true" className="select-none text-lg leading-none text-slate-400">⠿</span>
                   {d.image && (
-                    <img src={d.image} alt="" className="h-12 w-12 shrink-0 rounded-lg object-cover" />
+                    <img src={d.image} alt="" className="h-12 w-12 shrink-0 rounded-md object-cover" />
                   )}
                   <div>
                     <div className="flex items-center gap-2">
@@ -406,20 +406,20 @@ export default function DocumentManager({ section, label }: { section: DocSectio
                 <div className="flex shrink-0 gap-2">
                   <button
                     onClick={() => handleTogglePin(d)}
-                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-yefa-orange-ink ring-1 ring-inset ring-yefa-orange/30 transition hover:bg-yefa-orange/10"
+                    className="rounded-md px-3 py-1.5 text-sm font-semibold text-yefa-orange-ink ring-1 ring-inset ring-yefa-orange/30 transition hover:bg-yefa-orange/10"
                   >
                     {d.pinned ? "Unpin" : "Pin"}
                   </button>
                   <button
                     onClick={() => startEdit(d)}
-                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-yefa-blue ring-1 ring-inset ring-yefa-blue/30 transition hover:bg-yefa-blue-50"
+                    className="rounded-md px-3 py-1.5 text-sm font-semibold text-yefa-blue ring-1 ring-inset ring-yefa-blue/30 transition hover:bg-yefa-blue-50"
                   >
                     Edit
                   </button>
                   {!d.pinned && (
                     <button
                       onClick={() => handleDelete(d.id)}
-                      className="rounded-full px-3 py-1.5 text-sm font-semibold text-red-600 ring-1 ring-inset ring-red-200 transition hover:bg-red-50"
+                      className="rounded-md px-3 py-1.5 text-sm font-semibold text-red-600 ring-1 ring-inset ring-red-200 transition hover:bg-red-50"
                     >
                       Delete
                     </button>

@@ -51,7 +51,7 @@ export default function CalendarView() {
   return (
     <>
       {error && (
-        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <div className="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
         </div>
       )}
@@ -62,7 +62,7 @@ export default function CalendarView() {
         <div ref={calendarRef} className="grid scroll-mt-20 gap-8 lg:grid-cols-[1fr_1fr]">
           <EventCalendar events={events} selected={selected} onSelect={setSelected} />
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6">
+          <div className="rounded-md border border-yefa-rule bg-white p-6">
             <h3 className="text-base font-semibold text-yefa-navy">{formatDateLabel(selected)}</h3>
 
             {selectedEvents.length === 0 ? (
@@ -72,8 +72,8 @@ export default function CalendarView() {
                 {selectedEvents.map((e) => (
                   <li
                     key={e.id}
-                    className={`rounded-xl border p-4 transition-colors ${
-                      e.id === highlightId ? "border-yefa-blue bg-yefa-blue-50" : "border-slate-200"
+                    className={`rounded-md border p-4 transition-colors ${
+                      e.id === highlightId ? "border-yefa-blue bg-yefa-blue-50" : "border-yefa-rule"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -103,7 +103,7 @@ export default function CalendarView() {
                 key={e.id}
                 type="button"
                 onClick={() => jumpToEvent(e)}
-                className="flex w-full flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-5 text-left transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)] sm:flex-row sm:items-center sm:justify-between"
+                className="flex w-full flex-col gap-2 rounded-md border border-yefa-rule bg-white p-5 text-left transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)] sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="flex items-center gap-3">
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${TYPE_STYLES[e.type]}`}>

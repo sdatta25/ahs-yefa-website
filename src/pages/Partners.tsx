@@ -8,14 +8,14 @@ export default function Partners() {
 
       <section className="mx-auto max-w-5xl px-5 py-20">
         {PARTNERS.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center">
+          <div className="rounded-md border border-dashed border-slate-300 bg-white p-12 text-center">
             <h2 className="text-lg font-semibold text-yefa-navy">No partners listed yet.</h2>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {PARTNERS.map((p) => {
               const Card = (
-                <div className="flex h-full flex-col items-center justify-center gap-4 rounded-2xl border border-slate-200 bg-white p-8 text-center transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]">
+                <div className="flex h-full flex-col items-center justify-center gap-4 rounded-md border border-yefa-rule bg-white p-8 text-center transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)]">
                   {p.logo ? (
                     <img src={p.logo} alt={p.name} className="h-16 w-auto object-contain" />
                   ) : (

@@ -1,50 +1,50 @@
-import { useState } from "react"
 import AuthGate from "../components/admin/AuthGate"
 import PageHeader from "../components/PageHeader"
+import PortalShell, { usePortalTab, type PortalGroup } from "../components/PortalShell"
 import EventManager from "../components/admin/EventManager"
 import DocumentManager from "../components/admin/DocumentManager"
 
-const TABS = [
-  { key: "events", label: "Calendar" },
-  { key: "forms", label: "Forms" },
-  { key: "resources", label: "Resources" },
-  { key: "social", label: "Social Media" },
-] as const
-
-type TabKey = (typeof TABS)[number]["key"]
+const GROUPS: PortalGroup[] = [
+  {
+    heading: "Website content",
+    items: [
+      { key: "events", label: "Calendar", description: "Add, edit and delete meetings and competition deadlines. Times are Eastern." },
+      { key: "forms", label: "Forms", description: "Sign-up forms shown on the Forms page. Drag to reorder." },
+      { key: "resources", label: "Resources", description: "Guides and links shown on the Resources page. Drag to reorder." },
+      { key: "social", label: "Social Media", description: "Instagram post previews. Drag to reorder." },
+    ],
+  },
+]
 
 export default function Admin() {
-  const [tab, setTab] = useState<TabKey>("events")
+  const { active, select } = usePortalTab(GROUPS)
+  const tab = active.key
 
   return (
     <div>
       <PageHeader
         title="Admin"
-        subtitle="Edit the public website: the calendar, sign-up forms, resources and social posts. Changes go live right away."
+        subtitle="Edit the public website. Changes go live right away."
       />
 
-      <section className="mx-auto max-w-5xl px-5 py-12">
-        <AuthGate>
-          <div className="mb-8 flex gap-1 overflow-x-auto rounded-full bg-slate-100 p-1">
-            {TABS.map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
-                className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${
-                  tab === t.key ? "bg-white text-yefa-blue shadow-sm" : "text-yefa-ink hover:text-yefa-blue"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          {tab === "events" && <EventManager />}
-          {tab === "forms" && <DocumentManager section="forms" label="Forms" />}
-          {tab === "resources" && <DocumentManager section="resources" label="Resources" />}
-          {tab === "social" && <DocumentManager section="social" label="Social Media" />}
-        </AuthGate>
-      </section>
+      <AuthGate>
+        {(logout) => (
+          <PortalShell
+            groups={GROUPS}
+            active={active}
+            onSelect={select}
+            actions={[
+              { label: "Officer Portal", to: "/officer" },
+              { label: "Log out", onClick: logout },
+            ]}
+          >
+            {tab === "events" && <EventManager />}
+            {tab === "forms" && <DocumentManager section="forms" label="Forms" />}
+            {tab === "resources" && <DocumentManager section="resources" label="Resources" />}
+            {tab === "social" && <DocumentManager section="social" label="Social Media" />}
+          </PortalShell>
+        )}
+      </AuthGate>
     </div>
   )
 }

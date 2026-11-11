@@ -1,42 +1,13 @@
-import { lazy, Suspense, useEffect, useState } from "react"
+import { lazy, Suspense } from "react"
 import { Link } from "react-router-dom"
 import { motion, useReducedMotion } from "framer-motion"
 import { SITE } from "../data/site"
 import ErrorBoundary from "../components/ErrorBoundary"
 import { COMPETITIONS } from "../data/competitions"
 import { OFFICERS } from "../data/officers"
-import { fetchEvents, type EventItem } from "../lib/api"
-import { formatTime12h, todayISO } from "../lib/date"
+import UpcomingList from "../components/views/UpcomingList"
 
 const HeroObjects = lazy(() => import("../components/hero/HeroObjects"))
-
-function dateParts(iso: string) {
-  const [y, m, d] = iso.split("-").map(Number)
-  const date = new Date(y, m - 1, d)
-  return {
-    month: date.toLocaleDateString("en-US", { month: "short" }),
-    day: d,
-    weekday: date.toLocaleDateString("en-US", { weekday: "long" }),
-  }
-}
-
-function useUpcoming(limit: number) {
-  const [events, setEvents] = useState<EventItem[] | null>(null)
-  useEffect(() => {
-    fetchEvents()
-      .then((all) => {
-        const today = todayISO()
-        setEvents(
-          all
-            .filter((e) => e.date >= today)
-            .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
-            .slice(0, limit),
-        )
-      })
-      .catch(() => setEvents([]))
-  }, [limit])
-  return events
-}
 
 const DOES = [
   {
@@ -54,7 +25,6 @@ const DOES = [
 ]
 
 export default function Home() {
-  const upcoming = useUpcoming(3)
   const reduceMotion = useReducedMotion()
 
   return (
@@ -126,44 +96,9 @@ export default function Home() {
                 Full calendar
               </Link>
             </div>
-            {upcoming === null ? (
-              <p className="mt-8 text-yefa-ink">Loading the calendar…</p>
-            ) : upcoming.length === 0 ? (
-              <p className="mt-8 max-w-md leading-relaxed text-yefa-ink">
-                Nothing is scheduled yet. New meetings and competition deadlines go on the calendar as soon as
-                they're set.
-              </p>
-            ) : (
-              <ol className="mt-8 divide-y divide-yefa-rule border-y border-yefa-rule">
-                {upcoming.map((e) => {
-                  const d = dateParts(e.date)
-                  return (
-                    <li key={e.id} className="flex gap-6 py-5">
-                      <div className="w-14 shrink-0 text-center">
-                        <div className="text-xs font-semibold text-yefa-ink">{d.month}</div>
-                        <div className="tabular font-display text-3xl font-extrabold leading-none [font-stretch:125%]">
-                          {d.day}
-                        </div>
-                      </div>
-                      <div>
-                        <p className="font-semibold">
-                          {e.title}
-                          {e.type === "competition" && (
-                            <span className="ml-2 rounded bg-yefa-orange/15 px-1.5 py-0.5 align-middle text-xs font-semibold text-yefa-orange-ink">
-                              Competition
-                            </span>
-                          )}
-                        </p>
-                        <p className="mt-1 text-sm text-yefa-ink">
-                          {d.weekday}, {formatTime12h(e.time)}
-                          {e.location ? `, ${e.location}` : ""}
-                        </p>
-                      </div>
-                    </li>
-                  )
-                })}
-              </ol>
-            )}
+            <div className="mt-8">
+              <UpcomingList limit={3} />
+            </div>
           </div>
 
           <div>

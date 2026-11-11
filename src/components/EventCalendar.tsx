@@ -45,7 +45,7 @@ export default function EventCalendar({
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+    <div className="rounded-md border border-yefa-rule bg-white p-5">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold text-yefa-navy">{formatMonthLabel(cursor.year, cursor.month)}</h3>
         <div className="flex gap-1">
@@ -81,7 +81,7 @@ export default function EventCalendar({
             <button
               key={cell.iso}
               onClick={() => onSelect(cell.iso)}
-              className={`relative flex aspect-square flex-col items-center justify-center rounded-xl text-sm transition ${
+              className={`relative flex aspect-square flex-col items-center justify-center rounded-md text-sm transition ${
                 isSelected
                   ? "bg-yefa-blue text-white font-semibold"
                   : cell.inMonth

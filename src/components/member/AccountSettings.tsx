@@ -9,12 +9,12 @@ import { displayName } from "../../lib/useSession"
 const MIN_PASSWORD = 8
 
 const fieldClass =
-  "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+  "w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
 const inputClass = `mt-1 ${fieldClass}`
 const primaryButton =
-  "rounded-lg bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
+  "rounded-md bg-yefa-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark disabled:opacity-60"
 const secondaryButton =
-  "rounded-lg px-4 py-2 text-sm font-semibold text-yefa-ink ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 disabled:opacity-60"
+  "rounded-md px-4 py-2 text-sm font-semibold text-yefa-ink ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50 disabled:opacity-60"
 
 function errorText(err: unknown, fallback: string) {
   return err instanceof Error ? err.message : fallback
@@ -22,7 +22,7 @@ function errorText(err: unknown, fallback: string) {
 
 function Card({ title, description, children }: { title: string; description?: string; children: ReactNode }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6">
+    <div className="rounded-md border border-yefa-rule bg-white p-6">
       <h2 className="text-lg font-semibold text-yefa-navy">{title}</h2>
       {description && <p className="mt-1 text-sm text-yefa-ink">{description}</p>}
       <div className="mt-4">{children}</div>
@@ -252,7 +252,7 @@ function DeleteCard() {
   return (
     <Card title="Delete account" description="This permanently deletes your member account. It can't be undone.">
       {!open ? (
-        <button onClick={() => setOpen(true)} className="rounded-lg px-4 py-2 text-sm font-semibold text-red-600 ring-1 ring-inset ring-red-200 transition hover:bg-red-50">
+        <button onClick={() => setOpen(true)} className="rounded-md px-4 py-2 text-sm font-semibold text-red-600 ring-1 ring-inset ring-red-200 transition hover:bg-red-50">
           Delete my account
         </button>
       ) : (
@@ -266,7 +266,7 @@ function DeleteCard() {
             <button
               onClick={handleDelete}
               disabled={busy || typed !== "DELETE"}
-              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-50"
+              className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-50"
             >
               {busy ? "Deleting…" : "Delete permanently"}
             </button>

@@ -1,60 +1,80 @@
-import { useState } from "react"
 import PageHeader from "../components/PageHeader"
+import PortalShell, { PortalCard, usePortalTab, type PortalGroup } from "../components/PortalShell"
 import CalendarView from "../components/views/CalendarView"
 import DocumentListView from "../components/views/DocumentListView"
 import SocialFeedView from "../components/views/SocialFeedView"
 import CompetitionsView from "../components/views/CompetitionsView"
+import UpcomingList from "../components/views/UpcomingList"
 import LinkCard from "../components/views/LinkCard"
 import AccountSettings from "../components/member/AccountSettings"
 import { useSession, displayName } from "../lib/useSession"
 import { supabase } from "../lib/supabase"
 import { SITE } from "../data/site"
 
-const TABS = [
-  { key: "calendar", label: "Calendar" },
-  { key: "points", label: "Points" },
-  { key: "resources", label: "Resources" },
-  { key: "competitions", label: "Competitions" },
-  { key: "social", label: "Social Media" },
-  { key: "forms", label: "Forms" },
-  { key: "account", label: "Account" },
-] as const
+const GROUPS: PortalGroup[] = [
+  {
+    heading: "Dashboard",
+    items: [{ key: "overview", label: "Overview", description: "What's coming up and the things members use most." }],
+  },
+  {
+    heading: "Club",
+    items: [
+      { key: "calendar", label: "Calendar", description: "Meetings and competition deadlines. All times Eastern." },
+      { key: "competitions", label: "Competitions", description: "Every competition YEFA is tracking this year." },
+      { key: "social", label: "Social Media", description: "The latest posts from YEFA's Instagram." },
+    ],
+  },
+  {
+    heading: "Take part",
+    items: [
+      { key: "points", label: "Points", description: "Went to a meeting, competed, or helped out? Log it and officers add it to the points sheet." },
+      { key: "forms", label: "Forms", description: "Sign-ups and submissions for members." },
+      { key: "resources", label: "Resources", description: "Study guides, prep material and links." },
+    ],
+  },
+  {
+    heading: "You",
+    items: [{ key: "account", label: "Account", description: "Your name, password and account." }],
+  },
+]
 
-type TabKey = (typeof TABS)[number]["key"]
-
-function PointsTab() {
+function Overview({ go }: { go: (key: string) => void }) {
   return (
-    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-      <h2 className="text-lg font-semibold text-yefa-navy">Earn points for YEFA activities.</h2>
-      <p className="mx-auto mt-2 max-w-md text-sm text-yefa-ink">
-        Went to a meeting, competed, or helped out? Log it with the Points Form and officers will add
-        it to the points sheet.
-      </p>
-      <a
-        href={SITE.pointsForm}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-6 inline-block rounded-lg bg-yefa-blue px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-yefa-blue-dark"
-      >
-        Open the Points Form
-      </a>
+    <div className="grid gap-12 xl:grid-cols-2">
+      <div>
+        <div className="mb-5 flex items-baseline justify-between gap-4">
+          <h3 className="text-xl font-bold">Next up</h3>
+          <button onClick={() => go("calendar")} className="text-sm font-semibold text-yefa-blue hover:underline">
+            Full calendar
+          </button>
+        </div>
+        <UpcomingList limit={3} />
+      </div>
+      <div>
+        <h3 className="mb-5 text-xl font-bold">Quick actions</h3>
+        <div className="space-y-3">
+          <LinkCard
+            href={SITE.pointsForm}
+            title="Log points"
+            description="Record a meeting, competition or event you took part in."
+          />
+          <LinkCard href={SITE.econBowlForm} title="Econ Bowl sign-up" description="Sign up to compete in the Econ Bowl." />
+          <PortalCard title="Resources" description="Study guides, prep material and links." onClick={() => go("resources")} />
+        </div>
+      </div>
     </div>
   )
 }
 
 function FormsTab() {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <LinkCard
         href={SITE.pointsForm}
         title="Points Form"
         description="Log a meeting, competition, or event you took part in."
       />
-      <LinkCard
-        href={SITE.econBowlForm}
-        title="Econ Bowl Sign-Up"
-        description="Sign up to compete in the Econ Bowl."
-      />
+      <LinkCard href={SITE.econBowlForm} title="Econ Bowl Sign-Up" description="Sign up to compete in the Econ Bowl." />
       <LinkCard
         href={SITE.memberSignupForm}
         title="Membership Sign-Up"
@@ -68,37 +88,33 @@ export default function Member() {
   const { session } = useSession()
   const email = session?.user.email ?? ""
   const name = displayName(session?.user)
-  const [tab, setTab] = useState<TabKey>("calendar")
+  const { active, select } = usePortalTab(GROUPS)
+  const tab = active.key
 
   return (
     <div>
-      <PageHeader title={name ? `Welcome, ${name}!` : "Member Portal"} subtitle={`Signed in as ${email}`} />
+      <PageHeader title={name ? `Welcome, ${name}` : "Member Portal"} subtitle={`Signed in as ${email}`} />
 
-      <section className="mx-auto max-w-5xl px-5 py-12">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex gap-1 overflow-x-auto rounded-full bg-slate-100 p-1">
-            {TABS.map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
-                className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${
-                  tab === t.key ? "bg-white text-yefa-blue shadow-sm" : "text-yefa-ink hover:text-yefa-blue"
-                }`}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={() => supabase.auth.signOut()}
-            className="shrink-0 rounded-lg px-4 py-2 text-sm font-semibold text-yefa-ink ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
-          >
-            Sign out
-          </button>
-        </div>
-
+      <PortalShell
+        groups={GROUPS}
+        active={active}
+        onSelect={select}
+        actions={[{ label: "Sign out", onClick: () => supabase.auth.signOut() }]}
+      >
+        {tab === "overview" && <Overview go={select} />}
         {tab === "calendar" && <CalendarView />}
-        {tab === "points" && <PointsTab />}
+        {tab === "competitions" && <CompetitionsView />}
+        {tab === "social" && <SocialFeedView />}
+        {tab === "points" && (
+          <div className="max-w-xl">
+            <LinkCard
+              href={SITE.pointsForm}
+              title="Points Form"
+              description="Log a meeting, competition, or event you took part in."
+            />
+          </div>
+        )}
+        {tab === "forms" && <FormsTab />}
         {tab === "resources" && (
           <DocumentListView
             section="resources"
@@ -106,11 +122,8 @@ export default function Member() {
             emptyBody="Study guides, prep materials, and links will live here."
           />
         )}
-        {tab === "competitions" && <CompetitionsView />}
-        {tab === "social" && <SocialFeedView />}
-        {tab === "forms" && <FormsTab />}
         {tab === "account" && session && <AccountSettings user={session.user} />}
-      </section>
+      </PortalShell>
     </div>
   )
 }

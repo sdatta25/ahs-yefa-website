@@ -85,7 +85,7 @@ export default function EventManager() {
 
   return (
     <div className="space-y-8">
-      <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-white p-6">
+      <form onSubmit={handleSubmit} className="rounded-md border border-yefa-rule bg-white p-6">
         <h3 className="font-semibold text-yefa-navy">{editingId ? "Edit Item" : "Add Meeting or Competition"}</h3>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -94,7 +94,7 @@ export default function EventManager() {
             <select
               value={draft.type}
               onChange={(e) => setDraft({ ...draft, type: e.target.value as EventType })}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
             >
               <option value="meeting">Meeting</option>
               <option value="competition">Competition</option>
@@ -107,7 +107,7 @@ export default function EventManager() {
               type="text"
               value={draft.title}
               onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
               required
             />
           </label>
@@ -118,7 +118,7 @@ export default function EventManager() {
               type="date"
               value={draft.date}
               onChange={(e) => setDraft({ ...draft, date: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
               required
             />
           </label>
@@ -129,7 +129,7 @@ export default function EventManager() {
               type="time"
               value={draft.time}
               onChange={(e) => setDraft({ ...draft, time: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
               required
             />
           </label>
@@ -140,7 +140,7 @@ export default function EventManager() {
               type="text"
               value={draft.location}
               onChange={(e) => setDraft({ ...draft, location: e.target.value })}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
             />
           </label>
 
@@ -150,7 +150,7 @@ export default function EventManager() {
               value={draft.description}
               onChange={(e) => setDraft({ ...draft, description: e.target.value })}
               rows={2}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
+              className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-yefa-blue focus:outline-none focus:ring-1 focus:ring-yefa-blue"
             />
           </label>
         </div>
@@ -169,7 +169,7 @@ export default function EventManager() {
             <button
               type="button"
               onClick={resetForm}
-              className="rounded-full px-5 py-2.5 text-sm font-semibold text-yefa-ink ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
+              className="rounded-md px-5 py-2.5 text-sm font-semibold text-yefa-ink ring-1 ring-inset ring-slate-300 transition hover:bg-slate-50"
             >
               Cancel
             </button>
@@ -188,7 +188,7 @@ export default function EventManager() {
             {events.map((e) => (
               <div
                 key={e.id}
-                className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-2 rounded-md border border-yefa-rule bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div>
                   <span className="text-xs font-semibold text-yefa-orange-ink">{e.type === "competition" ? "Competition" : "Meeting"}</span>
@@ -200,13 +200,13 @@ export default function EventManager() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => startEdit(e)}
-                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-yefa-blue ring-1 ring-inset ring-yefa-blue/30 transition hover:bg-yefa-blue-50"
+                    className="rounded-md px-3 py-1.5 text-sm font-semibold text-yefa-blue ring-1 ring-inset ring-yefa-blue/30 transition hover:bg-yefa-blue-50"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(e.id)}
-                    className="rounded-full px-3 py-1.5 text-sm font-semibold text-red-600 ring-1 ring-inset ring-red-200 transition hover:bg-red-50"
+                    className="rounded-md px-3 py-1.5 text-sm font-semibold text-red-600 ring-1 ring-inset ring-red-200 transition hover:bg-red-50"
                   >
                     Delete
                   </button>
