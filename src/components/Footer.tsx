@@ -29,7 +29,7 @@ export default function Footer() {
         <div>
           <p className="font-display text-2xl font-extrabold text-white [font-stretch:125%]">AHS YEFA X YEI</p>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-slate-400">
-            Youth Economics &amp; Finance Association at Alpharetta High School.
+            Youth Entrepreneurship &amp; Finance Association at Alpharetta High School.
           </p>
         </div>
 

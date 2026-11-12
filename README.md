@@ -1,6 +1,6 @@
 # AHS YEFA Website
 
-The official website for AHS YEFA (Youth Economics & Finance Association) — club info,
+The official website for AHS YEFA (Youth Entrepreneurship & Finance Association) — club info,
 officer introductions, a meetings/competitions calendar, a competitions catalog, social
 posts, sign-up forms, resources, and how to join.
 

@@ -55,7 +55,7 @@ export default function Home() {
               X YEI
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-slate-300">
-              The Youth Economics &amp; Finance Association at Alpharetta High School, officially partnered with the Youth Economics Initiative. Members learn how
+              The Youth Entrepreneurship &amp; Finance Association at Alpharetta High School, officially partnered with the Youth Economics Initiative. Members learn how
               markets work and compete in national economics, finance and investing competitions.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
