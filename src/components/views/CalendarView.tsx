@@ -59,14 +59,14 @@ export default function CalendarView() {
       {loading ? (
         <p className="text-sm text-yefa-ink">Loading calendar&hellip;</p>
       ) : (
-        <div ref={calendarRef} className="grid scroll-mt-20 gap-8 lg:grid-cols-[1fr_1fr]">
+        <div ref={calendarRef} className="grid scroll-mt-32 gap-4 sm:gap-8 lg:grid-cols-[1fr_1fr]">
           <EventCalendar events={events} selected={selected} onSelect={setSelected} />
 
-          <div className="rounded-md border border-yefa-rule bg-white p-6">
+          <div className="min-h-32 rounded-md border border-yefa-rule bg-white p-4 sm:p-6">
             <h3 className="text-base font-semibold text-yefa-navy">{formatDateLabel(selected)}</h3>
 
             {selectedEvents.length === 0 ? (
-              <p className="mt-4 text-sm text-yefa-ink">None.</p>
+              <p className="mt-3 text-sm text-yefa-ink">Nothing scheduled this day.</p>
             ) : (
               <ul className="mt-4 space-y-3">
                 {selectedEvents.map((e) => (
@@ -94,16 +94,16 @@ export default function CalendarView() {
       )}
 
       {!loading && upcoming.length > 0 && (
-        <div className="mt-12">
+        <div className="mt-8 sm:mt-12">
           <h2 className="text-lg font-bold text-yefa-navy">Coming Up</h2>
-          <p className="mt-1 text-sm text-yefa-ink">Click an item to jump to it on the calendar above.</p>
+          <p className="mt-1 text-sm text-yefa-ink">Pick one to jump to it on the calendar.</p>
           <div className="mt-4 space-y-3">
             {upcoming.map((e) => (
               <button
                 key={e.id}
                 type="button"
                 onClick={() => jumpToEvent(e)}
-                className="flex w-full flex-col gap-2 rounded-md border border-yefa-rule bg-white p-5 text-left transition hover:-translate-y-0.5 hover:border-yefa-blue/30 hover:shadow-[0_18px_30px_-18px_rgba(16,20,43,0.25)] sm:flex-row sm:items-center sm:justify-between"
+                className="flex w-full flex-col gap-2 rounded-md border border-yefa-rule bg-white p-4 text-left transition-colors hover:border-yefa-blue/50 sm:flex-row sm:p-5 sm:items-center sm:justify-between"
               >
                 <div className="flex items-center gap-3">
                   <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${TYPE_STYLES[e.type]}`}>

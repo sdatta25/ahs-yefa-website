@@ -237,3 +237,11 @@ h4 {
     animation: none;
   }
 }
+
+/* Scrollable rows that shouldn't show a scrollbar (phone tab row). */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

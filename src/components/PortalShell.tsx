@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react"
 import type { ReactNode } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 
@@ -43,19 +44,42 @@ export default function PortalShell({
   children: ReactNode
 }) {
   const items = groups.flatMap((g) => g.items)
+  const tabRow = useRef<HTMLElement>(null)
+  const panel = useRef<HTMLElement>(null)
+
+  // Phones: keep the open tab in view in the row, and when a new section
+  // opens while scrolled down, start it at the top instead of mid-page.
+  useEffect(() => {
+    const row = tabRow.current
+    const tab = row?.querySelector<HTMLElement>('[aria-current="page"]')
+    if (row && tab) {
+      const target = tab.offsetLeft - (row.clientWidth - tab.offsetWidth) / 2
+      row.scrollTo({ left: Math.max(0, target), behavior: "smooth" })
+    }
+    const el = panel.current
+    if (!row || !el || row.offsetParent === null) return
+    const pinnedBottom = 57 + row.offsetHeight
+    if (el.getBoundingClientRect().top < pinnedBottom) {
+      window.scrollTo({ top: window.scrollY + el.getBoundingClientRect().top - pinnedBottom - 16, behavior: "instant" })
+    }
+  }, [active.key])
 
   return (
     <div className="bg-[linear-gradient(180deg,#e6ebf7_0%,var(--color-yefa-paper)_22rem)]">
       <div className="mx-auto max-w-7xl px-5 lg:grid lg:grid-cols-[13.5rem_minmax(0,1fr)] lg:gap-10">
         {/* Phones and tablets: one scrolling row of tabs */}
-        <nav aria-label="Sections" className="-mx-5 overflow-x-auto border-b border-yefa-rule px-5 lg:hidden">
+        <nav
+          ref={tabRow}
+          aria-label="Sections"
+          className="no-scrollbar sticky top-[57px] z-40 -mx-5 touch-pan-x overflow-x-auto overflow-y-hidden overscroll-x-contain border-b border-yefa-rule bg-[#e6ebf7]/95 px-5 backdrop-blur lg:hidden"
+        >
           <div className="flex w-max gap-1">
             {items.map((item) => (
               <button
                 key={item.key}
                 onClick={() => onSelect(item.key)}
                 aria-current={item.key === active.key ? "page" : undefined}
-                className={`-mb-px whitespace-nowrap border-b-2 px-3 py-3.5 text-sm font-semibold transition-colors ${
+                className={`whitespace-nowrap border-b-2 px-3 py-3.5 text-sm font-semibold transition-colors ${
                   item.key === active.key
                     ? "border-yefa-blue text-yefa-blue"
                     : "border-transparent text-yefa-ink hover:text-yefa-navy"
@@ -68,7 +92,7 @@ export default function PortalShell({
               <ActionButton
                 key={a.label}
                 action={a}
-                className="-mb-px whitespace-nowrap border-b-2 border-transparent px-3 py-3.5 text-sm font-semibold text-yefa-ink hover:text-yefa-navy"
+                className="whitespace-nowrap border-b-2 border-transparent px-3 py-3.5 text-sm font-semibold text-yefa-ink hover:text-yefa-navy"
               />
             ))}
           </div>
@@ -113,7 +137,7 @@ export default function PortalShell({
           </nav>
         </aside>
 
-        <section className="my-8 min-w-0 rounded-2xl border border-yefa-rule bg-white p-5 shadow-[0_24px_48px_-32px_rgba(15,27,61,0.3)] sm:p-8 lg:my-10 lg:p-10">
+        <section ref={panel} className="my-6 min-w-0 rounded-2xl border border-yefa-rule bg-white p-4 shadow-[0_24px_48px_-32px_rgba(15,27,61,0.3)] sm:p-8 lg:my-10 lg:p-10">
           <header className="mb-8 border-b border-yefa-rule pb-6">
             <h2 className="text-2xl font-bold sm:text-3xl">{active.title ?? active.label}</h2>
             {active.description && <p className="mt-2 max-w-2xl leading-relaxed text-yefa-ink">{active.description}</p>}

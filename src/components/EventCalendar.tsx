@@ -45,28 +45,28 @@ export default function EventCalendar({
   }
 
   return (
-    <div className="rounded-md border border-yefa-rule bg-white p-5">
+    <div className="rounded-md border border-yefa-rule bg-white p-3 sm:p-5">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold text-yefa-navy">{formatMonthLabel(cursor.year, cursor.month)}</h3>
         <div className="flex gap-1">
           <button
             onClick={() => goMonth(-1)}
             aria-label="Previous month"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-yefa-ink transition hover:bg-slate-100"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-yefa-ink transition hover:bg-slate-100"
           >
             &larr;
           </button>
           <button
             onClick={() => goMonth(1)}
             aria-label="Next month"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-yefa-ink transition hover:bg-slate-100"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-yefa-ink transition hover:bg-slate-100"
           >
             &rarr;
           </button>
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-400">
+      <div className="mt-2 grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-400 sm:mt-4">
         {WEEKDAYS.map((w, i) => (
           <div key={i} className="py-1">{w}</div>
         ))}
@@ -81,7 +81,7 @@ export default function EventCalendar({
             <button
               key={cell.iso}
               onClick={() => onSelect(cell.iso)}
-              className={`relative flex aspect-square flex-col items-center justify-center rounded-md text-sm transition ${
+              className={`tabular relative flex h-10 flex-col items-center justify-center rounded-md text-sm transition-colors sm:aspect-square sm:h-auto ${
                 isSelected
                   ? "bg-yefa-blue text-white font-semibold"
                   : cell.inMonth
@@ -92,7 +92,7 @@ export default function EventCalendar({
               {cell.day}
               {dayEvents.length > 0 && (
                 <span
-                  className={`absolute bottom-1.5 h-1 w-1 rounded-full ${
+                  className={`absolute bottom-1 h-1 w-1 rounded-full sm:bottom-1.5 ${
                     isSelected ? "bg-white" : "bg-yefa-orange"
                   }`}
                 />
