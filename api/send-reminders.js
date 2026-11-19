@@ -1,5 +1,6 @@
 import { readCollection } from "./_lib/store.js"
-import { configuredWebPush, readSubs, writeSubs } from "./_lib/push.js"
+import { configuredWebPush, readSubs, writeSubs, readEmailSubs } from "./_lib/push.js"
+import { emailHtml, mailer, sendMail } from "./_lib/mail.js"
 
 const DAYS_BEFORE = [3, 2, 1, 0]
 
@@ -39,7 +40,25 @@ export default async function handler(req, res) {
   const today = todayEastern()
   const events = (await readCollection("data/events-")).filter((e) => DAYS_BEFORE.includes(daysBetween(today, e.date)))
   const subs = await readSubs()
-  if (events.length === 0 || subs.length === 0) return res.status(200).json({ ok: true, events: events.length, devices: subs.length, sent: 0 })
+
+  // Email reminders (members who turned them on, once Gmail is set up).
+  let emailed = 0
+  const emailSubs = mailer() ? await readEmailSubs() : []
+  for (const event of events) {
+    const r = reminderFor(event, daysBetween(today, event.date))
+    for (const sub of emailSubs) {
+      await sendMail({
+        to: sub.email,
+        subject: r.title,
+        text: `${r.title}\n${r.body}\n\nSee the calendar: https://ahsyefaandyei.vercel.app${r.url}`,
+        html: emailHtml({ heading: r.title, lines: [r.body, event.description || ""].filter(Boolean), button: { label: "Open the calendar", path: r.url } }),
+      })
+        .then(() => emailed++)
+        .catch(() => {})
+    }
+  }
+
+  if (events.length === 0 || subs.length === 0) return res.status(200).json({ ok: true, events: events.length, devices: subs.length, sent: 0, emailed })
 
   const webpush = await configuredWebPush()
   const gone = new Set()
@@ -59,5 +78,5 @@ export default async function handler(req, res) {
   }
   if (gone.size) await writeSubs(subs.filter((s) => !gone.has(s.endpoint)))
 
-  return res.status(200).json({ ok: true, events: events.length, devices: subs.length, sent, removed: gone.size })
+  return res.status(200).json({ ok: true, events: events.length, devices: subs.length, sent, removed: gone.size, emailed })
 }

@@ -100,6 +100,10 @@ Their email can't be changed.
   calendar event and on the day. The push key pair comes from `VAPID_PUBLIC_KEY` /
   `VAPID_PRIVATE_KEY` if set, otherwise it's generated once and kept in Blob storage.
   On iPhone, reminders need the site added to the home screen (iOS 16.4+).
+- **Email** goes out from the club Gmail using `SMTP_USER` / `SMTP_PASS` (a Gmail app
+  password) in Vercel: email reminders (members opt in under Account, same schedule as
+  push) and bug reports. Sign-in and sign-up codes are sent by Supabase, which has its
+  own SMTP settings (Authentication → Emails) using the same app password.
 
 ## Officer Portal
 

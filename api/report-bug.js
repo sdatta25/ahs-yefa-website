@@ -1,6 +1,7 @@
 import crypto from "crypto"
 import { requireAuth, parseBody } from "./_lib/http.js"
 import { readCollection, writeCollection } from "./_lib/store.js"
+import { mailer, sendMail } from "./_lib/mail.js"
 
 const PREFIX = "data/bugs-"
 const SETTINGS = "data/settings-"
@@ -23,6 +24,22 @@ export default async function handler(req, res) {
   // Officers read the saved reports in Admin.
   if (req.method === "GET") {
     if (!requireAuth(req, res)) return
+    // ?smtp=1 checks the Gmail login; ?smtp=send also emails a test message.
+    if (req.query?.smtp) {
+      const m = mailer()
+      if (!m) return res.status(200).json({ smtp: "not set" })
+      try {
+        await m.verify()
+        if (req.query.smtp === "send") {
+          const to = await relayTarget()
+          await sendMail({ to, subject: "YEFA website: email test", text: "Email from the website is working." })
+          return res.status(200).json({ smtp: "ok", sentTo: to.replace(/(.).*(@.*)/, "$1…$2") })
+        }
+        return res.status(200).json({ smtp: "ok" })
+      } catch (err) {
+        return res.status(200).json({ smtp: "failed", error: String(err.message || err).slice(0, 200) })
+      }
+    }
     const bugs = await readCollection(PREFIX)
     return res.status(200).json({ bugs })
   }
@@ -47,9 +64,25 @@ export default async function handler(req, res) {
     createdAt: new Date().toISOString(),
   }
 
+  // Email it from the club Gmail when that's set up; otherwise the browser
+  // forwards it through FormSubmit.
+  const to = await relayTarget()
+  if (to.includes("@") && mailer()) {
+    try {
+      await sendMail({
+        to,
+        replyTo: report.email || undefined,
+        subject: `YEFA site bug: ${message.slice(0, 60)}`,
+        text: `${message}\n\nPage: ${report.page}\nFrom: ${report.email || report.name || "Not given"}\nDevice: ${report.device}\nWhen: ${report.createdAt}`,
+      })
+      report.emailed = "sent"
+    } catch {
+      report.emailed = "failed"
+    }
+  }
   const bugs = await readCollection(PREFIX)
   bugs.unshift(report)
   await writeCollection(PREFIX, bugs.slice(0, KEEP), { secret: true })
 
-  return res.status(201).json({ ok: true, relay: await relayTarget() })
+  return res.status(201).json({ ok: true, relay: report.emailed === "sent" ? "" : to })
 }

@@ -25,6 +25,8 @@ export default function Login() {
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
   const [sending, setSending] = useState(false)
+  const [code, setCode] = useState("")
+  const [verifying, setVerifying] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [idleNotice] = useState(takeIdleNotice)
   const [googleLoading, setGoogleLoading] = useState(false)
@@ -91,7 +93,7 @@ export default function Login() {
         if (data.user && data.user.identities?.length === 0) {
           setMode("signin")
           setError(
-            "There's already an account with this email. Sign in with Google or the email link, then set a password under Account.",
+            "There's already an account with this email. Sign in with Google or an email code, then set a password under Account.",
           )
           return
         }
@@ -109,6 +111,28 @@ export default function Login() {
   function switchMethod(next: Method) {
     setMethod(next)
     setError(null)
+  }
+
+  // The emailed 6-digit code: confirms a new account or signs you in.
+  async function handleVerifyCode(e: FormEvent) {
+    e.preventDefault()
+    setError(null)
+    const token = code.replace(/\D/g, "")
+    if (token.length < 6) return setError("Enter the 6-digit code from the email.")
+    setVerifying(true)
+    try {
+      const addr = email.trim().toLowerCase()
+      let { error: verifyError } = await supabase.auth.verifyOtp({ email: addr, token, type: "email" })
+      if (verifyError && step === "confirm") {
+        ;({ error: verifyError } = await supabase.auth.verifyOtp({ email: addr, token, type: "signup" }))
+      }
+      if (verifyError) throw verifyError
+      navigate(from, { replace: true })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "That code didn't work. Check it and try again.")
+    } finally {
+      setVerifying(false)
+    }
   }
 
   async function handleGoogle() {
@@ -180,7 +204,7 @@ export default function Login() {
                       : "text-yefa-ink hover:text-yefa-navy"
                   }`}
                 >
-                  {m === "password" ? "Password" : "Email link"}
+                  {m === "password" ? "Password" : "Email code"}
                 </button>
               ))}
             </div>
@@ -251,7 +275,7 @@ export default function Login() {
                 </p>
                 {mode === "signin" && (
                   <p className="text-center text-sm leading-relaxed text-slate-500">
-                    Forgot your password, or signed up with Google? Use the email link, then set a password under
+                    Forgot your password, or signed up with Google? Use the email code, then set a password under
                     Account.
                   </p>
                 )}
@@ -270,41 +294,62 @@ export default function Login() {
                     className="auth-field"
                     required
                   />
-                  <p className="mt-2 text-sm text-slate-500">We'll email you a link that signs you in. No password needed.</p>
+                  <p className="mt-2 text-sm text-slate-500">We'll email you a 6-digit code to sign in. No password needed.</p>
                 </div>
                 {alert}
                 <button type="submit" disabled={sending} className="btn btn-primary">
                   {sending && <span className="spinner" aria-hidden="true" />}
-                  {sending ? "Sending…" : "Email me a sign-in link"}
+                  {sending ? "Sending…" : "Email me a code"}
                 </button>
               </form>
             )}
           </>
         ) : (
-          <div className="auth-rise text-center" role="status">
+          <div className="auth-rise" role="status">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-yefa-blue-50 text-yefa-blue">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8" aria-hidden="true">
                 <rect x="3" y="5" width="18" height="14" rx="2.5" />
                 <path d="m4 7 8 6 8-6" />
               </svg>
             </div>
-            <h1 className="mt-6 text-3xl font-bold">{step === "confirm" ? "Confirm your email" : "Check your email"}</h1>
-            <p className="mt-3 text-lg leading-relaxed text-yefa-ink">
-              {step === "confirm" ? "We sent a confirmation link to " : "We sent a sign-in link to "}
-              <span className="font-semibold text-yefa-navy">{email}</span>.{" "}
-              {step === "confirm"
-                ? "Click it, then come back and sign in with your password."
-                : "Open it and click Sign in to go straight to your dashboard."}
+            <h1 className="mt-6 text-center text-3xl font-bold">{step === "confirm" ? "Confirm your email" : "Check your email"}</h1>
+            <p className="mt-3 text-center text-lg leading-relaxed text-yefa-ink">
+              We sent a 6-digit code to <span className="font-semibold text-yefa-navy">{email}</span>.
             </p>
-            <p className="mt-3 text-sm text-slate-500">Nothing there? Check spam. The link expires soon and works once.</p>
+            <form onSubmit={handleVerifyCode} className="mt-7 space-y-5">
+              <div>
+                <label htmlFor="auth-code" className="auth-label">Code</label>
+                <input
+                  id="auth-code"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={10}
+                  placeholder="123456"
+                  className="auth-field text-center text-2xl tracking-[0.4em]"
+                  autoFocus
+                  required
+                />
+              </div>
+              {alert}
+              <button type="submit" disabled={verifying} className="btn btn-primary">
+                {verifying && <span className="spinner" aria-hidden="true" />}
+                {verifying ? "Checking…" : step === "confirm" ? "Confirm and continue" : "Sign in"}
+              </button>
+            </form>
+            <p className="mt-4 text-center text-sm text-slate-500">
+              Nothing there? Check spam. You can also click the link in the email. The code expires soon and works once.
+            </p>
             <button
               type="button"
               onClick={() => {
                 setStep("email")
+                setCode("")
                 if (step === "confirm") setMode("signin")
                 setError(null)
               }}
-              className="btn btn-quiet mt-8"
+              className="btn btn-quiet mt-6"
             >
               {step === "confirm" ? "Back to sign in" : "Use a different email"}
             </button>

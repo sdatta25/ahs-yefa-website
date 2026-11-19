@@ -25,3 +25,7 @@ export async function configuredWebPush() {
 
 export const readSubs = () => readCollection(SUBS)
 export const writeSubs = (subs) => writeCollection(SUBS, subs, { secret: true })
+
+export const EMAIL_SUBS = "data/email-subs-"
+export const readEmailSubs = () => readCollection(EMAIL_SUBS)
+export const writeEmailSubs = (subs) => writeCollection(EMAIL_SUBS, subs, { secret: true })

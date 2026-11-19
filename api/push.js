@@ -1,13 +1,26 @@
 import { parseBody } from "./_lib/http.js"
 import { getBearerToken } from "./_lib/auth.js"
 import { userFromToken } from "./_lib/supabase-admin.js"
-import { readSubs, vapidKeys, writeSubs } from "./_lib/push.js"
+import { readSubs, vapidKeys, writeSubs, readEmailSubs, writeEmailSubs } from "./_lib/push.js"
 
 // Meeting reminders.
 //   GET    -> the public key browsers need to subscribe
 //   POST   -> save this device's subscription (signed-in members only)
 //   DELETE -> remove it
+//   channel "email" -> GET/POST {on} for email reminders (signed-in members)
+async function emailChannel(req, res, body) {
+  const user = await userFromToken(getBearerToken(req))
+  if (!user?.email) return res.status(401).json({ error: "Sign in again first." })
+  const subs = await readEmailSubs()
+  if (req.method === "GET") return res.status(200).json({ on: subs.some((s) => s.userId === user.id) })
+  const rest = subs.filter((s) => s.userId !== user.id)
+  if (body.on) rest.push({ userId: user.id, email: user.email, createdAt: new Date().toISOString() })
+  await writeEmailSubs(rest)
+  return res.status(200).json({ on: Boolean(body.on) })
+}
+
 export default async function handler(req, res) {
+  if (req.query?.channel === "email") return emailChannel(req, res, parseBody(req))
   if (req.method === "GET") {
     const { publicKey } = await vapidKeys()
     return res.status(200).json({ publicKey })

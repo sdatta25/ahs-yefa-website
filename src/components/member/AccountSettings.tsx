@@ -292,6 +292,66 @@ export function RemindersCard() {
   )
 }
 
+// Email reminders on the same schedule, sent from the club Gmail. One
+// setting per account (not per device).
+export function EmailRemindersCard() {
+  const [on, setOn] = useState<boolean | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function call(method: "GET" | "POST", body?: object) {
+    const { data } = await supabase.auth.getSession()
+    const res = await fetch("/api/push?channel=email", {
+      method,
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${data.session?.access_token ?? ""}` },
+      body: body ? JSON.stringify(body) : undefined,
+    })
+    const json = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(json.error || "Couldn't change email reminders.")
+    return Boolean(json.on)
+  }
+
+  useEffect(() => {
+    call("GET").then(setOn).catch(() => setOn(false))
+  }, [])
+
+  async function toggle() {
+    setError(null)
+    setBusy(true)
+    try {
+      setOn(await call("POST", { on: !on }))
+    } catch (err) {
+      setError(errorText(err, "Couldn't change email reminders."))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <Card title="Email reminders" description="The same reminders by email: 3 days, 2 days and 1 day before, and on the day.">
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={Boolean(on)}
+            onClick={toggle}
+            disabled={busy || on === null}
+            className={`relative h-8 w-14 shrink-0 rounded-full transition-colors disabled:opacity-60 ${on ? "bg-yefa-blue" : "bg-slate-300"}`}
+          >
+            <span className="sr-only">Email reminders</span>
+            <span className={`absolute top-1 left-1 h-6 w-6 rounded-full bg-white shadow transition-transform ${on ? "translate-x-6" : ""}`} />
+          </button>
+          <span className="text-sm font-medium text-yefa-navy">
+            {on === null ? "Checking…" : busy ? "One moment…" : on ? "On" : "Off"}
+          </span>
+        </div>
+        {error && <p className="text-sm text-red-600">{error}</p>}
+      </div>
+    </Card>
+  )
+}
+
 function DeleteCard() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
@@ -364,6 +424,7 @@ export default function AccountSettings({ user }: { user: User }) {
     <div className="mx-auto max-w-xl space-y-6">
       <ProfileCard user={user} />
       <RemindersCard />
+      <EmailRemindersCard />
       <PasswordCard user={user} />
       <DeleteCard />
     </div>
