@@ -3,7 +3,7 @@ import type { FormEvent } from "react"
 import { useLocation } from "react-router-dom"
 import { useSession, displayName } from "../lib/useSession"
 
-// A bug button fixed to the bottom-left of every page. Reports go to the
+// A bug button fixed to the bottom-right of every page. Reports go to the
 // webmaster by email and are saved for Admin.
 export default function BugReportButton() {
   const { pathname, search } = useLocation()
@@ -83,7 +83,7 @@ export default function BugReportButton() {
         onClick={openForm}
         aria-label="Report a bug"
         title="Report a bug"
-        className="fixed bottom-4 left-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-yefa-navy text-white shadow-[0_10px_24px_-8px_rgba(15,27,61,0.6)] ring-2 ring-white transition-transform hover:scale-105 active:scale-95 print:hidden"
+        className="fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-yefa-navy text-white shadow-[0_10px_24px_-8px_rgba(15,27,61,0.6)] ring-2 ring-white transition-transform hover:scale-105 active:scale-95 print:hidden"
         style={{ bottom: "max(1rem, env(safe-area-inset-bottom))" }}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden="true">

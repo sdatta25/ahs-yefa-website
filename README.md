@@ -90,7 +90,7 @@ Their email can't be changed.
 
 ### Bug reports and meeting reminders
 
-- **Bug button** (bottom-left on every page) posts to `api/report-bug.js`. Reports are
+- **Bug button** (bottom-right on every page) posts to `api/report-bug.js`. Reports are
   saved (Admin → Bug reports) and emailed through FormSubmit to the address set in
   Admin → Bug reports (or a `BUG_REPORT_EMAIL` env var). The first report sends an
   activation email to that address; reports arrive after it's confirmed.
