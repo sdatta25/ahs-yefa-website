@@ -4,7 +4,7 @@ import { readCollection, writeCollection } from "./_lib/store.js"
 // Officer-only settings (e.g. the Google Sheet links previewed in the officer
 // portal). Stored as a one-element collection so it reuses the blob store.
 const PREFIX = "data/settings-"
-const FIELDS = ["pointsSheetUrl", "membersSheetUrl"]
+const FIELDS = ["pointsSheetUrl", "membersSheetUrl", "bugReportEmail"]
 
 function sanitize(input) {
   const out = {}
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     const body = parseBody(req)
     const current = await readSettings()
     const next = sanitize({ ...current, ...(body.settings || {}) })
-    await writeCollection(PREFIX, [next])
+    await writeCollection(PREFIX, [next], { secret: true })
     return res.status(200).json({ settings: next })
   }
 

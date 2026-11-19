@@ -12,14 +12,16 @@ export async function readCollection(prefix) {
   return Array.isArray(data) ? data : []
 }
 
-export async function writeCollection(prefix, items) {
+// `secret: true` adds a random suffix to the file name so its public URL
+// can't be guessed (used for bug reports, push subscriptions, keys).
+export async function writeCollection(prefix, items, { secret = false } = {}) {
   const { blobs } = await list({ prefix })
   // Zero-padded timestamp so pathnames sort chronologically as plain strings.
   const pathname = `${prefix}${String(Date.now()).padStart(15, "0")}.json`
 
   await put(pathname, JSON.stringify(items, null, 2), {
     access: "public",
-    addRandomSuffix: false,
+    addRandomSuffix: secret,
     contentType: "application/json",
     cacheControlMaxAge: 0,
   })

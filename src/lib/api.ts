@@ -154,6 +154,23 @@ export async function fetchLinkPreview(url: string): Promise<{ title: string; im
 export type OfficerSettings = {
   pointsSheetUrl: string
   membersSheetUrl: string
+  bugReportEmail: string
+}
+
+export type BugReport = {
+  id: string
+  message: string
+  email: string
+  name: string
+  page: string
+  device: string
+  createdAt: string
+  emailed?: string
+}
+
+export async function fetchBugReports(): Promise<BugReport[]> {
+  const data = await authedFetch("/api/report-bug", { method: "GET" })
+  return data.bugs
 }
 
 export async function fetchSettings(): Promise<OfficerSettings> {

@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase"
 import Navbar from "./Navbar"
 import Footer from "./Footer"
 import ErrorBoundary from "./ErrorBoundary"
+import BugReportButton from "./BugReportButton"
 import { useIdleSignOut } from "../lib/idleTimeout"
 
 function PageCrashed() {
@@ -62,6 +63,7 @@ export default function Layout() {
         </ErrorBoundary>
       </main>
       <Footer />
+      <BugReportButton />
     </div>
   )
 }

@@ -3,6 +3,7 @@ import PageHeader from "../components/PageHeader"
 import PortalShell, { usePortalTab, type PortalGroup } from "../components/PortalShell"
 import EventManager from "../components/admin/EventManager"
 import DocumentManager from "../components/admin/DocumentManager"
+import BugReports from "../components/admin/BugReports"
 
 const GROUPS: PortalGroup[] = [
   {
@@ -30,6 +31,10 @@ const GROUPS: PortalGroup[] = [
       },
     ],
   },
+  {
+    heading: "Site",
+    items: [{ key: "bugs", label: "Bug reports", description: "Reports sent from the bug button on every page." }],
+  },
 ]
 
 export default function Admin() {
@@ -53,6 +58,7 @@ export default function Admin() {
             {tab === "forms" && <DocumentManager section="forms" label="Forms" />}
             {tab === "resources" && <DocumentManager section="resources" label="Resources" />}
             {tab === "social" && <DocumentManager section="social" label="Social Media" />}
+            {tab === "bugs" && <BugReports />}
           </PortalShell>
         )}
       </AuthGate>

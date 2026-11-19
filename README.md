@@ -88,6 +88,19 @@ Their email can't be changed.
   query against Supabase so the project never goes idle. Check it under Vercel →
   Settings → Cron Jobs. Optionally set a `CRON_SECRET` env var so only Vercel can call it.
 
+### Bug reports and meeting reminders
+
+- **Bug button** (bottom-left on every page) posts to `api/report-bug.js`. Reports are
+  saved (Admin → Bug reports) and emailed through FormSubmit to the address set in
+  Admin → Bug reports (or a `BUG_REPORT_EMAIL` env var). The first report sends an
+  activation email to that address; reports arrive after it's confirmed.
+- **Meeting reminders** use Web Push. Members turn them on per device under
+  Account. `api/push.js` stores subscriptions; a daily Vercel Cron (12:00 UTC) calls
+  `api/send-reminders.js`, which notifies every device 3, 2 and 1 days before each
+  calendar event and on the day. The push key pair comes from `VAPID_PUBLIC_KEY` /
+  `VAPID_PRIVATE_KEY` if set, otherwise it's generated once and kept in Blob storage.
+  On iPhone, reminders need the site added to the home screen (iOS 16.4+).
+
 ## Officer Portal
 
 The Officer Portal lives at **`/officer`** (the "Officer Login" link in the footer and the

@@ -1,10 +1,11 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { FormEvent, ReactNode } from "react"
 import type { User } from "@supabase/supabase-js"
 import { useNavigate } from "react-router-dom"
 import PasswordInput from "../PasswordInput"
 import { supabase } from "../../lib/supabase"
 import { displayName } from "../../lib/useSession"
+import { reminderSupport, remindersOn, turnOffReminders, turnOnReminders } from "../../lib/reminders"
 
 const MIN_PASSWORD = 8
 
@@ -221,6 +222,76 @@ function PasswordCard({ user }: { user: User }) {
   )
 }
 
+// Push reminders 3, 2 and 1 days before each meeting or competition and on
+// the day. The choice is per device: turn it on on each phone or laptop.
+export function RemindersCard() {
+  const [support] = useState(reminderSupport)
+  const [on, setOn] = useState<boolean | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    remindersOn().then(setOn).catch(() => setOn(false))
+  }, [])
+
+  async function toggle() {
+    setError(null)
+    setBusy(true)
+    try {
+      if (on) await turnOffReminders()
+      else await turnOnReminders()
+      setOn(!on)
+    } catch (err) {
+      setError(errorText(err, "Couldn't change reminders. Try again."))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <Card
+      title="Meeting reminders"
+      description="Get a notification 3 days, 2 days and 1 day before each meeting or competition, and on the day."
+    >
+      {support === "ios-install" ? (
+        <p className="text-sm text-yefa-ink">
+          On iPhone, reminders work once the site is on your home screen: in Safari tap <b>Share</b> then{" "}
+          <b>Add to Home Screen</b>, open YEFA from there, and turn reminders on here.
+        </p>
+      ) : support === "unsupported" ? (
+        <p className="text-sm text-yefa-ink">This browser can't show notifications. Try Chrome, Edge, Firefox or Safari.</p>
+      ) : support === "blocked" ? (
+        <p className="text-sm text-yefa-ink">
+          Notifications are blocked for this site. Allow them in your browser's site settings, then reload.
+        </p>
+      ) : (
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-4">
+            <button
+              type="button"
+              role="switch"
+              aria-checked={Boolean(on)}
+              onClick={toggle}
+              disabled={busy || on === null}
+              className={`relative h-8 w-14 shrink-0 rounded-full transition-colors disabled:opacity-60 ${on ? "bg-yefa-blue" : "bg-slate-300"}`}
+            >
+              <span className="sr-only">Meeting reminders</span>
+              <span
+                className={`absolute top-1 left-1 h-6 w-6 rounded-full bg-white shadow transition-transform ${on ? "translate-x-6" : ""}`}
+              />
+            </button>
+            <span className="text-sm font-medium text-yefa-navy">
+              {on === null ? "Checking…" : busy ? "One moment…" : on ? "On for this device" : "Off"}
+            </span>
+          </div>
+          <p className="text-xs text-slate-500">Turn it on separately on each phone or laptop you use.</p>
+          {error && <p className="text-sm text-red-600">{error}</p>}
+        </div>
+      )}
+    </Card>
+  )
+}
+
 function DeleteCard() {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
@@ -292,6 +363,7 @@ export default function AccountSettings({ user }: { user: User }) {
   return (
     <div className="mx-auto max-w-xl space-y-6">
       <ProfileCard user={user} />
+      <RemindersCard />
       <PasswordCard user={user} />
       <DeleteCard />
     </div>
