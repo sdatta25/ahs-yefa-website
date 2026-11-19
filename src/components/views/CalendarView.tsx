@@ -59,10 +59,10 @@ export default function CalendarView() {
       {loading ? (
         <p className="text-sm text-yefa-ink">Loading calendar&hellip;</p>
       ) : (
-        <div ref={calendarRef} className="grid scroll-mt-32 gap-4 sm:gap-8 lg:grid-cols-[1fr_1fr]">
+        <div ref={calendarRef} className="grid scroll-mt-32 grid-cols-1 gap-4 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <EventCalendar events={events} selected={selected} onSelect={setSelected} />
 
-          <div className="min-h-32 rounded-md border border-yefa-rule bg-white p-4 sm:p-6">
+          <div className="min-h-32 min-w-0 rounded-md border border-yefa-rule bg-white p-4 sm:p-6">
             <h3 className="text-base font-semibold text-yefa-navy">{formatDateLabel(selected)}</h3>
 
             {selectedEvents.length === 0 ? (
@@ -84,7 +84,7 @@ export default function CalendarView() {
                     </div>
                     <h4 className="mt-2 font-semibold text-yefa-navy">{e.title}</h4>
                     {e.location && <p className="mt-0.5 text-sm text-yefa-ink">{e.location}</p>}
-                    {e.description && <p className="mt-1 text-sm text-yefa-ink">{e.description}</p>}
+                    {e.description && <p className="mt-1 text-sm text-yefa-ink [overflow-wrap:anywhere]">{e.description}</p>}
                   </li>
                 ))}
               </ul>
