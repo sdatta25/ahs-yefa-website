@@ -6,6 +6,7 @@ import ErrorBoundary from "../components/ErrorBoundary"
 import { COMPETITIONS } from "../data/competitions"
 import { OFFICERS } from "../data/officers"
 import UpcomingList from "../components/views/UpcomingList"
+import { useSession } from "../lib/useSession"
 
 const OrbitVisual = lazy(() => import("../components/hero/OrbitVisual"))
 
@@ -25,6 +26,8 @@ const DOES = [
 ]
 
 export default function Home() {
+  const { session } = useSession()
+  const signedIn = Boolean(session)
   const reduceMotion = useReducedMotion()
 
   return (
@@ -118,6 +121,59 @@ export default function Home() {
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Reminders */}
+      <section className="overflow-hidden border-t border-yefa-rule">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 lg:grid-cols-2 lg:gap-20 lg:py-28">
+          <div>
+            <h2 className="text-3xl font-bold sm:text-4xl">Never miss a meeting.</h2>
+            <p className="mt-4 max-w-lg text-lg leading-relaxed text-yefa-ink">
+              Turn on reminders and your phone or laptop pings you 3 days, 2 days and 1 day before every meeting and
+              competition, and again on the day, with the time and the room.
+            </p>
+            <ul className="mt-6 space-y-2 text-yefa-ink">
+              <li>Works on Android, iPhone (once you add the site to your home screen) and laptops.</li>
+              <li>Tap a reminder to open the calendar.</li>
+              <li>Turn it off anytime under Account.</li>
+            </ul>
+            <Link
+              to={signedIn ? "/member?tab=account" : "/login"}
+              state={signedIn ? undefined : { from: "/member?tab=account" }}
+              className="mt-8 inline-block rounded-md bg-yefa-blue px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-yefa-blue-dark"
+            >
+              {signedIn ? "Turn on reminders" : "Sign in to turn on reminders"}
+            </Link>
+          </div>
+
+          {/* Example of the four reminders a member gets */}
+          <div aria-hidden="true" className="relative mx-auto w-full max-w-md">
+            <div className="absolute -inset-10 -z-10 rounded-full bg-[radial-gradient(closest-side,rgba(43,79,194,0.18),transparent)]" />
+            <div className="space-y-3">
+              {[
+                ["In 3 days", "Thursday, Dec 4 · 3:35 PM ET · Room 2317", "opacity-60 scale-[0.94]"],
+                ["In 2 days", "Thursday, Dec 4 · 3:35 PM ET · Room 2317", "opacity-75 scale-[0.96]"],
+                ["Tomorrow", "3:35 PM ET · Room 2317", "opacity-90 scale-[0.98]"],
+                ["Today", "3:35 PM ET · Room 2317", "ring-2 ring-yefa-orange"],
+              ].map(([when, detail, look]) => (
+                <div
+                  key={when}
+                  className={`flex items-start gap-3 rounded-2xl border border-yefa-rule bg-white/95 p-4 shadow-[0_16px_32px_-20px_rgba(15,27,61,0.45)] backdrop-blur ${look}`}
+                >
+                  <img src="/icon-192.png" alt="" className="h-10 w-10 shrink-0 rounded-xl" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex justify-between gap-2 text-xs text-slate-500">
+                      <span className="font-semibold text-yefa-navy">YEFA</span>
+                      <span>{when === "Today" ? "now" : "7:00 AM"}</span>
+                    </div>
+                    <p className="mt-0.5 truncate text-sm font-semibold text-yefa-navy">{when}: General Meeting</p>
+                    <p className="truncate text-sm text-yefa-ink">{detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
