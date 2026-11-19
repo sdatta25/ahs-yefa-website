@@ -10,31 +10,13 @@ function clip(value, max) {
   return typeof value === "string" ? value.trim().slice(0, max) : ""
 }
 
-// Emails a report through FormSubmit (no account or SMTP needed). The first
-// report sends an activation email to the address; reports arrive after it's
-// confirmed. The address lives in BUG_REPORT_EMAIL or the Admin setting, not
+// Where the reporter's browser forwards the email (FormSubmit only accepts
+// requests from browsers). It's the address set in Admin or BUG_REPORT_EMAIL,
+// or better, the private alias FormSubmit gives after activation. Not stored
 // in this public repo.
-async function emailReport(report) {
+async function relayTarget() {
   const [settings] = await readCollection(SETTINGS)
-  const to = process.env.BUG_REPORT_EMAIL || settings?.bugReportEmail
-  if (!to) return "no address set"
-  const site = process.env.SITE_URL || "https://ahsyefaandyei.vercel.app"
-  const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json", Origin: site, Referer: site + "/" },
-    body: JSON.stringify({
-      _subject: `YEFA site bug: ${report.message.slice(0, 60)}`,
-      _template: "table",
-      _captcha: "false",
-      ...(report.email ? { _replyto: report.email } : {}),
-      Problem: report.message,
-      Page: report.page,
-      "Reported by": report.email || report.name || "Not given",
-      Device: report.device,
-      When: report.createdAt,
-    }),
-  }).catch(() => null)
-  return res && res.ok ? "sent" : `failed (${res ? res.status : "network"})`
+  return process.env.BUG_REPORT_EMAIL || settings?.bugReportEmail || ""
 }
 
 export default async function handler(req, res) {
@@ -65,10 +47,9 @@ export default async function handler(req, res) {
     createdAt: new Date().toISOString(),
   }
 
-  report.emailed = await emailReport(report)
   const bugs = await readCollection(PREFIX)
   bugs.unshift(report)
   await writeCollection(PREFIX, bugs.slice(0, KEEP), { secret: true })
 
-  return res.status(201).json({ ok: true })
+  return res.status(201).json({ ok: true, relay: await relayTarget() })
 }

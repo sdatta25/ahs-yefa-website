@@ -44,7 +44,8 @@ export default function BugReports() {
         </div>
         <p className="mt-2 text-xs text-slate-500">
           The first report sends an activation email from FormSubmit to this address. Click <b>Activate</b> in it and
-          reports arrive from then on. Every report is also saved below.
+          reports arrive from then on. FormSubmit's email also gives a random alias: paste that here instead of
+          your address to keep it private. Every report is also saved below.
         </p>
         {saved && <p className="mt-2 text-sm text-green-700">Saved.</p>}
         {error && <p className="mt-2 text-sm text-red-600">{error}</p>}

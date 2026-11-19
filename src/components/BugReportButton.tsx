@@ -50,6 +50,24 @@ export default function BugReportButton() {
       })
       const body = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(body.error || "Couldn't send the report.")
+      // The report is saved; also email it to the webmaster. FormSubmit only
+      // accepts requests from browsers, so this goes from here.
+      if (body.relay) {
+        await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(body.relay)}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            _subject: `YEFA site bug: ${message.trim().slice(0, 60)}`,
+            _template: "table",
+            _captcha: "false",
+            ...(email ? { _replyto: email } : {}),
+            Problem: message.trim(),
+            Page: window.location.href,
+            "Reported by": email || displayName(session?.user) || "Not given",
+            Device: navigator.userAgent,
+          }),
+        }).catch(() => {})
+      }
       setState("sent")
       setMessage("")
     } catch (err) {
